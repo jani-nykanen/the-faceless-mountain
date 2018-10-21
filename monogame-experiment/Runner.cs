@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using monogame_experiment.Desktop.Core;
+using monogame_experiment.Desktop.Field;
 
 
 namespace monogame_experiment.Desktop
@@ -18,7 +19,7 @@ namespace monogame_experiment.Desktop
         // Graphics device manager
         private GraphicsDeviceManager gman;
 
-
+        
         // Constructor
         public Runner()
         {
@@ -30,12 +31,14 @@ namespace monogame_experiment.Desktop
             // Create configuration
             Configuration conf = new Configuration();
             conf.fullscreen = false;
+			conf.frameRate = 30;
             
             // Create application base for custom app behavior
             appBase = new Application(conf, gman, this);
 
-            // Add scenes
-            // ...
+			// Add scenes
+			appBase.AddScene(new GameField(), true);
+			appBase.AddScene(new Global(), false, true);
 
             // Initialize scenes
             appBase.InitScenes();

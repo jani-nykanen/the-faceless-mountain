@@ -25,14 +25,18 @@ namespace monogame_experiment.Desktop.Core
 		// Whether redraw the frame
 		private bool redraw = false;
 		// Time sum
-		private float timeSum;
+		private float timeSum = 0.0f;
 
 		// Scene manager
 		private SceneManager sceneMan;
+		// Input manager
+		private InputManager input;
+		// Weak event manager
+		private WeakEventManager eventMan;
 
 
 		// Configurate application
-        private void Configurate()
+        private void Configure()
         {
 			// Change window size
             gman.PreferredBackBufferWidth = conf.winWidth;
@@ -47,6 +51,8 @@ namespace monogame_experiment.Desktop.Core
 
 			// Set window title
             runner.Window.Title = conf.caption;
+			// Enable resizing (not a user-option)
+			runner.Window.AllowUserResizing = true;
         }
 
 		
@@ -59,10 +65,14 @@ namespace monogame_experiment.Desktop.Core
 
 			// Configurate
 			this.conf = conf;
-			Configurate();
+			Configure();
 
+			// Create input manager
+			input = new InputManager();
+			// Create event manager
+			eventMan = new WeakEventManager(this);
 			// Create scene manager
-			sceneMan = new SceneManager();
+			sceneMan = new SceneManager(input, eventMan);
         }
 
 
@@ -99,8 +109,7 @@ namespace monogame_experiment.Desktop.Core
 
         // Update
 		public void Update(float delta)
-		{
-			
+		{         
 			const int MAX_FRAME_UPDATE = 5;
             const int COMPARABLE_FRAME_RATE = 60;
 
@@ -108,7 +117,7 @@ namespace monogame_experiment.Desktop.Core
 
             // Wait until enough time has passed, 
             // then update the frame
-            timeSum += delta;
+            timeSum += delta / 1000.0f;
 
             // Update until all the frames in queue
             // are updated
@@ -130,13 +139,15 @@ namespace monogame_experiment.Desktop.Core
 
         // Update frame
 		public void UpdateFrame(float tm) {
-
-			// Quit (TEMP)
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                runner.Exit();
+                 
+			// Update input (pre)
+			input.Update();
 
 			// Update scenes
 			sceneMan.Update(tm);
+
+			// Update input (post)
+			input.PostUpdate();
 		}
 
 
@@ -144,12 +155,11 @@ namespace monogame_experiment.Desktop.Core
 		public void Draw() 
 		{
 			if (!redraw) return;
-
-			// Clear screen
-			graphics.ClearScreen(170, 170, 170);
-
+                     
 			// Draw scenes
 			sceneMan.Draw(graphics);
+
+			redraw = false;
 		}
 
 
@@ -159,6 +169,21 @@ namespace monogame_experiment.Desktop.Core
 
 			// Destroy scenes
 			sceneMan.Destroy();
+		}
+
+
+        // Terminate
+		public void Terminate() 
+		{
+
+			runner.Exit();
+		}
+
+
+        // Toggle fullscreen
+        public void ToggleFullscreen() 
+		{
+			gman.ToggleFullScreen();
 		}
     }
 }

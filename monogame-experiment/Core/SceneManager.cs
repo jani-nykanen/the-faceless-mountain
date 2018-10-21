@@ -14,13 +14,22 @@ namespace monogame_experiment.Desktop.Core
 		// Current scene
 		private Scene currentScene;
 
+		// Weak event manager
+		private WeakEventManager eventMan;
+		// Input manager
+		private InputManager input;
+
 
 		// Constructor
-        public SceneManager()
+		public SceneManager(InputManager input, WeakEventManager eventMan)
         {
 			scenes = new List<Scene>();
 			globalScene = null;
 			currentScene = null;
+
+			// Store references to certain objects
+			this.input = input;
+			this.eventMan = eventMan;
         }
 
 
@@ -44,6 +53,10 @@ namespace monogame_experiment.Desktop.Core
 
 				globalScene = scene;
 			}
+
+			// Pass references to certain objects to the
+			// scene
+			scene.Ready(input, eventMan);
 		}
 
 
