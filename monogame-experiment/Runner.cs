@@ -39,9 +39,6 @@ namespace monogame_experiment.Desktop
 			// Add scenes
 			appBase.AddScene(new GameField(), true);
 			appBase.AddScene(new Global(), false, true);
-
-            // Initialize scenes
-            appBase.InitScenes();
         }
 
 
@@ -61,6 +58,9 @@ namespace monogame_experiment.Desktop
 
             // Load game assets
             appBase.LoadAssets();
+
+			// Initialize scenes
+            appBase.InitScenes();
         }
         
 
