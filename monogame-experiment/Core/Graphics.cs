@@ -33,8 +33,18 @@ namespace monogame_experiment.Desktop.Core
 		// Global color
 		private Vector4 globalColor = new Vector4(1, 1, 1, 1);
 
+		// White texture/bitmap
+		private Bitmap bmpWhite;
+
 		// Automatic begin/end
 		private bool autoBeginEnd = true;
+
+
+        // Creates a white texture
+        public void CreateWhiteTexture() 
+		{
+			bmpWhite = new Bitmap(new byte[] { 255, 255, 255, 255 }, 1, 1);
+		}
 
 		
 		// Constructor
@@ -51,6 +61,9 @@ namespace monogame_experiment.Desktop.Core
 			baseBatch = new SpriteBatch(gdev);
 			// ... and effects
 			baseEffects = new SpriteEffects();
+
+			// Create a white texture
+			CreateWhiteTexture();
         }
 
 
@@ -191,6 +204,24 @@ namespace monogame_experiment.Desktop.Core
 				baseBatch.End();
 				ToggleAutoBeginEnd(true);
 			}
+		}
+
+
+        // Draw a filled rectangle
+        public void FillRect(int x, int y, int w, int h) 
+		{
+			if (autoBeginEnd)
+                baseBatch.Begin(SpriteSortMode.Deferred);
+
+            // Draw
+            baseBatch.Draw(bmpWhite.GetTexture(),
+                           new Rectangle((int)x, (int)y, (int)w, (int)h),
+                           new Rectangle(0, 0, 1, 1),
+                           (new Color(globalColor.X, globalColor.Y, globalColor.Z))
+                           * globalColor.W);
+
+            if (autoBeginEnd)
+                baseBatch.End();
 		}
 
 

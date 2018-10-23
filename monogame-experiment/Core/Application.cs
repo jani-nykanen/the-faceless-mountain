@@ -21,9 +21,7 @@ namespace monogame_experiment.Desktop.Core
 
 		// Configuration
         private Configuration conf;
-
-		// Whether redraw the frame
-		private bool redraw = false;
+        
 		// Time sum
 		private float timeSum = 0.0f;
 
@@ -45,7 +43,7 @@ namespace monogame_experiment.Desktop.Core
 			// Set fullscreen
 			gman.HardwareModeSwitch = false;
 			gman.IsFullScreen = conf.fullscreen;
-         
+
             // Apply changes
             gman.ApplyChanges();
 
@@ -123,11 +121,9 @@ namespace monogame_experiment.Desktop.Core
             // are updated
             int updateCount = 0;
             while (timeSum >= frameWait)
-            {
-
+            {            
                 // Update frame and set frame to be redrawable
 				UpdateFrame((float)COMPARABLE_FRAME_RATE / (float)conf.frameRate);
-                redraw = true;
 
                 timeSum -= frameWait;
 
@@ -154,12 +150,8 @@ namespace monogame_experiment.Desktop.Core
         // Draw
 		public void Draw() 
 		{
-			if (!redraw) return;
-                     
 			// Draw scenes
 			sceneMan.Draw(graphics);
-
-			redraw = false;
 		}
 
 
