@@ -16,6 +16,7 @@ namespace monogame_experiment.Desktop.Field
 
 		// Test bitmaps
 		private Bitmap bmpFont;
+		private Bitmap bmpTest;
 
 
 		// Constructor
@@ -25,8 +26,11 @@ namespace monogame_experiment.Desktop.Field
 		// Initialize scene
 		override public void Init()
         {
+			AssetPack assets = ((Global)globalScene).GetAssets();
+
 			// Load assets
-			bmpFont = new Bitmap("Assets/Bitmaps/font.png");
+			bmpFont = assets.GetBitmap("font");
+			bmpTest = assets.GetBitmap("test");
         }
 
 
@@ -66,6 +70,16 @@ namespace monogame_experiment.Desktop.Field
 			g.DrawText(bmpFont, "Hello world!\nAnd a thousand other cool things.", 32, 32, -16, 0, 0.75f, false);
 
 			// End drawing
+			g.EndDrawing();
+
+			// Draw a spinning bitmap
+			g.Translate(320, 320);
+			g.Rotate(val);
+  			g.BeginDrawing();
+
+			g.SetColor(1, 1, 1, 1.0f-s);
+			g.DrawBitmap(bmpTest, -128, -128);
+
 			g.EndDrawing();
 		}
 

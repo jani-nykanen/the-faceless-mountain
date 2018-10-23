@@ -10,6 +10,10 @@ namespace monogame_experiment.Desktop
     // Global scene
 	public class Global : Scene
     {
+		// Global asset pack
+		private AssetPack assets;
+            
+
 		// Constructor
 		public Global() { /* ... */ }
 
@@ -17,7 +21,8 @@ namespace monogame_experiment.Desktop
 		// Initialize scene
         override public void Init()
         {
-
+			// Load global assets
+			assets = new AssetPack("Assets/assets.xml");
         }
 
 
@@ -61,5 +66,12 @@ namespace monogame_experiment.Desktop
         {
             return "global";
         }
+
+
+        // Get the global asset pack
+		public AssetPack GetAssets()
+		{
+			return assets;
+		}
     }
 }

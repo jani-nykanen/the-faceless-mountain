@@ -73,7 +73,7 @@ namespace monogame_experiment.Desktop.Core
         public void Translate(float x, float y) 
 		{
 			operand = Matrix.CreateTranslation(new Vector3(x, y, 0.0f));
-			model = Matrix.Multiply(model, operand);
+			model = Matrix.Multiply(operand, model);
 		}
 
         
@@ -81,7 +81,7 @@ namespace monogame_experiment.Desktop.Core
         public void Scale(float x, float y) 
 		{
 			operand = Matrix.CreateScale(new Vector3(x, y, 1.0f));
-            model = Matrix.Multiply(model, operand);
+			model = Matrix.Multiply(operand, model);
 		}
 
 
@@ -89,14 +89,14 @@ namespace monogame_experiment.Desktop.Core
         public void Rotate(float angle)
         {
 			operand = Matrix.CreateRotationZ(angle);
-            model = Matrix.Multiply(model, operand);
+			model = Matrix.Multiply(operand, model);
         }
 
 
         // Get result matrix
 		public Matrix GetResultMatrix()
 		{
-			return Matrix.Multiply(view, model);
+			return Matrix.Multiply(model, view);
 		}
     }
 }

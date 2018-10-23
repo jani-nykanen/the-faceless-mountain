@@ -11,12 +11,22 @@ namespace monogame_experiment.Desktop.Core
 		// Weak event manager
 		protected WeakEventManager eventMan;
 
+		// A refrence to a global scene
+		protected Scene globalScene;
+
 
         // Make ready for use
 		public void Ready(InputManager input, WeakEventManager eventMan) {
 
 			this.input = input;
 			this.eventMan = eventMan;
+		}
+
+
+        // Set global scene
+        public void SetGlobalScene(Scene s)
+		{
+			globalScene = s;         
 		}
 
 

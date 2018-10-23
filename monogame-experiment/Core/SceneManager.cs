@@ -63,10 +63,17 @@ namespace monogame_experiment.Desktop.Core
         // Initialize scenes
 		public void Init() {
 
-            // Initialize every scene
+			// Initialize global scene first
+			globalScene.Init();
+
+            // Initialize other scenes
 			foreach(var s in scenes) {
 
-				s.Init();
+				if (s != globalScene)
+				{
+					s.SetGlobalScene(globalScene);
+					s.Init();
+				}
 			}
 		}
 
