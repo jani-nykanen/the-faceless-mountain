@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 namespace monogame_experiment.Desktop.Core
 {
 	// Graphics manager
-    public class Graphics
+	public class Graphics : Transformation
     {
 		// Flipping flag
 		public enum Flip
@@ -22,9 +22,7 @@ namespace monogame_experiment.Desktop.Core
 
 		// Graphics device manager
 		private GraphicsDeviceManager gman;
-		// Graphics device
-		private GraphicsDevice gdev;
-
+      
 		// Base sprite batch
 		private SpriteBatch baseBatch;
 		// Base sprite effects
@@ -45,11 +43,11 @@ namespace monogame_experiment.Desktop.Core
 		{
 			bmpWhite = new Bitmap(new byte[] { 255, 255, 255, 255 }, 1, 1);
 		}
-
+        
 		
 		// Constructor
-		public Graphics(GraphicsDevice gdev, GraphicsDeviceManager gman)
-        {
+		public Graphics(GraphicsDevice gdev, GraphicsDeviceManager gman) : base(gdev)
+        {         
             // Store stuff
 			this.gdev = gdev;
 			this.gman = gman;
@@ -236,7 +234,7 @@ namespace monogame_experiment.Desktop.Core
         public void BeginDrawing()
 		{
 
-			baseBatch.Begin(SpriteSortMode.Deferred);
+			baseBatch.Begin(SpriteSortMode.Deferred,null,null,null,null,null, GetResultMatrix());
 		}
 
 

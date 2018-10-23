@@ -108,6 +108,14 @@ namespace monogame_experiment.Desktop.Core
         // Update
 		public void Update(float delta)
 		{         
+            /**
+             * Reasoning behind this:
+             * Consider we had physics simulation
+             * with non-fixed framerate. Causes chaos.
+             * But we still render the game every frame,
+             * otherwise we could get flickering.
+             */
+
 			const int MAX_FRAME_UPDATE = 5;
             const int COMPARABLE_FRAME_RATE = 60;
 

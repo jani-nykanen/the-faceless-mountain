@@ -40,6 +40,11 @@ namespace monogame_experiment.Desktop.Field
         // Draw scene
 		override public void Draw(Graphics g)
 		{
+			// Set matrices
+			g.Identity();
+			g.FitViewHeight(720.0f);
+			g.Scale(1, 1);
+
 			g.ToggleAutoBeginEnd(false);
 			g.BeginDrawing();
 
