@@ -60,6 +60,7 @@
     <Compile Include="Core\AssetPack.cs" />
     <Compile Include="Core\KeyConfig.cs" />
     <Compile Include="Core\KeyValuePair.cs" />
+    <Compile Include="Core\Sprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -138,6 +139,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="keyconfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bitmaps\goat.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

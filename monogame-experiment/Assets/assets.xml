@@ -2,5 +2,6 @@
 <assets bitmap_path="Assets/Bitmaps/">
     <bitmap name="font" path="font.png" />
     <bitmap name="test" path="test.png" />
+    <bitmap name="goat" path="goat.png" />
 </assets>
 

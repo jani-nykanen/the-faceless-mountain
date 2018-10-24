@@ -17,6 +17,10 @@ namespace monogame_experiment.Desktop.Field
 		// Test bitmaps
 		private Bitmap bmpFont;
 		private Bitmap bmpTest;
+		private Bitmap bmpGoat;
+
+		// Goat sprite
+		private Sprite sprGoat;
 
 		// Key configuration
 		private KeyConfig keyConf;
@@ -35,6 +39,10 @@ namespace monogame_experiment.Desktop.Field
 			// Load assets
 			bmpFont = assets.GetBitmap("font");
 			bmpTest = assets.GetBitmap("test");
+			bmpGoat = assets.GetBitmap("goat");
+
+			// Create the goat sprite
+			sprGoat = new Sprite(32, 32);
 
 			// Get key configuration
 			keyConf = gs.GetKeyConfig();
@@ -44,8 +52,13 @@ namespace monogame_experiment.Desktop.Field
         // Update scene
 		override public void Update(float tm)
         {
+			// Animate goat
+			sprGoat.Animate(0, 0, 7, 4.0f, tm);
+
+			// Update temp val
 			val += 0.05f * tm;
 
+            // Key events
 			if(keyConf.GetKey("fire1") == State.Pressed)
 			{
 				val = 0.0f;
@@ -83,6 +96,9 @@ namespace monogame_experiment.Desktop.Field
 			// Hello world!
 			g.SetColor();
 			g.DrawText(bmpFont, "Hello world!\nAnd a thousand other cool things.", 32, 32, -16, 0, 0.75f, false);
+
+			// Draw a goat
+			sprGoat.Draw(g, bmpGoat, 512, 320, 128, 128, Graphics.Flip.Horizontal);
 
 			// End drawing
 			g.EndDrawing();
