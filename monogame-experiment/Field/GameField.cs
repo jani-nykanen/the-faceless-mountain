@@ -60,8 +60,7 @@ namespace monogame_experiment.Desktop.Field
 			g.SetColor(s, 1.0f - s, 0.5f + s * 0.5f, 1.0f);
 			g.FillRect(64, 64, 320, 240);
 			g.DrawScaledBitmapRegion(bmpFont, 0, 0, 512, 256, 64, 0, 1024, 512, Graphics.Flip.Both);
-           
-
+                    
 			g.SetColor(1, 1, 1, s);
 			g.DrawScaledBitmapRegion(bmpFont, 256, 256, 256, 256, 256, 256, 256, 256, Graphics.Flip.Vertical);
 

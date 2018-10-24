@@ -28,10 +28,8 @@ namespace monogame_experiment.Desktop
             // Create graphics device manager
             gman = new GraphicsDeviceManager(this);
 
-            // Create configuration
-            Configuration conf = new Configuration();
-            conf.fullscreen = false;
-			conf.frameRate = 30;
+			// Create configuration
+			Configuration conf = Configuration.ReadXML("config.xml");
             
             // Create application base for custom app behavior
             appBase = new Application(conf, gman, this);
