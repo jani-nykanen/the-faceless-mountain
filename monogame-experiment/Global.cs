@@ -12,6 +12,9 @@ namespace monogame_experiment.Desktop
     {
 		// Global asset pack
 		private AssetPack assets;
+
+		// Global key configuration
+		private KeyConfig keyConf;
             
 
 		// Constructor
@@ -21,8 +24,15 @@ namespace monogame_experiment.Desktop
 		// Initialize scene
         override public void Init()
         {
+			// Get asset & key configuration paths
+			String assetPath = conf.GetOtherParam("asset_path");
+			String keyconfPath = conf.GetOtherParam("keyconfig_path");
+
 			// Load global assets
-			assets = new AssetPack("Assets/assets.xml");
+			assets = new AssetPack(assetPath);
+
+			// Parse key configuration
+			keyConf = new KeyConfig(input, keyconfPath);
         }
 
 
@@ -72,6 +82,13 @@ namespace monogame_experiment.Desktop
 		public AssetPack GetAssets()
 		{
 			return assets;
+		}
+
+
+        // Get the global key configuration
+		public KeyConfig GetKeyConfig()
+		{
+			return keyConf;
 		}
     }
 }

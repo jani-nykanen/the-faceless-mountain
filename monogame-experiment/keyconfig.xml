@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<keyconfig>
+    <key name="fire1" code="88" />
+    <key name="fire2" code="90" />
+</keyconfig>

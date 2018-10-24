@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using System.Xml.Linq;
 
@@ -6,7 +7,7 @@ namespace monogame_experiment.Desktop.Core
 {
 	// Simple configuration structure
 	public class Configuration
-    {
+    {      
 
 		// Initial window size
 		public int winWidth = 800;
@@ -19,7 +20,10 @@ namespace monogame_experiment.Desktop.Core
 		public String caption = "Game";
 
 		// Framerate
-		public int frameRate = 60;      
+		public int frameRate = 60;
+      
+        // Other parameters
+		private List<KeyValuePair<String>> otherParams = new List<KeyValuePair<String>> ();
 
 
         // Set a parameter
@@ -50,8 +54,27 @@ namespace monogame_experiment.Desktop.Core
 
                 
 				default:
+
+					// Add to "other params"
+					otherParams.Add(new KeyValuePair<String>(name, value));
+
 					break;
 			}
+		}
+
+
+        // Get other param
+        public String GetOtherParam(String name)
+		{
+			foreach(KeyValuePair<String> p in otherParams) 
+			{
+				if(name.Equals(p.key))
+				{
+					return p.value;
+				}
+			}
+
+			return "";
 		}
 
 

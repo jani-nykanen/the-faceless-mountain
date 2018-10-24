@@ -18,6 +18,9 @@ namespace monogame_experiment.Desktop.Field
 		private Bitmap bmpFont;
 		private Bitmap bmpTest;
 
+		// Key configuration
+		private KeyConfig keyConf;
+
 
 		// Constructor
 		public GameField() { /* ... */ }
@@ -26,11 +29,15 @@ namespace monogame_experiment.Desktop.Field
 		// Initialize scene
 		override public void Init()
         {
-			AssetPack assets = ((Global)globalScene).GetAssets();
+			Global gs = (Global)globalScene;
+			AssetPack assets = gs.GetAssets();
 
 			// Load assets
 			bmpFont = assets.GetBitmap("font");
 			bmpTest = assets.GetBitmap("test");
+
+			// Get key configuration
+			keyConf = gs.GetKeyConfig();
         }
 
 
@@ -38,6 +45,15 @@ namespace monogame_experiment.Desktop.Field
 		override public void Update(float tm)
         {
 			val += 0.05f * tm;
+
+			if(keyConf.GetKey("fire1") == State.Pressed)
+			{
+				val = 0.0f;
+			}
+			if(keyConf.GetKey("fire2") == State.Down)
+			{
+				val -= 0.10f * tm;
+			}
         }
       
 

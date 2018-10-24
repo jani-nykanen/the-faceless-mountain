@@ -7,21 +7,7 @@ namespace monogame_experiment.Desktop.Core
 	// An asset pack used to load a pack of assets
     public class AssetPack
     {
-
-        // A key-value pair for assest
-		private struct KeyValuePair<T>
-		{
-			public T value;
-			public String key;
-
-            // Constructor
-			public KeyValuePair(T value, String key)
-			{
-				this.value = value;
-				this.key = key;
-			}
-		}
-
+        
 
 		// Bitmaps
 		private List<KeyValuePair<Bitmap>> bitmaps;
@@ -55,7 +41,7 @@ namespace monogame_experiment.Desktop.Core
 				fpath = e.Attribute("path").Value;
             
 				// Load bitmaps
-				bitmaps.Add(new KeyValuePair<Bitmap>(new Bitmap(bmpPath + fpath), name));
+				bitmaps.Add(new KeyValuePair<Bitmap>(name, new Bitmap(bmpPath + fpath)));
 			}
 
         }

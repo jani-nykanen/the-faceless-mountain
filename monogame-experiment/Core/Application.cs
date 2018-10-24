@@ -70,7 +70,7 @@ namespace monogame_experiment.Desktop.Core
 			// Create event manager
 			eventMan = new WeakEventManager(this);
 			// Create scene manager
-			sceneMan = new SceneManager(input, eventMan);
+			sceneMan = new SceneManager(input, eventMan, conf);
         }
 
 

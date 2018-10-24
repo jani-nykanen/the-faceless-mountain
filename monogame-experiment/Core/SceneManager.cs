@@ -18,10 +18,12 @@ namespace monogame_experiment.Desktop.Core
 		private WeakEventManager eventMan;
 		// Input manager
 		private InputManager input;
+		// Configuration
+		private Configuration conf;
 
 
 		// Constructor
-		public SceneManager(InputManager input, WeakEventManager eventMan)
+		public SceneManager(InputManager input, WeakEventManager eventMan, Configuration conf)
         {
 			scenes = new List<Scene>();
 			globalScene = null;
@@ -30,6 +32,7 @@ namespace monogame_experiment.Desktop.Core
 			// Store references to certain objects
 			this.input = input;
 			this.eventMan = eventMan;
+			this.conf = conf;
         }
 
 
@@ -56,7 +59,7 @@ namespace monogame_experiment.Desktop.Core
 
 			// Pass references to certain objects to the
 			// scene
-			scene.Ready(input, eventMan);
+			scene.Ready(input, eventMan, conf);
 		}
 
 

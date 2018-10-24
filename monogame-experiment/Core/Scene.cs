@@ -10,16 +10,19 @@ namespace monogame_experiment.Desktop.Core
 		protected InputManager input;
 		// Weak event manager
 		protected WeakEventManager eventMan;
+		// Configuration data
+		protected Configuration conf;
 
 		// A refrence to a global scene
 		protected Scene globalScene;
 
 
         // Make ready for use
-		public void Ready(InputManager input, WeakEventManager eventMan) {
+		public void Ready(InputManager input, WeakEventManager eventMan, Configuration conf) {
 
 			this.input = input;
 			this.eventMan = eventMan;
+			this.conf = conf;
 		}
 
 
