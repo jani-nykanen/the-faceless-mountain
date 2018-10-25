@@ -100,10 +100,7 @@ namespace monogame_experiment.Desktop.Core
 		// Update 
 		public void Update()
 		{
-			// Get mouse position
-			mousePos.X = Mouse.GetState().X;
-			mousePos.Y = Mouse.GetState().Y;
-
+         
 			// Go through all the damn keys and check
 			// status changes
 			for (int i = 0; i < LAST_KEY; ++i)
@@ -218,6 +215,10 @@ namespace monogame_experiment.Desktop.Core
         // Get mouse position in the view coordinates
 		public Vector2 GetCursorPos()
 		{
+			// Get mouse position
+            mousePos.X = Mouse.GetState().X;
+            mousePos.Y = Mouse.GetState().Y;
+
 			Vector2 ret = new Vector2();
 			Vector2 view = graph.GetViewport();
 			Vector2 frame = graph.GetFramebufferSize();
