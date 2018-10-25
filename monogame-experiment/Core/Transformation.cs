@@ -98,5 +98,20 @@ namespace monogame_experiment.Desktop.Core
 		{
 			return Matrix.Multiply(model, view);
 		}
+
+
+        // Get viewport
+        public Vector2 GetViewport()
+		{
+			return viewport;
+		}
+
+
+        // Get framebuffer size
+		public Vector2 GetFramebufferSize()
+		{
+			return new Vector2((float)gdev.PresentationParameters.BackBufferWidth,
+							   (float)gdev.PresentationParameters.BackBufferHeight);
+		}
     }
 }

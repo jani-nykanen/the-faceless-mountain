@@ -90,10 +90,12 @@ namespace monogame_experiment.Desktop.Core
 
         // Initialize graphics
 		public void InitGraphics(GraphicsDevice gdev) 
-		{
-
+		{         
 			// Create graphics object
             graphics = new Graphics(gdev, gman);
+
+			// Pass reference to the input manager
+			input.PassGraphics(graphics);
 		}
 
 

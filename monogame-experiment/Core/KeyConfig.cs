@@ -8,19 +8,15 @@ namespace monogame_experiment.Desktop.Core
 	// Key configuration class
     public class KeyConfig
     {
-
-		// A reference to an input manager
-		private InputManager input;
-
+      
 		// Keys
 		private List<KeyValuePair<int>> keys;
 
 
 		// Constructor
-        public KeyConfig(InputManager input, String path)
+        public KeyConfig(String path)
         {
-
-			this.input = input;
+        
 			keys = new List<KeyValuePair<int>>();
                      
             // Open document
@@ -41,18 +37,18 @@ namespace monogame_experiment.Desktop.Core
         }
 
 
-        // Get a key state
-        public State GetKey(String name) 
+        // Get a key index
+        public int GetKeyIndex(String name) 
 		{
 
 			foreach(KeyValuePair<int> kv in keys)
 			{
 				if(kv.key.Equals(name))
 				{
-					return input.GetKey(kv.value);
+					return kv.value;
 				}
 			}
-  			return State.Up;
+			return 0;
 		}
     }
 }

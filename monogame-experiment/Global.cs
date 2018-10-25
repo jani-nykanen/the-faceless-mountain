@@ -31,8 +31,10 @@ namespace monogame_experiment.Desktop
 			// Load global assets
 			assets = new AssetPack(assetPath);
 
-			// Parse key configuration
-			keyConf = new KeyConfig(input, keyconfPath);
+			// Parse key configuration & pass
+            // it to input manager
+			keyConf = new KeyConfig(keyconfPath);
+			input.BindKeyConfig(keyConf);
         }
 
 

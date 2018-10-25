@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using monogame_experiment.Desktop.Core;
@@ -59,11 +61,11 @@ namespace monogame_experiment.Desktop.Field
 			val += 0.05f * tm;
 
             // Key events
-			if(keyConf.GetKey("fire1") == State.Pressed)
+			if(input.GetKey("fire1") == State.Pressed)
 			{
 				val = 0.0f;
 			}
-			if(keyConf.GetKey("fire2") == State.Down)
+			if(input.GetKey("fire2") == State.Down)
 			{
 				val -= 0.10f * tm;
 			}
@@ -109,7 +111,22 @@ namespace monogame_experiment.Desktop.Field
   			g.BeginDrawing();
 
 			g.SetColor(1, 1, 1, 1.0f-s);
-			g.DrawBitmap(bmpTest, -128, -128);
+			g.DrawBitmap(bmpTest, -128, -128);         
+
+			g.EndDrawing();
+
+            // Draw mouse cursor
+			g.Identity();
+			g.BeginDrawing();
+
+			Vector2 cpos = input.GetCursorPos();
+
+			if (input.GetMouseButton(0) == State.Down)            
+				g.SetColor(1, 0, 1);
+			else
+			    g.SetColor(0, 0, 0);
+
+			g.FillRect((int)cpos.X, (int)cpos.Y, 32, 32);
 
 			g.EndDrawing();
 		}
