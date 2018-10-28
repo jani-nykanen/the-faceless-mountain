@@ -61,6 +61,9 @@
     <Compile Include="Core\KeyConfig.cs" />
     <Compile Include="Core\KeyValuePair.cs" />
     <Compile Include="Core\Sprite.cs" />
+    <Compile Include="Field\AnimatedFigure.cs" />
+    <Compile Include="Field\Player.cs" />
+    <Compile Include="Field\Camera.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

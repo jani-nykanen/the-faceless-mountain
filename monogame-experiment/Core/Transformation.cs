@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,10 +11,14 @@ namespace monogame_experiment.Desktop.Core
     {
 		// View matrix
 		protected Matrix view;
+		// Model matrix
+		protected Matrix world;
         // Model matrix
 		protected Matrix model;
 		// Right-side matrix operand
 		protected Matrix operand;
+		// Matrix stack
+		protected Stack<Matrix> stack;
 
 		// Viewport size
 		protected Vector2 viewport;
@@ -25,9 +30,14 @@ namespace monogame_experiment.Desktop.Core
         // Constructor
         public Transformation(GraphicsDevice gdev)
         {
+			// Set matrices to identity matrices
 			view = Matrix.Identity;
 			model = Matrix.Identity;
+			world = Matrix.Identity;
 			operand = Matrix.Identity;
+
+			// Create stack
+			stack = new Stack<Matrix>();
 
 			this.gdev = gdev;
         }
@@ -69,11 +79,26 @@ namespace monogame_experiment.Desktop.Core
 		}
 
 
+        // Identity, world
+        public void IdentityWorld()
+		{
+			world = Matrix.Identity;
+		}
+
+
         // Translate
         public void Translate(float x, float y) 
 		{
 			operand = Matrix.CreateTranslation(new Vector3(x, y, 0.0f));
 			model = Matrix.Multiply(operand, model);
+		}
+
+
+        // Translate world
+        public void TranslateWorld(float x, float y)
+		{
+			operand = Matrix.CreateTranslation(new Vector3(x, y, 0.0f));
+			world = Matrix.Multiply(operand, world);
 		}
 
         
@@ -82,6 +107,14 @@ namespace monogame_experiment.Desktop.Core
 		{
 			operand = Matrix.CreateScale(new Vector3(x, y, 1.0f));
 			model = Matrix.Multiply(operand, model);
+		}
+
+
+        // Scale world
+		public void ScaleWorld(float x, float y)
+		{
+			operand = Matrix.CreateScale(new Vector3(x, y, 1.0f));
+			world = Matrix.Multiply(operand, world);
 		}
 
 
@@ -96,7 +129,8 @@ namespace monogame_experiment.Desktop.Core
         // Get result matrix
 		public Matrix GetResultMatrix()
 		{
-			return Matrix.Multiply(model, view);
+			operand = Matrix.Multiply(world, view);
+			return Matrix.Multiply(model, operand);
 		}
 
 
@@ -113,5 +147,19 @@ namespace monogame_experiment.Desktop.Core
 			return new Vector2((float)gdev.PresentationParameters.BackBufferWidth,
 							   (float)gdev.PresentationParameters.BackBufferHeight);
 		}
-    }
+    
+	    
+        // Push model to the stack
+        public void Push()
+		{
+			stack.Push(model);
+		}
+
+
+        // Pop model matrix from the stack
+        public void Pop()
+		{
+			model = stack.Pop();
+		}
+	}
 }
