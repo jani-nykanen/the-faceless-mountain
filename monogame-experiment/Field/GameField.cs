@@ -54,7 +54,7 @@ namespace monogame_experiment.Desktop.Field
 			player.Update(input, tm);
 
 			cam.Scale(2, 2);
-			cam.MoveTo(0, 64);
+			cam.MoveTo(0, 128);
         }
       
 

@@ -34,7 +34,7 @@ namespace monogame_experiment.Desktop.Field
         // Update player
         public void Update(InputManager input, float tm)
 		{
-			const float ANIM_SPEED = 0.1f;
+			const float ANIM_SPEED = 0.05f;
 
 			// Animate skeleton
 			skeleton.Animate(ANIM_SPEED, tm);
