@@ -37,6 +37,9 @@ namespace monogame_experiment.Desktop.Core
 		// Automatic begin/end
 		private bool autoBeginEnd = true;
 
+		// Rasterizer state
+		private RasterizerState rstate;
+      
 
         // Creates a white texture
         public void CreateWhiteTexture() 
@@ -62,6 +65,9 @@ namespace monogame_experiment.Desktop.Core
 
 			// Create a white texture
 			CreateWhiteTexture();
+
+			rstate = new RasterizerState();
+			rstate.CullMode = CullMode.None;
         }
 
 
@@ -232,9 +238,8 @@ namespace monogame_experiment.Desktop.Core
 
         // Begin drawing
         public void BeginDrawing()
-		{
-
-			baseBatch.Begin(SpriteSortMode.Deferred,null,null,null,null,null, GetResultMatrix());
+		{         
+			baseBatch.Begin(SpriteSortMode.Deferred,null,null,null,rstate,null, GetResultMatrix());
 		}
 
 

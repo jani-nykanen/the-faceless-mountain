@@ -32,10 +32,7 @@ namespace monogame_experiment.Desktop.Field
 				angle = a;
 			}
 		};
-
-		// Animation mode
-		private AnimationMode animMode;
-
+      
 		// Animation timer
 		private float animTimer;
               
@@ -114,8 +111,8 @@ namespace monogame_experiment.Desktop.Field
 			Joint ret;
 
 			// Calculate hand angle
-			ret.angle = isLeft ? -(float)Math.Abs(pi_f - (t-pi_f) )
-				: (float)Math.Abs(pi_f - t);
+			ret.angle = isLeft ? -(float)Math.Abs(pi_f - (t - pi_f))
+					: (float)Math.Abs(pi_f - t);
 
 			// Calculate position angle
 			float a = t - pi_f;
@@ -200,10 +197,15 @@ namespace monogame_experiment.Desktop.Field
                         
 			g.Push();
             g.Translate(x*size, y*size);
-            g.Rotate(angle);
+            g.Rotate(-angle);
             g.BeginDrawing();
 
             g.FillRect(-w / 2, -h / 2, w, h);
+
+			// TEMP eyes
+			g.SetColor(0, 0, 0);
+			g.FillRect(0, -16, 8, 8);
+			g.FillRect(24, -16, 8, 8);
 
             g.EndDrawing();
             g.Pop();
@@ -213,7 +215,6 @@ namespace monogame_experiment.Desktop.Field
 		// Constructor
         public AnimatedFigure(float size)
         {
-			animMode = AnimationMode.Run;
 			animTimer = 0.0f;
 			this.size = size;
 
@@ -222,8 +223,11 @@ namespace monogame_experiment.Desktop.Field
 
         
         // Animate
-        public void Animate(float animSpeed, float tm)
+        public void Animate(AnimationMode animMode, float animSpeed, float tm)
 		{
+			const float pi_f = (float)Math.PI;
+			const float HEAD_TARGET = pi_f / 4.0f;
+         
 			// Update animation timer
 			animTimer += animSpeed * tm;
             if(animTimer >= (float)Math.PI*2)
@@ -231,26 +235,46 @@ namespace monogame_experiment.Desktop.Field
 				animTimer -= (float)Math.PI * 2;
 			}
 
+			headAngle = 0.0f;
             // Animate different modes
 			switch(animMode)
 			{
+                // Standing
+				case AnimationMode.Stand:
+
+					rightFoot = GetFootJoint(pi_f/2.0f);
+					leftFoot = rightFoot;
+
+					rightHand = GetHandJoint(pi_f / 2.0f);
+					leftHand = rightHand;
+
+					break;
+
 				// Running animation
 				case AnimationMode.Run:
 
 					// Animate feet
 					rightFoot = GetFootJoint(animTimer);
-					leftFoot = GetFootJoint(animTimer + (float)Math.PI);
+					leftFoot = GetFootJoint(animTimer + pi_f);
 
 					// Animate hands
 					rightHand = GetHandJoint(animTimer);
-					leftHand = GetHandJoint(animTimer + (float)Math.PI, true);
+					leftHand = GetHandJoint(animTimer + pi_f, true);
                
+					break;
+
+                // Jumping
+				case AnimationMode.Jump:
+					
+					// Set head angle
+					headAngle = -animSpeed * HEAD_TARGET;
 					break;
 
                 // Ignore the rest for now
 				default:
 					break;
 			}
+
 		}
 
 
@@ -270,14 +294,14 @@ namespace monogame_experiment.Desktop.Field
 			const float HEAD_DIM = 1.0f;
             
 			// Draw left foot
-			g.SetColor(1, 0, 0);
+			g.SetColor(0, 0.625f, 0);
 			DrawFoot(g, leftFoot, FEET_OFF);
 			// Draw left hand
-            g.SetColor(0.75f, 0, 0);
+            g.SetColor(0.625f, 0, 0);
 			DrawHand(g, leftHand, FEET_OFF, HAND_Y);
 
 			// Draw torso
-			g.SetColor(0.5f, 0, 0.5f);
+			g.SetColor(0.0f, 0.25f, 0.75f);
 			DrawTorso(g, TORSO_WIDTH, TORSO_HEIGHT, TORSO_YOFF);
 
 			// Draw head
@@ -285,10 +309,10 @@ namespace monogame_experiment.Desktop.Field
 			DrawHead(g, HEAD_X, HEAD_Y, HEAD_DIM, headAngle);
 
             // Draw right foot
-			g.SetColor(0, 1, 0);
+			g.SetColor(0, 1.0f, 0);
 			DrawFoot(g, rightFoot, -FEET_OFF);
 			// Draw right hand
-			g.SetColor(0, 0.75f, 0);
+			g.SetColor(1.0f, 0.0f, 0);
 			DrawHand(g, rightHand, -FEET_OFF, HAND_Y);
          
             // Reset color

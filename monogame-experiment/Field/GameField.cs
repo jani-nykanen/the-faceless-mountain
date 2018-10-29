@@ -54,7 +54,6 @@ namespace monogame_experiment.Desktop.Field
 			player.Update(input, tm);
 
 			cam.Scale(2, 2);
-			cam.MoveTo(0, 128);
         }
       
 
@@ -69,7 +68,7 @@ namespace monogame_experiment.Desktop.Field
 			// Set matrices
 			g.Identity();
 			g.FitViewHeight(720.0f);
-
+         
 			// Use camera
 			cam.Use(g);         
          
@@ -79,6 +78,7 @@ namespace monogame_experiment.Desktop.Field
 			// Draw HUD elements etc
 			g.IdentityWorld();
 			g.Identity();
+
 			g.BeginDrawing();
 
 			// Draw some text
