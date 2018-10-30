@@ -212,6 +212,37 @@ namespace monogame_experiment.Desktop.Field
 		}
 
 
+        // Set camera following
+        // TEMPORARY!
+        public void SetCameraFollowing(Camera cam, float tm)
+        {
+            const float DELTA = 1.0f;
+            const float CAM_SPEED = 32.0f;
+
+            float dx = pos.X;
+            float dy = pos.Y - SCALE;
+
+            // Get camera pos
+            float cx = cam.GetPos().X;
+            float cy = cam.GetPos().Y;
+
+            // Get angle & distance
+            float angle = (float)Math.Atan2(dy - cy, dx - cx);
+            float dist = (float)Math.Sqrt( (dx - cx)*(dx - cx) + (dy - cy)*(dy - cy) );
+
+            // Move camera
+            float tx = 0.0f, ty = 0.0f;
+            float viewRatio = cam.GetViewport().X / cam.GetViewport().Y;
+            if(dist > DELTA)
+            {
+                tx = (float)Math.Cos(angle) * (dist / CAM_SPEED) * tm;
+                ty = (float)Math.Sin(angle) * (dist / (CAM_SPEED / viewRatio)) * tm;
+            }
+
+            cam.Translate(tx, ty);
+        }
+
+
         // Draw player
         public void Draw(Graphics g)
 		{

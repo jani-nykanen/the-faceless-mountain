@@ -23,6 +23,8 @@ namespace monogame_experiment.Desktop.Field
 		private Camera cam;
 		// Player object
 		private Player player;
+        // Game stage
+        private Stage stage;
 
 
 		// Constructor
@@ -44,7 +46,9 @@ namespace monogame_experiment.Desktop.Field
 			// Create game objects
 			player = new Player();
 			cam = new Camera();
-		}
+            stage = new Stage(assets.GetTilemap("test"));
+
+        }
 
 
         // Update scene
@@ -52,8 +56,13 @@ namespace monogame_experiment.Desktop.Field
         {
 			// Update player
 			player.Update(input, tm);
+            // Set camera following
+            player.SetCameraFollowing(cam, tm);
 
-			cam.Scale(2, 2);
+            // Update stage
+            stage.Update(tm);
+            // Player collision
+            stage.GetPlayerCollision(player);
         }
       
 
@@ -70,8 +79,11 @@ namespace monogame_experiment.Desktop.Field
 			g.FitViewHeight(720.0f);
          
 			// Use camera
-			cam.Use(g);         
-         
+			cam.Use(g);
+
+            // Draw stage
+            stage.Draw(g, cam);
+
 			// Draw player
 			player.Draw(g);
 

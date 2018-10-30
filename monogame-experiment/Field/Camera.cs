@@ -16,12 +16,19 @@ namespace monogame_experiment.Desktop.Field
 		// Scale
 		private Vector2 scale;
 
+        // Top-left corner
+        private Vector2 topLeft;
+        // Viewport size
+        private Vector2 viewport;
         
 		// Constructor
 		public Camera(Vector2 pos)
         {
 			this.pos = pos;
 			scale = Vector2.One;
+
+            viewport = new Vector2(1, 1);
+            topLeft = new Vector2(1, 1);
         }
 
 
@@ -35,6 +42,14 @@ namespace monogame_experiment.Desktop.Field
 			pos.X = x;
 			pos.Y = y;
 		}
+
+
+        // Translate
+        public void Translate(float x, float y)
+        {
+            pos.X += x;
+            pos.Y += y;
+        }
 
 
         // Get position
@@ -57,11 +72,29 @@ namespace monogame_experiment.Desktop.Field
 		{
 			Vector2 view = g.GetViewport();
 
-			g.IdentityWorld();
+            // Store viewport
+            viewport = view / scale;
+            topLeft = pos - (new Vector2((view.X / 2.0f), (view.Y / 2.0f) )) / scale;
+
+            g.IdentityWorld();
 			g.TranslateWorld(view.X / 2.0f, view.Y / 2.0f);
-			g.TranslateWorld(pos.X, pos.Y);
+			g.TranslateWorld(-pos.X, -pos.Y);
 			g.ScaleWorld(scale.X, scale.Y);
 
 		}
+
+
+        // Get top-left corner
+        public Vector2 GetTopLeftCorner()
+        {
+            return topLeft;
+        }
+
+
+        // Get viewport size (scaled to camera size)
+        public Vector2 GetViewport()
+        {
+            return viewport;
+        }
     }
 }
