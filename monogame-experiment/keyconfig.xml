@@ -3,7 +3,7 @@
     <key name="left"  code= "37" />
     <key name="up"    code= "38" />
     <key name="right"   code= "39" />
-    <key name="bottom"   code= "40" />
+    <key name="down"   code= "40" />
     <key name="fire1" code="88" />
     <key name="fire2" code="90" />
 </keyconfig>

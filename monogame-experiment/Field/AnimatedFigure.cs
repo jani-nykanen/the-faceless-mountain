@@ -46,6 +46,8 @@ namespace monogame_experiment.Desktop.Field
 
 		// Head angle
 		private float headAngle;
+        // Torso position
+        private float torsoPos;
 
 		// Size (=scale)
 		private float size;
@@ -125,6 +127,24 @@ namespace monogame_experiment.Desktop.Field
 		}
 
 
+        // Get foot joint when jumping
+        private Joint GetFootJointJumping(float speed)
+        {
+            const float pi_f = (float)Math.PI;
+            const float FOOT_HEIGHT = -0.5f;
+
+            Joint ret;
+
+            float t = (speed + 1.0f) * pi_f / 2.0f + pi_f / 2.0f;
+
+            ret.angle = -t;
+            ret.pos.X = 0.0f;
+            ret.pos.Y = FOOT_HEIGHT;
+
+            return ret;
+        }
+
+
         // Draw a foot
 		private void DrawFoot(Graphics g, Joint foot, float xoff = 0.0f)
 		{
@@ -182,7 +202,7 @@ namespace monogame_experiment.Desktop.Field
 
 			int w = (int)(width * size);
 			int h = (int)(height* size);
-			int y = (int)(yoff * size);
+            int y = (int)( (yoff + torsoPos) * size);
 
             g.FillRect(-w / 2, -h + y, w, h);
             g.EndDrawing();
@@ -196,7 +216,7 @@ namespace monogame_experiment.Desktop.Field
 			int h = (int)(dim * size);
                         
 			g.Push();
-            g.Translate(x*size, y*size);
+            g.Translate(x*size, (y+ torsoPos) * size);
             g.Rotate(-angle);
             g.BeginDrawing();
 
@@ -219,15 +239,17 @@ namespace monogame_experiment.Desktop.Field
 			this.size = size;
 
 			headAngle = 0.0f;
+            torsoPos = 0.0f;
         }
 
         
         // Animate
-        public void Animate(AnimationMode animMode, float animSpeed, float tm)
+        public void Animate(AnimationMode animMode, float animSpeed, float tm, int headDir = 0)
 		{
 			const float pi_f = (float)Math.PI;
 			const float HEAD_TARGET = pi_f / 4.0f;
-         
+            const float HEAD_SPEED = 0.05f;
+
 			// Update animation timer
 			animTimer += animSpeed * tm;
             if(animTimer >= (float)Math.PI*2)
@@ -235,9 +257,10 @@ namespace monogame_experiment.Desktop.Field
 				animTimer -= (float)Math.PI * 2;
 			}
 
-			headAngle = 0.0f;
+            torsoPos = 0.0f;
+
             // Animate different modes
-			switch(animMode)
+            switch (animMode)
 			{
                 // Standing
 				case AnimationMode.Stand:
@@ -268,12 +291,44 @@ namespace monogame_experiment.Desktop.Field
 					
 					// Set head angle
 					headAngle = -animSpeed * HEAD_TARGET;
-					break;
+
+                    // Set hand positions
+                    rightHand = GetHandJoint((animSpeed+1.0f) * pi_f/2.0f);
+                    leftHand = rightHand;
+
+                    // Set foot positions
+                    rightFoot = GetFootJointJumping(animSpeed);
+                    leftFoot = rightFoot;
+
+                    break;
 
                 // Ignore the rest for now
 				default:
 					break;
 			}
+
+            // Update head angle
+            if((animMode == AnimationMode.Stand ||
+                           animMode == AnimationMode.Run))
+            {
+                float headTarget = headDir * HEAD_TARGET;
+                if (headAngle < headTarget)
+                {
+                    headAngle += HEAD_SPEED * tm;
+                    if(headAngle > HEAD_TARGET)
+                    {
+                        headAngle = HEAD_TARGET;
+                    }
+                }
+                else if(headAngle > headTarget)
+                {
+                    headAngle -= HEAD_SPEED * tm;
+                    if (headAngle < headTarget)
+                    {
+                        headAngle = headTarget;
+                    }
+                }
+            }
 
 		}
 

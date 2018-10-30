@@ -13,7 +13,8 @@ namespace monogame_experiment.Desktop.Field
     public class Player
     {
 		const float SCALE = 64.0f;
-		const float JUMP_HEIGHT = 12.0f;
+		const float JUMP_HEIGHT = 10.0f;
+        const float JUMP_TIME_MAX = 15.0f;
 
 		// Animated figure ("skeleton")
 		private AnimatedFigure skeleton;
@@ -32,6 +33,13 @@ namespace monogame_experiment.Desktop.Field
 
 		// Can jump
 		private bool canJump;
+        // Jump timer
+        private float jumpTimer;
+        // Is running
+        private bool running;
+
+        // Head direction
+        private int headDir;
 
 
         // Update speed
@@ -58,6 +66,7 @@ namespace monogame_experiment.Desktop.Field
 		private void Control(InputManager input, float tm)
 		{
 			const float TARGET_X = 4.0f;
+            const float RUN_PLUS = 2.0f;
 			const float GRAVITY = 6.0f;
 
             // Movement direction (we cannot use
@@ -65,8 +74,11 @@ namespace monogame_experiment.Desktop.Field
 			// or 1)
 			moveDir = 0;
 
+            // Is running
+            running = input.GetKey("fire2") == State.Down;
+
             // Get direction
-			if(input.GetKey("left") == State.Down)
+            if (input.GetKey("left") == State.Down)
 			{
 				moveDir = -1;
 				direction = -1;
@@ -81,17 +93,36 @@ namespace monogame_experiment.Desktop.Field
 			target.X = moveDir * TARGET_X;
 			target.Y = GRAVITY;
 
+            // Apply running multiplier
+            if(running)
+            {
+                target.X *= RUN_PLUS;
+            }
+
 			// Jump
 			State fire1 = input.GetKey("fire1");
 			if(canJump && fire1 == State.Pressed)
 			{
 				speed.Y = -JUMP_HEIGHT;
 			}
-			else if(speed.Y < 0.0f && fire1 == State.Released)
+            else if(jumpTimer > 0.0f && fire1 == State.Down)
 			{
-				speed.Y /= 2.0f;
-			}
-		}
+                speed.Y = -JUMP_HEIGHT;
+                jumpTimer -= 1.0f * tm;
+            }
+            else if(fire1 == State.Up)
+            {
+                jumpTimer = 0.0f;
+            }
+
+            headDir = 0;
+            // Looking up or down
+            if (input.GetKey("up") == State.Down)
+                headDir = 1;
+            else if (input.GetKey("down") == State.Down)
+                headDir = -1;
+
+        }
 
 
         // Move
@@ -144,7 +175,7 @@ namespace monogame_experiment.Desktop.Field
 			}
 
 			// Animate skeleton
-            skeleton.Animate(mode, animSpeed, tm);
+            skeleton.Animate(mode, animSpeed, tm, headDir);
 		}
 
 
@@ -175,7 +206,9 @@ namespace monogame_experiment.Desktop.Field
 				pos.Y = FLOOR_Y;
 				speed.Y = 0.0f;
 				canJump = true;
-			}
+                jumpTimer = JUMP_TIME_MAX;
+
+            }
 		}
 
 
