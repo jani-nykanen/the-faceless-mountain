@@ -62,16 +62,16 @@ namespace monogame_experiment.Desktop.Field
 			const float HEIGHT_MUL = 0.33f;
 			const float ANGLE_TARGET = pi_f / 5.0f;         
 
-			Joint ret = new Joint();
-                     
-  			// Make sure not negative or bigger than 2PI
-			// NOTE: we do this only once since we assume
+            Joint ret = new Joint(Vector2.Zero, 0.0f);
+
+            // Make sure not negative or bigger than 2PI
+            // NOTE: we do this only once since we assume
             // the value is mostly bounded already
-            if (t < 0.0f)
+            while (t < 0.0f)
             {
                 t += pi_f * 2.0f;
             }
-			if (t >= pi_f * 2.0f)
+			while (t >= pi_f * 2.0f)
             {
                 t -= pi_f * 2.0f;
             }
@@ -308,6 +308,7 @@ namespace monogame_experiment.Desktop.Field
 			}
 
             // Update head angle
+            // TODO: An own method for this
             if((animMode == AnimationMode.Stand ||
                            animMode == AnimationMode.Run))
             {
