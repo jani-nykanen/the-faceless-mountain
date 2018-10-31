@@ -11,7 +11,7 @@ namespace monogame_experiment.Desktop.Field
     public class Stage
     {
         // Tile size
-        const int TILE_SIZE = 96;
+        const int TILE_SIZE = 64;
 
         // Tilemap
         private Tilemap map;

@@ -224,8 +224,8 @@ namespace monogame_experiment.Desktop.Field
 
 			// TEMP eyes
 			g.SetColor(0, 0, 0);
-			g.FillRect(0, -16, 8, 8);
-			g.FillRect(24, -16, 8, 8);
+			g.FillRect(0, -12, 6, 6);
+			g.FillRect(16, -12, 6, 6);
 
             g.EndDrawing();
             g.Pop();

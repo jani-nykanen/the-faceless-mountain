@@ -12,8 +12,14 @@ namespace monogame_experiment.Desktop.Field
 	// Player object
     public class Player
     {
-		const float SCALE = 64.0f;
-		const float JUMP_HEIGHT = 10.0f;
+		const float SCALE = 48.0f;
+
+        const float TARGET_X = 3.0f;
+        const float ACC_X = 0.25f;
+        const float ACC_Y = 0.5f;
+
+        const float GRAVITY = 6.0f;
+        const float JUMP_HEIGHT = 8.0f;
         const float JUMP_TIME_MAX = 15.0f;
 
 		// Animated figure ("skeleton")
@@ -65,9 +71,7 @@ namespace monogame_experiment.Desktop.Field
         // Control
 		private void Control(InputManager input, float tm)
 		{
-			const float TARGET_X = 4.0f;
             const float RUN_PLUS = 2.0f;
-			const float GRAVITY = 6.0f;
 
             // Movement direction (we cannot use
             // direction since it must be either -1
@@ -128,9 +132,6 @@ namespace monogame_experiment.Desktop.Field
         // Move
         private void Move(float tm)
 		{
-			const float ACC_X = 0.5f;
-			const float ACC_Y = 0.5f;
-
 			// Update speed
 			speed.X = UpdateSpeed(speed.X, ACC_X, target.X, tm);
 			speed.Y = UpdateSpeed(speed.Y, ACC_Y, target.Y, tm);
@@ -217,7 +218,7 @@ namespace monogame_experiment.Desktop.Field
         public void SetCameraFollowing(Camera cam, float tm)
         {
             const float DELTA = 1.0f;
-            const float CAM_SPEED = 32.0f;
+            const float CAM_SPEED = 24.0f;
 
             float dx = pos.X;
             float dy = pos.Y - SCALE;

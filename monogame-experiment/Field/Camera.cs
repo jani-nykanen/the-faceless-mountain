@@ -73,13 +73,13 @@ namespace monogame_experiment.Desktop.Field
 			Vector2 view = g.GetViewport();
 
             // Store viewport
-            viewport = view / scale;
-            topLeft = pos - (new Vector2((view.X / 2.0f), (view.Y / 2.0f) )) / scale;
+            viewport = new Vector2(view.X / scale.X, view.Y / scale.Y);
+            topLeft = pos - (new Vector2((viewport.X / 2.0f), (viewport.Y / 2.0f) ));
 
             g.IdentityWorld();
 			g.TranslateWorld(view.X / 2.0f, view.Y / 2.0f);
-			g.TranslateWorld(-pos.X, -pos.Y);
-			g.ScaleWorld(scale.X, scale.Y);
+            g.ScaleWorld(scale.X, scale.Y);
+            g.TranslateWorld(-pos.X, -pos.Y);
 
 		}
 

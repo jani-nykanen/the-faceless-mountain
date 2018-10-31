@@ -48,6 +48,9 @@ namespace monogame_experiment.Desktop.Field
 			cam = new Camera();
             stage = new Stage(assets.GetTilemap("test"));
 
+            // Set initial camera scale
+            cam.Scale(1.5f, 1.5f);
+
         }
 
 
