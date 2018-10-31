@@ -65,16 +65,9 @@ namespace monogame_experiment.Desktop.Field
             Joint ret = new Joint(Vector2.Zero, 0.0f);
 
             // Make sure not negative or bigger than 2PI
-            // NOTE: we do this only once since we assume
-            // the value is mostly bounded already
-            while (t < 0.0f)
-            {
-                t += pi_f * 2.0f;
-            }
-			while (t >= pi_f * 2.0f)
-            {
-                t -= pi_f * 2.0f;
-            }
+            // NOTE: t shouldn't be negative in the first place
+            if (t < 0.0f) t = 0.0f;
+            t %= (pi_f * 2.0f);
                   
             // Calculate coordinates & angles
             if(t <= pi_f)
@@ -250,7 +243,8 @@ namespace monogame_experiment.Desktop.Field
 			const float HEAD_TARGET = pi_f / 4.0f;
             const float HEAD_SPEED = 0.05f;
 
-			// Update animation timer
+            // Update animation timer
+            if (animSpeed < 0.0f) animSpeed *= -1;
 			animTimer += animSpeed * tm;
             if(animTimer >= (float)Math.PI*2)
 			{
