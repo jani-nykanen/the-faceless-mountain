@@ -66,6 +66,9 @@
     <Compile Include="Field\Camera.cs" />
     <Compile Include="Core\Tilemap.cs" />
     <Compile Include="Field\Stage.cs" />
+    <Compile Include="Field\CollisionObject.cs" />
+    <Compile Include="Field\GameObject.cs" />
+    <Compile Include="Field\Tongue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

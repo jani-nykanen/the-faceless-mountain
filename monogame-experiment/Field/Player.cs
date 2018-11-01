@@ -10,7 +10,7 @@ using monogame_experiment.Desktop.Core;
 namespace monogame_experiment.Desktop.Field
 {
 	// Player object
-    public class Player
+    public class Player : GameObject
     {
 		const float SCALE = 48.0f;
         const float WIDTH = 40.0f;
@@ -27,21 +27,6 @@ namespace monogame_experiment.Desktop.Field
 		// Animated figure ("skeleton")
 		private AnimatedFigure skeleton;
 
-		// Position
-		private Vector2 pos;
-        // Previous position
-        private Vector2 oldPos;
-		// Speed
-		private Vector2 speed;
-		// Target speed
-		private Vector2 target;
-        // Total speed
-        private float totalSpeed;
-
-        // Dimensions
-        private float width;
-        private float height;
-
 		// Direction (animation)
 		private int direction =1;
 		// Direction (movement)
@@ -56,6 +41,9 @@ namespace monogame_experiment.Desktop.Field
 
         // Head direction
         private int headDir;
+
+        // Player's tongue
+        private Tongue tongue;
 
 
         // Update speed
@@ -82,6 +70,7 @@ namespace monogame_experiment.Desktop.Field
 		private void Control(InputManager input, float tm)
 		{
             const float RUN_PLUS = 2.0f;
+            const float TONGUE_SPEED = 32.0f;
 
             // Movement direction (we cannot use
             // direction since it must be either -1
@@ -119,7 +108,7 @@ namespace monogame_experiment.Desktop.Field
 			{
 				speed.Y = -JUMP_HEIGHT;
 			}
-            else if(jumpTimer > 0.0f && fire1 == State.Down)
+            else if(!canJump && jumpTimer > 0.0f && fire1 == State.Down)
 			{
                 speed.Y = -JUMP_HEIGHT;
                 jumpTimer -= 1.0f * tm;
@@ -130,32 +119,30 @@ namespace monogame_experiment.Desktop.Field
             }
 
             headDir = 0;
+
             // Looking up or down
             if (input.GetKey("up") == State.Down)
                 headDir = 1;
             else if (input.GetKey("down") == State.Down)
                 headDir = -1;
 
+            // Create tongue
+            if(!tongue.DoesExist() && input.GetKey("fire3") == State.Pressed)
+            {
+                Vector2 speed = new Vector2(0, 0);
+
+                if(headDir == 0)
+                {
+                    speed.X = direction * TONGUE_SPEED;
+                }
+                else
+                {
+                    speed.Y = -headDir * TONGUE_SPEED;
+                }
+
+                tongue.Create(pos - new Vector2(0, SCALE), speed);
+            }
         }
-
-
-        // Move
-        private void Move(float tm)
-		{
-            // Store old position
-            oldPos = pos;
-
-            // Update speed
-            speed.X = UpdateSpeed(speed.X, ACC_X, target.X, tm);
-			speed.Y = UpdateSpeed(speed.Y, ACC_Y, target.Y, tm);
-
-            // Calculate total speed
-            totalSpeed = (float)Math.Sqrt(speed.X * speed.X + speed.Y * speed.Y);
-
-			// Move
-			pos.X += speed.X * tm;
-			pos.Y += speed.Y * tm;
-		}
 
 
         // Animate
@@ -200,106 +187,73 @@ namespace monogame_experiment.Desktop.Field
         public Player(Vector2 pos)
         {
 			skeleton = new AnimatedFigure(SCALE);
+            tongue = new Tongue();
 
 			this.pos = pos;
             this.oldPos = pos;
 
             this.width = WIDTH;
             this.height = HEIGHT;
+
+            acc.X = ACC_X;
+            acc.Y = ACC_Y;
 		}
 		public Player() : this(Vector2.Zero) { }
 
 
         // Update player
-        public void Update(InputManager input, float tm)
+        override public void Update(float tm, InputManager input = null)
 		{
 
+            // Update player stuff
 			Control(input, tm);
 			Move(tm);
 			Animate(tm);
+
+            // Update tongue
+            tongue.Update(tm, input);
+            tongue.UpdateStartPos(pos - new Vector2(0, SCALE));
 
 			canJump = false;
         }
 
 
         // Floor collision
-        public void GetFloorCollision(float x, float y, float w, float tm)
+        override protected void OnFloorCollision(float x, float y)
         {
-            const float DELTA = 2.0f;
-            const float DELTA_H = -0.01f;
 
-            // Check if horizontal overlay
-            if (pos.X + width / 2 < x || pos.X - width / 2 > x + w)
-                return;
+             pos.Y = y;
+             speed.Y = 0.0f;
+             canJump = true;
+             jumpTimer = JUMP_TIME_MAX;
 
-            // Check speed
-            if (speed.Y < DELTA_H*tm)
-                return;
-
-            // Check if the surface is between old & new value
-            if(pos.Y > y- DELTA*tm && oldPos.Y < y+ DELTA*tm)
-            {
-                pos.Y = y;
-                speed.Y = 0.0f;
-                canJump = true;
-                jumpTimer = JUMP_TIME_MAX;
-
-                skeleton.ResetTimer();
-            }
+             skeleton.ResetTimer();
         }
 
 
         // Ceiling collision
-        public void GetCeilingCollision(float x, float y, float w, float tm)
+        override protected void OnCeilingCollision(float x, float y)
         {
-            const float DELTA = 2.0f;
 
-            // Check if horizontal overlay
-            if (pos.X + width / 2 < x || pos.X - width / 2 > x + w)
-                return;
-
-            // Check speed
-            if (speed.Y > 0.0f)
-                return;
-
-            // Check if the surface is between old & new value
-            if (pos.Y-height < y + DELTA*tm && oldPos.Y-height > y - DELTA*tm)
-            {
-                pos.Y = y + height;
-                speed.Y = 0.0f;
-                jumpTimer = 0.0f;
-            }
+             pos.Y = y;
+             speed.Y = 0.0f;
+             jumpTimer = 0.0f;
         }
 
 
         // Wall collision
-        public void GetWallCollision(float x, float y, float h, int dir, float tm)
+        override protected void OnWallCollision(float x, float y, int dir)
         {
-            const float DELTA = 2.0f;
-            const float DELTA_H = 1.0f;
-
-            // Other directions not allowed
-            if (!(dir == 1 || dir == -1))
-                return;
-
-            // Check if vertical overlay
-            if (pos.Y < y+ DELTA_H*tm || pos.Y - height > y + h - DELTA_H * tm)
-                return;
-
-            // Check if the surface is between old & new value
-            if (
-                (speed.X > 0.0f && dir == 1 && pos.X + width / 2 > x - DELTA * tm
-                 && oldPos.X + width / 2 < x + DELTA * tm)
-                ||
-                (speed.X < 0.0f && dir == -1 && pos.X - width / 2 < x + DELTA * tm
-                 && oldPos.X - width / 2 > x - DELTA * tm)
-                )
-            {
-                speed.X = 0.0f;
-                pos.X = x - width / 2 * dir;
-            }
+            speed.X = 0.0f;
+            pos.X = x;
         }
 
+
+        // Get tongue
+        public Tongue GetTongue()
+        {
+            return tongue;
+        }
 
         // Set camera following
         public void SetCameraFollowing(Camera cam, float tm)
@@ -359,7 +313,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw player
-        public void Draw(Graphics g)
+        override public void Draw(Graphics g)
 		{
 			g.Push();
 
@@ -371,13 +325,10 @@ namespace monogame_experiment.Desktop.Field
 			skeleton.Draw(g);
 
 			g.Pop();
+
+            // Draw tongue
+            tongue.Draw(g);
 		}
 
-
-        // Get coordinates
-        public Vector2 GetPos()
-        {
-            return pos;
-        }
     }
 }

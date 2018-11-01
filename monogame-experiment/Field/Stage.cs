@@ -32,10 +32,12 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Player collision
-        public void GetPlayerCollision(Player pl, float tm)
+        public void GetObjectCollision(CollisionObject pl, float tm, bool floorPlus = false)
         {
             const int CHECK = 5;
             const float WIDTH_PLUS = 8.0f;
+
+            float widthPlus = floorPlus ? WIDTH_PLUS : 0.0f;
 
             Vector2 p = pl.GetPos();
 
@@ -56,24 +58,31 @@ namespace monogame_experiment.Desktop.Field
                     tile = map.GetTile(0, x, y);
                     if (tile == -1)
                         continue;
-
-                    // TODO: Check for nearby tiles, not
-                    // all the collisions are necessary
+                        
+                    // If collision tile
                     if(tile == 1)
                     {
-                        if(map.GetTile(0, x, y-1) != 1)
-                            pl.GetFloorCollision(x * TILE_SIZE - WIDTH_PLUS, 
-                                                 y * TILE_SIZE, 
-                                                 TILE_SIZE + WIDTH_PLUS*2, tm);
+                        if (map.GetTile(0, x, y - 1) != 1)
+                        {
+                            pl.GetFloorCollision(x * TILE_SIZE - widthPlus,
+                                                 y * TILE_SIZE,
+                                                 TILE_SIZE + widthPlus * 2, tm);
+                        }
 
                         if (map.GetTile(0, x, y + 1) != 1)
+                        {
                             pl.GetCeilingCollision(x * TILE_SIZE, (y + 1) * TILE_SIZE, TILE_SIZE, tm);
+                        }
 
-                        if (map.GetTile(0, x-1, y) != 1)
+                        if (map.GetTile(0, x - 1, y) != 1)
+                        {
                             pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1, tm);
+                        }
 
-                        if (map.GetTile(0, x+1, y) != 1)
-                            pl.GetWallCollision( (x+1) * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, -1, tm);
+                        if (map.GetTile(0, x + 1, y) != 1)
+                        {
+                            pl.GetWallCollision((x + 1) * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, -1, tm);
+                        }
                     }
                 }
             }

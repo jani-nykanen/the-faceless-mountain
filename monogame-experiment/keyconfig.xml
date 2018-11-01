@@ -6,4 +6,5 @@
     <key name="down"   code= "40" />
     <key name="fire1" code="88" />
     <key name="fire2" code="90" />
+    <key name="fire3" code="67" />
 </keyconfig>

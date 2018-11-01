@@ -58,14 +58,16 @@ namespace monogame_experiment.Desktop.Field
 		override public void Update(float tm)
         {
 			// Update player
-			player.Update(input, tm);
+			player.Update(tm, input);
             // Set camera following
             player.SetCameraFollowing(cam, tm);
 
             // Update stage
             stage.Update(tm);
-            // Player collision
-            stage.GetPlayerCollision(player, tm);
+            // Player collisions
+            stage.GetObjectCollision(player, tm, false);
+            // Player tongue collisions
+            stage.GetObjectCollision(player.GetTongue(), tm);
 
             // Update camera
             cam.Update(tm);
