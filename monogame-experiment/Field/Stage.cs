@@ -32,7 +32,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Player collision
-        public void GetPlayerCollision(Player pl)
+        public void GetPlayerCollision(Player pl, float tm)
         {
             const int CHECK = 5;
             const float WIDTH_PLUS = 8.0f;
@@ -64,16 +64,16 @@ namespace monogame_experiment.Desktop.Field
                         if(map.GetTile(0, x, y-1) != 1)
                             pl.GetFloorCollision(x * TILE_SIZE - WIDTH_PLUS, 
                                                  y * TILE_SIZE, 
-                                                 TILE_SIZE + WIDTH_PLUS*2);
+                                                 TILE_SIZE + WIDTH_PLUS*2, tm);
 
                         if (map.GetTile(0, x, y + 1) != 1)
-                            pl.GetCeilingCollision(x * TILE_SIZE, (y + 1) * TILE_SIZE, TILE_SIZE);
+                            pl.GetCeilingCollision(x * TILE_SIZE, (y + 1) * TILE_SIZE, TILE_SIZE, tm);
 
                         if (map.GetTile(0, x-1, y) != 1)
-                            pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1);
+                            pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1, tm);
 
                         if (map.GetTile(0, x+1, y) != 1)
-                            pl.GetWallCollision( (x+1) * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, -1);
+                            pl.GetWallCollision( (x+1) * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, -1, tm);
                     }
                 }
             }
@@ -87,22 +87,23 @@ namespace monogame_experiment.Desktop.Field
             g.BeginDrawing();
 
             // Get top left corner & viewport
-            Vector2 corner = cam.GetTopLeftCorner();
+            Vector2 topLeft = cam.GetTopLeftCorner();
+            Vector2 bottomRight = cam.GetBottomRightCorner();
             Vector2 view = cam.GetViewport();
 
             // Compute starting positions
-            int sx = (int)(corner.X / TILE_SIZE) - 1;
-            int sy = (int)(corner.Y / TILE_SIZE) - 1;
+            int sx = (int)(topLeft.X / TILE_SIZE) - 1;
+            int sy = (int)(topLeft.Y / TILE_SIZE) - 1;
 
-            // Compute dimensions
-            int w = (int)(view.X / TILE_SIZE) + 2;
-            int h = (int)(view.Y / TILE_SIZE) + 3;
+            int ex = (int)(bottomRight.X / TILE_SIZE) + 1;
+            int ey = (int)(bottomRight.Y / TILE_SIZE) + 1;
+
 
             // Draw tiles
             int tile = 0;
-            for (int y = sy; y < sy + h; ++ y)
+            for (int y = sy; y <= ey; ++ y)
             {
-                for (int x = sx; x < sx + w; ++ x)
+                for (int x = sx; x <= ex; ++ x)
                 {
                     // Get tile
                     tile = map.GetTile(0, x, y);

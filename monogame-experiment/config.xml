@@ -5,6 +5,6 @@
     <property key="fullscreen" value="false" />
     <property key="caption" value="Game" />
     <property key="asset_path" value="Assets/assets.xml" />
-    <property key="framerate" value="30" />
+    <property key="framerate" value="60" />
     <property key="keyconfig_path" value="keyconfig.xml" />
 </config>

@@ -35,6 +35,8 @@ namespace monogame_experiment.Desktop.Field
 		private Vector2 speed;
 		// Target speed
 		private Vector2 target;
+        // Total speed
+        private float totalSpeed;
 
         // Dimensions
         private float width;
@@ -147,6 +149,9 @@ namespace monogame_experiment.Desktop.Field
             speed.X = UpdateSpeed(speed.X, ACC_X, target.X, tm);
 			speed.Y = UpdateSpeed(speed.Y, ACC_Y, target.Y, tm);
 
+            // Calculate total speed
+            totalSpeed = (float)Math.Sqrt(speed.X * speed.X + speed.Y * speed.Y);
+
 			// Move
 			pos.X += speed.X * tm;
 			pos.Y += speed.Y * tm;
@@ -218,33 +223,36 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Floor collision
-        public void GetFloorCollision(float x, float y, float w)
+        public void GetFloorCollision(float x, float y, float w, float tm)
         {
-            const float DELTA = 4.0f;
+            const float DELTA = 2.0f;
+            const float DELTA_H = -0.01f;
 
             // Check if horizontal overlay
             if (pos.X + width / 2 < x || pos.X - width / 2 > x + w)
                 return;
 
             // Check speed
-            if (speed.Y < 0.0f)
+            if (speed.Y < DELTA_H*tm)
                 return;
 
             // Check if the surface is between old & new value
-            if(pos.Y > y- DELTA && oldPos.Y < y+ DELTA)
+            if(pos.Y > y- DELTA*tm && oldPos.Y < y+ DELTA*tm)
             {
                 pos.Y = y;
                 speed.Y = 0.0f;
                 canJump = true;
                 jumpTimer = JUMP_TIME_MAX;
+
+                skeleton.ResetTimer();
             }
         }
 
 
         // Ceiling collision
-        public void GetCeilingCollision(float x, float y, float w)
+        public void GetCeilingCollision(float x, float y, float w, float tm)
         {
-            const float DELTA = 4.0f;
+            const float DELTA = 2.0f;
 
             // Check if horizontal overlay
             if (pos.X + width / 2 < x || pos.X - width / 2 > x + w)
@@ -255,7 +263,7 @@ namespace monogame_experiment.Desktop.Field
                 return;
 
             // Check if the surface is between old & new value
-            if (pos.Y-height < y + DELTA && oldPos.Y-height > y - DELTA)
+            if (pos.Y-height < y + DELTA*tm && oldPos.Y-height > y - DELTA*tm)
             {
                 pos.Y = y + height;
                 speed.Y = 0.0f;
@@ -265,7 +273,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Wall collision
-        public void GetWallCollision(float x, float y, float h, int dir)
+        public void GetWallCollision(float x, float y, float h, int dir, float tm)
         {
             const float DELTA = 2.0f;
             const float DELTA_H = 1.0f;
@@ -275,16 +283,16 @@ namespace monogame_experiment.Desktop.Field
                 return;
 
             // Check if vertical overlay
-            if (pos.Y < y+ DELTA_H || pos.Y - height > y + h - DELTA_H)
+            if (pos.Y < y+ DELTA_H*tm || pos.Y - height > y + h - DELTA_H * tm)
                 return;
 
             // Check if the surface is between old & new value
             if (
-                (speed.X > 0.0f && dir == 1 && pos.X + width / 2 > x - DELTA 
-                 && oldPos.X + width / 2 < x + DELTA)
+                (speed.X > 0.0f && dir == 1 && pos.X + width / 2 > x - DELTA * tm
+                 && oldPos.X + width / 2 < x + DELTA * tm)
                 ||
-                (speed.X < 0.0f && dir == -1 && pos.X - width / 2 < x + DELTA 
-                 && oldPos.X - width / 2 > x - DELTA)
+                (speed.X < 0.0f && dir == -1 && pos.X - width / 2 < x + DELTA * tm
+                 && oldPos.X - width / 2 > x - DELTA * tm)
                 )
             {
                 speed.X = 0.0f;
@@ -294,14 +302,35 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Set camera following
-        // TEMPORARY!
         public void SetCameraFollowing(Camera cam, float tm)
         {
             const float DELTA = 1.0f;
-            const float CAM_SPEED = 24.0f;
+
+            const float CAM_SPEED_X = 32.0f;
+            const float CAM_SPEED_Y = 12.0f;
+
+            const float CAM_H_JUMP = 192.0f;
+            const float CAM_V_JUMP = 128.0f;
+            const float Y_CENTER_MUL = 1.5f;
+
+            const float BASE_SCALE = 1.5f;
+            const float SPEED_SCALE_FACTOR = 6.0f;
+            const float SPEED_SCALE = 0.25f;
+            const float SCALE_SPEED = 0.005f;
 
             float dx = pos.X;
-            float dy = pos.Y - SCALE;
+            float dy = pos.Y - SCALE*Y_CENTER_MUL;
+
+            // If moving somewhere
+            if(moveDir != 0)
+            {
+                dx += CAM_H_JUMP * direction;
+            }
+            // If watching up/down
+            if(headDir != 0)
+            {
+                dy -= CAM_V_JUMP * headDir;
+            }
 
             // Get camera pos
             float cx = cam.GetPos().X;
@@ -313,12 +342,17 @@ namespace monogame_experiment.Desktop.Field
 
             // Move camera
             float tx = 0.0f, ty = 0.0f;
-            float viewRatio = cam.GetViewport().X / cam.GetViewport().Y;
             if(dist > DELTA)
             {
-                tx = (float)Math.Cos(angle) * (dist / CAM_SPEED) * tm;
-                ty = (float)Math.Sin(angle) * (dist / (CAM_SPEED / viewRatio)) * tm;
+                tx = (float)Math.Cos(angle) * (dist / CAM_SPEED_X) * tm;
+                ty = (float)Math.Sin(angle) * (dist / (CAM_SPEED_Y)) * tm;
             }
+
+            // Set speed scale
+            float scale = BASE_SCALE - totalSpeed / SPEED_SCALE_FACTOR * SPEED_SCALE;
+
+            if(cam.GetScale().X > scale || moveDir == 0)
+                cam.SetScaleTarget(scale, scale, SCALE_SPEED, SCALE_SPEED);
 
             cam.Translate(tx, ty);
         }

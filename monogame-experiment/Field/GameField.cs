@@ -65,7 +65,10 @@ namespace monogame_experiment.Desktop.Field
             // Update stage
             stage.Update(tm);
             // Player collision
-            stage.GetPlayerCollision(player);
+            stage.GetPlayerCollision(player, tm);
+
+            // Update camera
+            cam.Update(tm);
         }
       
 
