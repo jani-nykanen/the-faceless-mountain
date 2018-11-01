@@ -44,12 +44,13 @@ namespace monogame_experiment.Desktop.Field
 			keyConf = gs.GetKeyConfig();
 
 			// Create game objects
-			player = new Player();
+            player = new Player(new Vector2(12*64,30*64-1));
 			cam = new Camera();
             stage = new Stage(assets.GetTilemap("test"));
 
             // Set initial camera scale
             cam.Scale(1.5f, 1.5f);
+            cam.MoveTo(player.GetPos().X, player.GetPos().Y - 32);
 
         }
 

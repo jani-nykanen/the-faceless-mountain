@@ -46,24 +46,20 @@ namespace monogame_experiment.Desktop.Field
         private Tongue tongue;
 
 
-        // Update speed
-		private float UpdateSpeed(float speed, float acc, float target, float tm)
-		{
-			if(speed > target)
-			{
-				speed -= acc * tm;
-				if (speed <= target)
-					speed = target;
-			}
-			else if(speed < target)
-			{
-				speed += acc * tm;
-				if (speed >= target)
-					speed = target;
-			}
+        // Get tongue movement
+        private void GetTongueMovement(float tm)
+        {
+            const float SPEED_X = 0.5f;
+            const float SPEED_Y = 0.75f;
 
-			return speed;
-		}
+            if (!tongue.IsStuck()) return;
+
+            Vector2 p = tongue.GetPos();
+            float angle = (float)Math.Atan2(p.Y - pos.Y, p.X - pos.X);
+
+            speed.X += (float)Math.Cos(angle) * SPEED_X * tm;
+            speed.Y += (float)Math.Sin(angle) * SPEED_Y * tm;
+        }
 
 
         // Control
@@ -213,8 +209,9 @@ namespace monogame_experiment.Desktop.Field
             // Update tongue
             tongue.Update(tm, input);
             tongue.UpdateStartPos(pos - new Vector2(0, SCALE));
+            GetTongueMovement(tm);
 
-			canJump = false;
+            canJump = false;
         }
 
 

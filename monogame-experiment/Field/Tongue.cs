@@ -11,7 +11,7 @@ namespace monogame_experiment.Desktop.Field
     {
 
         // After this time the tongue will disappear
-        const float DISAPPEAR_TIMER = 30.0f;
+        const float DISAPPEAR_TIMER = 20.0f;
 
 
         // Does exists
@@ -26,6 +26,9 @@ namespace monogame_experiment.Desktop.Field
         // Length
         private float length;
 
+        // Flicker timer (it's beam, after all!)
+        private float flicker;
+
 
         // Constructor
         public Tongue()
@@ -37,6 +40,7 @@ namespace monogame_experiment.Desktop.Field
             height = 2.0f;
 
             centerY = 1.0f;
+            flicker = 0.0f;
         }
 
 
@@ -74,6 +78,8 @@ namespace monogame_experiment.Desktop.Field
         // Update
         public override void Update(float tm, InputManager input = null)
         {
+            const float FLICKER_SPEED = 0.2f;
+
             if (!exist) return;
 
             // If not stuck, update timer & move
@@ -104,6 +110,9 @@ namespace monogame_experiment.Desktop.Field
             length = (float)Math.Sqrt(
                   Math.Pow(pos.X - startPos.X, 2) 
                 + Math.Pow(pos.Y - startPos.Y, 2));
+
+            // Update flickering
+            flicker += FLICKER_SPEED * tm;
         }
 
 
@@ -131,7 +140,8 @@ namespace monogame_experiment.Desktop.Field
 
             g.BeginDrawing();
 
-            g.SetColor(1, 0.5f, 0.5f);
+            float alpha = (float)Math.Sin(flicker) * 0.25f + 0.75f;
+            g.SetColor(0.66f, 0.40f, 1.0f, alpha);
             g.FillRect(0, -HEIGHT / 2, (int)length, HEIGHT);
             g.SetColor();
 
@@ -145,7 +155,7 @@ namespace monogame_experiment.Desktop.Field
             g.Translate(pos.X, pos.Y);
             g.BeginDrawing();
 
-            g.SetColor(1, 0, 0);
+            g.SetColor(0.75f, 0, 1);
             g.FillRect(-16, -16, 32, 32);
             g.SetColor();
 
@@ -159,6 +169,13 @@ namespace monogame_experiment.Desktop.Field
         public bool DoesExist()
         {
             return exist;
+        }
+
+
+        // Is the tongue stuck
+        public bool IsStuck()
+        {
+            return exist && stuck;
         }
     }
 }
