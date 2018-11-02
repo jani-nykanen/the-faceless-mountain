@@ -16,13 +16,13 @@ namespace monogame_experiment.Desktop.Field
         const float WIDTH = 40.0f;
         const float HEIGHT = 80.0f;
 
-        const float TARGET_X = 3.0f;
-        const float ACC_X = 0.25f;
-        const float ACC_Y = 0.5f;
+        const float TARGET_X = 3.5f;
+        const float ACC_X = 0.125f;
+        const float ACC_Y = 0.625f;
 
-        const float GRAVITY = 6.0f;
+        const float GRAVITY = 7.0f;
         const float JUMP_HEIGHT = 8.0f;
-        const float JUMP_TIME_MAX = 25.0f;
+        const float JUMP_TIME_MAX = 20.0f;
 
 		// Animated figure ("skeleton")
 		private AnimatedFigure skeleton;
@@ -50,7 +50,7 @@ namespace monogame_experiment.Desktop.Field
         private void GetTongueMovement(float tm)
         {
             const float SPEED_X = 0.5f;
-            const float SPEED_Y = 0.75f;
+            const float SPEED_Y = SPEED_X + (ACC_Y - ACC_X);
 
             if (!tongue.IsStuck()) return;
 
@@ -67,11 +67,14 @@ namespace monogame_experiment.Desktop.Field
 		{
             const float RUN_PLUS = 2.0f;
             const float TONGUE_SPEED = 32.0f;
+            const float JUMP_SPEED_BONUS = 6.0f;
+
+            float jumpHeight = JUMP_HEIGHT + (float)Math.Abs(speed.X) / JUMP_SPEED_BONUS;
 
             // Movement direction (we cannot use
             // direction since it must be either -1
-			// or 1)
-			moveDir = 0;
+            // or 1)
+            moveDir = 0;
 
             // Is running
             running = input.GetKey("fire2") == State.Down;
@@ -102,11 +105,11 @@ namespace monogame_experiment.Desktop.Field
 			State fire1 = input.GetKey("fire1");
 			if(canJump && fire1 == State.Pressed)
 			{
-				speed.Y = -JUMP_HEIGHT;
+				speed.Y = -jumpHeight;
 			}
             else if(!canJump && jumpTimer > 0.0f && fire1 == State.Down)
 			{
-                speed.Y = -JUMP_HEIGHT;
+                speed.Y = -jumpHeight;
                 jumpTimer -= 1.0f * tm;
             }
             else if(fire1 == State.Up)
@@ -241,7 +244,17 @@ namespace monogame_experiment.Desktop.Field
         // Wall collision
         override protected void OnWallCollision(float x, float y, int dir)
         {
-            speed.X = 0.0f;
+            const float BOUNCE_DELTA = 2.0f;
+            const float BOUNCE_FACTOR = 1.25f;
+
+            if((float)Math.Abs(speed.X) < BOUNCE_DELTA)
+            {
+                speed.X = 0.0f;
+            }
+            else
+            {
+                speed.X /= -BOUNCE_FACTOR;
+            }
             pos.X = x;
         }
 
@@ -251,6 +264,7 @@ namespace monogame_experiment.Desktop.Field
         {
             return tongue;
         }
+
 
         // Set camera following
         public void SetCameraFollowing(Camera cam, float tm)
@@ -265,9 +279,10 @@ namespace monogame_experiment.Desktop.Field
             const float Y_CENTER_MUL = 1.5f;
 
             const float BASE_SCALE = 1.5f;
-            const float SPEED_SCALE_FACTOR = 6.0f;
-            const float SPEED_SCALE = 0.25f;
-            const float SCALE_SPEED = 0.005f;
+            const float MIN_SCALE = 1.25f;
+            const float SPEED_SCALE_FACTOR = 8.0f;
+            const float SPEED_SCALE = BASE_SCALE - MIN_SCALE;
+            const float SCALE_SPEED = 0.00125f;
 
             float dx = pos.X;
             float dy = pos.Y - SCALE*Y_CENTER_MUL;
@@ -301,8 +316,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Set speed scale
             float scale = BASE_SCALE - totalSpeed / SPEED_SCALE_FACTOR * SPEED_SCALE;
+            if (scale < MIN_SCALE) scale = MIN_SCALE;
 
-            if(cam.GetScale().X > scale || moveDir == 0)
+            if (cam.GetScale().X > scale || moveDir == 0)
                 cam.SetScaleTarget(scale, scale, SCALE_SPEED, SCALE_SPEED);
 
             cam.Translate(tx, ty);

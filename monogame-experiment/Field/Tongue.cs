@@ -11,15 +11,19 @@ namespace monogame_experiment.Desktop.Field
     {
 
         // After this time the tongue will disappear
-        const float DISAPPEAR_TIMER = 20.0f;
+        const float DISAPPEAR_TIMER = 17.5f;
 
 
         // Does exists
         private bool exist;
         // Is stuck
         private bool stuck;
+        // Is returning
+        private bool returning;
         // Existence timer
         private float timer;
+        // Returning speed
+        private float retSpeed;
 
         // Starting position
         private Vector2 startPos;
@@ -35,6 +39,7 @@ namespace monogame_experiment.Desktop.Field
         {
             exist = false;
             stuck = false;
+            returning = false;
 
             width = 2.0f;
             height = 2.0f;
@@ -47,15 +52,35 @@ namespace monogame_experiment.Desktop.Field
         // On any collision
         override protected void OnAnyCollision(float x, float y)
         {
-            if (!exist || stuck) return;
+            if (!exist || returning || stuck) return;
 
             stuck = true;
+            returning = false;
 
-            this.pos.X = x;
-            this.pos.Y = y;
+            pos.X = x;
+            pos.Y = y;
 
-            this.speed = Vector2.Zero;
-            this.target = Vector2.Zero;
+            speed = Vector2.Zero;
+            target = Vector2.Zero;
+        }
+
+
+        // Return back to the player
+        private void ReturnBack(float tm)
+        {
+            float angle = (float)Math.Atan2(pos.Y - startPos.Y, pos.X - startPos.X);
+
+            float delta = retSpeed*tm;
+
+            speed.X = -(float)Math.Cos(angle) * retSpeed;
+            speed.Y = -(float)Math.Sin(angle) * retSpeed;
+
+            if(length < delta)
+            {
+                exist = false;
+                stuck = false;
+                returning = false;
+            }
         }
 
 
@@ -82,9 +107,25 @@ namespace monogame_experiment.Desktop.Field
 
             if (!exist) return;
 
+            // Calculate length
+            length = (float)Math.Sqrt(
+                  Math.Pow(pos.X - startPos.X, 2)
+                + Math.Pow(pos.Y - startPos.Y, 2));
+
+            // Return back to the player
+            if (returning)
+            {
+                ReturnBack(tm);
+                Move(tm);
+                return;
+            }
+                
             // If not stuck, update timer & move
             if(!stuck)
             {
+                // Store total speed for future
+                retSpeed = totalSpeed;
+
                 // Move
                 Move(tm);
 
@@ -92,24 +133,19 @@ namespace monogame_experiment.Desktop.Field
                 timer += 1.0f * tm;
                 if(timer >= DISAPPEAR_TIMER)
                 {
-                    exist = false;
+                    returning = true;
                 }
             }
             // Or if stuck and the tongue button released,
             // disappear
             else
             {
-
                 if(input.GetKey("fire3") == State.Up)
                 {
-                    exist = false;
+                    returning = true;
+                    stuck = false;
                 }
             }
-
-            // Calculate length
-            length = (float)Math.Sqrt(
-                  Math.Pow(pos.X - startPos.X, 2) 
-                + Math.Pow(pos.Y - startPos.Y, 2));
 
             // Update flickering
             flicker += FLICKER_SPEED * tm;
