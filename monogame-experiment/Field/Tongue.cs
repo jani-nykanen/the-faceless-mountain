@@ -140,7 +140,7 @@ namespace monogame_experiment.Desktop.Field
             // disappear
             else
             {
-                if(input.GetKey("fire3") == State.Up)
+                if(input.GetButton("fire3") == State.Up)
                 {
                     returning = true;
                     stuck = false;

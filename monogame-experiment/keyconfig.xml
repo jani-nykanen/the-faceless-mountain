@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <keyconfig>
-    <key name="left"  code= "37" />
+    <key name="left"  code= "37"/>
     <key name="up"    code= "38" />
     <key name="right"   code= "39" />
     <key name="down"   code= "40" />
-    <key name="fire1" code="88" />
-    <key name="fire2" code="90" />
-    <key name="fire3" code="67" />
+    
+    <key name="fire1" code="88" button="0"/>
+    <key name="fire2" code="90" button="1"/>
+    <key name="fire3" code="67" button="4"/>
 </keyconfig>

@@ -65,11 +65,19 @@ namespace monogame_experiment.Desktop.Field
         // Control
 		private void Control(InputManager input, float tm)
 		{
+			const float DELTA = 0.01f;
+
             const float RUN_PLUS = 2.0f;
             const float TONGUE_SPEED = 32.0f;
             const float JUMP_SPEED_BONUS = 6.0f;
 
             float jumpHeight = JUMP_HEIGHT + (float)Math.Abs(speed.X) / JUMP_SPEED_BONUS;
+
+			// Get gamepad stick
+			Vector2 stick = input.GetStick();
+			// Make sure too small movements are ignored
+			if ((float)Math.Abs(stick.X) < DELTA)
+				stick.X = 0.0f;
 
             // Movement direction (we cannot use
             // direction since it must be either -1
@@ -77,22 +85,23 @@ namespace monogame_experiment.Desktop.Field
             moveDir = 0;
 
             // Is running
-            running = input.GetKey("fire2") == State.Down;
+            running = input.GetButton("fire2") == State.Down;
 
             // Get direction
-            if (input.GetKey("left") == State.Down)
+			if (stick.X < -DELTA)
 			{
 				moveDir = -1;
 				direction = -1;
 			}
-			else if(input.GetKey("right") == State.Down)
+			else if(stick.X > DELTA)
 			{
 				moveDir = 1;
 				direction = 1;
 			}
 
 			// Set speed target
-			target.X = moveDir * TARGET_X;
+			// target.X = moveDir * TARGET_X;
+			target.X = stick.X * TARGET_X;
 			target.Y = GRAVITY;
 
             // Apply running multiplier
@@ -102,7 +111,7 @@ namespace monogame_experiment.Desktop.Field
             }
 
 			// Jump
-			State fire1 = input.GetKey("fire1");
+			State fire1 = input.GetButton("fire1");
 			if(canJump && fire1 == State.Pressed)
 			{
 				speed.Y = -jumpHeight;
@@ -120,13 +129,13 @@ namespace monogame_experiment.Desktop.Field
             headDir = 0;
 
             // Looking up or down
-            if (input.GetKey("up") == State.Down)
+			if (stick.Y < -DELTA)
                 headDir = 1;
-            else if (input.GetKey("down") == State.Down)
+			else if (stick.Y > DELTA)
                 headDir = -1;
 
             // Create tongue
-            if(!tongue.DoesExist() && input.GetKey("fire3") == State.Pressed)
+            if(!tongue.DoesExist() && input.GetButton("fire3") == State.Pressed)
             {
                 Vector2 speed = new Vector2(0, 0);
 

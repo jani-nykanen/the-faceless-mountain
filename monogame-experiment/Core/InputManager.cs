@@ -14,6 +14,8 @@ namespace monogame_experiment.Desktop.Core
 		const int LAST_KEY = 255;
         // Mouse button count
 		const int MOUSE_BUTTON_COUNT = 3;
+		// Max gamepad button count
+		const int GAMEPAD_BUTTON_COUNT = 8;
 
 		// Key states
 		private State[] keyStates;
@@ -25,14 +27,49 @@ namespace monogame_experiment.Desktop.Core
 		// Old button states
 		private State[] oldButtonStates;
 
+		// Gamepad button states
+		private State[] gamePadStates;
+		// Old gamepad button states
+		private State[] oldPadStates;
+
  		// Mouse position
 		private Vector2 mousePos;
 
 		// Key configuration
 		private KeyConfig keyConf;
 
+		// Virtual gamepad stick
+		private Vector2 stick;
+
 		// Reference to graphics
 		private Graphics graph;
+
+
+        // Check special button array
+		private void CheckSpecialButtons(bool[] pressed, State[] oldArr, State[] newArr)
+		{
+			for (int i = 0; i < pressed.Length; ++i)
+            {
+                if (pressed[i])
+                {
+                    // Button down
+					if (oldArr[i] == State.Up)
+                    {
+						eventDown(newArr, i);
+                    }
+					oldArr[i] = State.Down;
+                }
+                else
+                {
+                    // Button up
+					if (oldArr[i] == State.Down)
+                    {
+						eventUp(newArr, i);
+                    }
+					oldArr[i] = State.Up;
+                }
+            }
+		}
 
         
         // Update a state array
@@ -72,6 +109,49 @@ namespace monogame_experiment.Desktop.Core
 		}
 
 
+        // Update stick
+		private void UpdateStick(GamePadState state)
+		{
+			const float DELTA = 0.1f;
+
+			stick = Vector2.Zero;
+
+            // Check arrow keys
+			if(keyConf != null)
+			{
+				if (GetKey("left") == State.Down)
+					stick.X = -1.0f;
+				else if (GetKey("right") == State.Down)
+                    stick.X = 1.0f;
+
+				if (GetKey("up") == State.Down)
+                    stick.Y = -1.0f;
+                else if (GetKey("down") == State.Down)
+                    stick.Y = 1.0f;
+			}
+
+			// Check gamepad stick
+			Vector2 lstick = state.ThumbSticks.Left;
+			if((float)Math.Sqrt(lstick.X*lstick.X + lstick.Y*lstick.Y) > DELTA)
+			{
+				lstick.Y *= -1;
+				stick = lstick;
+			}
+
+			// Check dpad
+			GamePadDPad dpad = state.DPad;
+			if (dpad.Left == ButtonState.Pressed)
+                stick.X = -1.0f;
+			else if (dpad.Right == ButtonState.Pressed)
+                stick.X = 1.0f;
+
+			if (dpad.Up == ButtonState.Pressed)
+                stick.Y = -1.0f;
+			else if (dpad.Down == ButtonState.Pressed)
+                stick.Y = 1.0f;
+		}
+
+
 		// Constructor
 		public InputManager()
 		{
@@ -80,11 +160,16 @@ namespace monogame_experiment.Desktop.Core
 			oldKeyStates = new State[LAST_KEY];
 			buttonStates = new State[MOUSE_BUTTON_COUNT];
 			oldButtonStates = new State[MOUSE_BUTTON_COUNT];
+			gamePadStates = new State[GAMEPAD_BUTTON_COUNT];
+			oldPadStates = new State[GAMEPAD_BUTTON_COUNT];
 
+            // Set to defaults
 			keyStates.Initialize();
 			oldKeyStates.Initialize();
 			buttonStates.Initialize();
 			oldButtonStates.Initialize();
+			gamePadStates.Initialize();
+			oldPadStates.Initialize();
 
 			mousePos = new Vector2();
 		}
@@ -126,37 +211,34 @@ namespace monogame_experiment.Desktop.Core
 					oldKeyStates[i] = State.Up;
 				}
 			}
-
+                     
+			// Do the same with mouse buttons
 			MouseState state = Mouse.GetState();
-			// Do the same with mouse buttons, but now we
-			// have to go through buttons manually (kind of)
-			bool[] pressed = {
+			bool[] mousePressed = {
 				state.LeftButton == ButtonState.Pressed,
 				state.MiddleButton == ButtonState.Pressed,
 				state.RightButton == ButtonState.Pressed,
 			};
-			for (int i = 0; i < pressed.Length; ++ i)
-			{
-				if(pressed[i])
-				{
-					// Button down
-					if(oldButtonStates[i] == State.Up)
-					{
-						eventDown(buttonStates, i);
-					}
-					oldButtonStates[i] = State.Down;
-				}
-				else 
-				{
-					// Button up
-					if (oldButtonStates[i] == State.Down)
-                    {
-						eventUp(buttonStates, i);
-                    }
-                    oldButtonStates[i] = State.Up;
-				}
-			}
+			CheckSpecialButtons(mousePressed, oldButtonStates, buttonStates);
 
+            // Update gamepad state
+			GamePadState padState = GamePad.GetState(PlayerIndex.One);
+			// Update stick
+			UpdateStick(padState);
+            
+			// Update gamepad button states
+			GamePadButtons buttons = padState.Buttons;
+			bool[] padPressed = {
+				buttons.A == ButtonState.Pressed,
+				buttons.X == ButtonState.Pressed,
+				buttons.B == ButtonState.Pressed,
+				buttons.Y == ButtonState.Pressed,
+				buttons.LeftShoulder == ButtonState.Pressed,
+				buttons.RightShoulder == ButtonState.Pressed,
+				buttons.Back == ButtonState.Pressed,
+				buttons.Start == ButtonState.Pressed,
+			};
+			CheckSpecialButtons(padPressed, oldPadStates, gamePadStates);
 		}
 
 
@@ -166,6 +248,7 @@ namespace monogame_experiment.Desktop.Core
 			// Update state arrays
 			updateStateArray(keyStates);
 			updateStateArray(buttonStates);
+			updateStateArray(gamePadStates);
 		}
 
 
@@ -202,6 +285,23 @@ namespace monogame_experiment.Desktop.Core
 		}
 
 
+        // Like GetKey but also checks the gamepad button
+        // (yeah, a misleading name, I'd better rename
+		// these methods)
+        public State GetButton(String name)
+		{
+			if (keyConf == null) return State.Up;
+
+			int[] ids = keyConf.GetKeyAndButtonIndex(name);
+
+			State ret = GetKey(ids[0]);
+			if (ret == State.Up)
+				ret = GetGamepadButton(ids[1]);
+
+			return ret;
+		}
+
+
         // Get mouse button
 		public State GetMouseButton(int id)
 		{
@@ -209,6 +309,16 @@ namespace monogame_experiment.Desktop.Core
 				return State.Up;
 
 			return buttonStates[id];
+		}
+
+
+        // Get gamepad button
+        public State GetGamepadButton(int id)
+		{
+			if (id < 0 || id >= gamePadStates.Length)
+				return State.Up;
+
+			return gamePadStates[id];
 		}
 
 
@@ -227,6 +337,13 @@ namespace monogame_experiment.Desktop.Core
 			ret.Y = mousePos.Y / frame.Y * view.Y;
 
 			return ret;
+		}
+
+
+        // Get stick
+		public Vector2 GetStick()
+		{
+			return stick;
 		}
 	}
 }
