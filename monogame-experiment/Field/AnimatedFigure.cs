@@ -226,11 +226,10 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Update head angle
-        private void UpdateHeadAngle(int headDir, float targetMax, float tm)
+		private void UpdateHeadAngle(float headTarget, float tm)
         {
             const float HEAD_SPEED = 0.05f;
 
-            float headTarget = headDir * targetMax;
             if (headAngle < headTarget)
             {
                 headAngle += HEAD_SPEED * tm;
@@ -270,6 +269,9 @@ namespace monogame_experiment.Desktop.Field
             // Should never change
             torsoPos = 0.0f;
 
+			// Head target
+			float headTarget = HEAD_TARGET * headDir;
+
             // Update animation timer
             animTimer += animSpeed * tm;
             if (animTimer >= (float)Math.PI * 2)
@@ -306,9 +308,10 @@ namespace monogame_experiment.Desktop.Field
 
                 // Jumping
 				case AnimationMode.Jump:
-					
+
 					// Set head angle
-					headAngle = -animSpeed * HEAD_TARGET;
+					if (headDir == 0)
+						headTarget = -HEAD_TARGET * (animSpeed < 0.0f ? -1 : 1);
 
                     // Set hand positions
                     rightHand = GetHandJoint((animSpeed+1.0f) * pi_f/2.0f);
@@ -326,11 +329,11 @@ namespace monogame_experiment.Desktop.Field
 			}
 
             // Update head angle
-            if ((animMode == AnimationMode.Stand ||
-                           animMode == AnimationMode.Run))
-            {
-                UpdateHeadAngle(headDir, HEAD_TARGET, tm);
-            }
+            //if ((animMode == AnimationMode.Stand ||
+            //               animMode == AnimationMode.Run))
+            //{
+			UpdateHeadAngle(headTarget, tm);
+            //}
 
 		}
 

@@ -159,6 +159,8 @@ namespace monogame_experiment.Desktop.Field
 			{
 				mode = AnimatedFigure.AnimationMode.Jump;
 				animSpeed = speed.Y / JUMP_HEIGHT;
+				if (animSpeed < -1.0f) animSpeed = -1.0f;
+				if (animSpeed > 1.0f) animSpeed = 1.0f;
 			}
 			else
 			{
