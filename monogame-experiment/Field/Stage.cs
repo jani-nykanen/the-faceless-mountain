@@ -21,7 +21,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw tilemap
-        private void DrawTilemap(Graphics g, Camera cam, int tx, int ty)
+        private void DrawTilemap(Graphics g, Camera cam, int tx = 0, int ty = 0, int outline = 0, bool black=false)
         {
             g.BeginDrawing();
 
@@ -50,6 +50,14 @@ namespace monogame_experiment.Desktop.Field
                     if (tile == -1)
                         continue;
 
+                    // If rendering black outlines, not every tile
+                    // must be re-rendered
+                    if(black)
+                    {
+                        if (map.GetTile(0, x + tx, y + ty) != 0)
+                            continue;
+                    }
+
                     // Draw a black tile if solid
                     if (tile-- != 0)
                     {
@@ -57,7 +65,8 @@ namespace monogame_experiment.Desktop.Field
                         srcy = tile / 16;
 
                         g.DrawScaledBitmapRegion(bmpTileset, srcx * 64, srcy * 64, 64, 64,
-                                                 tx + x * TILE_SIZE, ty + y * TILE_SIZE, 
+                                                 tx*outline + x * TILE_SIZE, 
+                                                 ty*outline + y * TILE_SIZE, 
                                                  TILE_SIZE, TILE_SIZE);
                     }
                 }
@@ -156,14 +165,14 @@ namespace monogame_experiment.Desktop.Field
                 {
                     if (x == y && x == 0) continue;
 
-                    DrawTilemap(g, cam, OUTLINE*x, OUTLINE*y);
+                    DrawTilemap(g, cam, x, y, OUTLINE, true);
                 }
             }
 
 
             // Draw with colors
             g.SetColor();
-            DrawTilemap(g, cam, 0, 0);
+            DrawTilemap(g, cam);
         }
     }
 }

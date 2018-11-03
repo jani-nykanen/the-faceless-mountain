@@ -49,7 +49,7 @@ namespace monogame_experiment.Desktop.Field
         // Get tongue movement
         private void GetTongueMovement(float tm)
         {
-            const float SPEED_X = 0.5f;
+            const float SPEED_X = 0.375f;
             const float SPEED_Y = SPEED_X + (ACC_Y - ACC_X);
 
             if (!tongue.IsStuck()) return;
