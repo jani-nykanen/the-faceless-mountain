@@ -83,7 +83,7 @@ namespace monogame_experiment.Desktop.Field
         // Floor collision
         public void GetFloorCollision(float x, float y, float w, float tm)
         {
-            const float DELTA = 2.0f;
+            const float DELTA = 4.0f;
             const float DELTA_H = -0.01f;
 
             // Check if horizontal overlay
