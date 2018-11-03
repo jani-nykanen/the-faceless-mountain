@@ -57,7 +57,7 @@ namespace monogame_experiment.Desktop.Field
                     // must be re-rendered
                     if(black)
                     {
-                        if (map.GetTile(0, x + tx, y + ty) != 0)
+                        if (map.GetTile(0, x + tx, y + ty) > 0)
                             continue;
                     }
 
@@ -129,7 +129,7 @@ namespace monogame_experiment.Desktop.Field
                     // If collision tile
                     if(tile != 0)
                     {
-                        // Check if nearby tiles are not empty
+                        // Check if nearby tiles are empty
                         if (map.GetTile(0, x, y - 1) == 0)
                         {
                             pl.GetFloorCollision(x * TILE_SIZE - widthPlus,
@@ -144,13 +144,13 @@ namespace monogame_experiment.Desktop.Field
                                                    TILE_SIZE, tm);
                         }
 
-                        if (map.GetTile(0, x - 1, y) == 0)
+                        if (map.GetTile(0, x - 1, y) <= 0)
                         {
                             pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE + transY,
                                                 TILE_SIZE, 1, tm);
                         }
 
-                        if (map.GetTile(0, x + 1, y) == 0)
+                        if (map.GetTile(0, x + 1, y) <= 0)
                         {
                             pl.GetWallCollision((x + 1) * TILE_SIZE, y * TILE_SIZE + transY,
                                                 TILE_SIZE, -1, tm);
