@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <config>
-    <property key="window_width" value="800" />
-    <property key="window_height" value="600" />
+    <property key="window_width" value="1280" />
+    <property key="window_height" value="720" />
     <property key="fullscreen" value="false" />
     <property key="caption" value="Game" />
     <property key="asset_path" value="Assets/assets.xml" />

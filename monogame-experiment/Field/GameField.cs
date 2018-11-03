@@ -44,7 +44,7 @@ namespace monogame_experiment.Desktop.Field
 			keyConf = gs.GetKeyConfig();
 
 			// Create game objects
-            player = new Player(new Vector2(6*64,30*64-1));
+            player = new Player(new Vector2(6*64,-2*64-1));
 			cam = new Camera();
             stage = new Stage(assets, 1);
 

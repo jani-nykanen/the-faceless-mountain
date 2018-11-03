@@ -24,6 +24,9 @@ namespace monogame_experiment.Desktop.Field
         const float JUMP_HEIGHT = 6.0f;
         const float JUMP_TIME_MAX = 20.0f;
 
+        // Starting position
+        private Vector2 startPos;
+
 		// Animated figure ("skeleton")
 		private AnimatedFigure skeleton;
 
@@ -207,7 +210,11 @@ namespace monogame_experiment.Desktop.Field
 
             acc.X = ACC_X;
             acc.Y = ACC_Y;
-		}
+
+            // Store starting position
+            startPos = pos;
+
+        }
 		public Player() : this(Vector2.Zero) { }
 
 
@@ -224,6 +231,17 @@ namespace monogame_experiment.Desktop.Field
             tongue.Update(tm, input);
             tongue.UpdateStartPos(pos - new Vector2(0, SCALE));
             GetTongueMovement(tm);
+
+            // Check if outside the game area
+            if(pos.Y-SCALE*3.0f > 0.0f)
+            {
+                pos = startPos;
+                speed = Vector2.Zero;
+                target = Vector2.Zero;
+
+                // Kill tongue
+                tongue.Kill();
+            }
 
             canJump = false;
         }

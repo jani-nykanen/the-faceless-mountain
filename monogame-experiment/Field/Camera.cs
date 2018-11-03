@@ -165,6 +165,12 @@ namespace monogame_experiment.Desktop.Field
             // Update scaling
             scale.X = UpdateScale(scale.X, scaleSpeed.X, targetScale.X, tm);
             scale.Y = UpdateScale(scale.Y, scaleSpeed.Y, targetScale.Y, tm);
+
+            // Limit bottom
+            if(pos.Y > -viewport.Y/2)
+            {
+                pos.Y = -viewport.Y/2;
+            }
         }
     }
 }

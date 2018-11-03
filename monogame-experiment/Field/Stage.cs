@@ -19,6 +19,9 @@ namespace monogame_experiment.Desktop.Field
         // Bitmaps
         private Bitmap bmpTileset;
 
+        // Y translation
+        private int transY;
+
 
         // Draw tilemap
         private void DrawTilemap(Graphics g, Camera cam, int tx = 0, int ty = 0, int outline = 0, bool black=false)
@@ -32,10 +35,10 @@ namespace monogame_experiment.Desktop.Field
 
             // Compute starting positions
             int sx = (int)(topLeft.X / TILE_SIZE) - 1;
-            int sy = (int)(topLeft.Y / TILE_SIZE) - 1;
+            int sy = (int)( (topLeft.Y-transY) / TILE_SIZE) - 1;
 
             int ex = (int)(bottomRight.X / TILE_SIZE) + 1;
-            int ey = (int)(bottomRight.Y / TILE_SIZE) + 1;
+            int ey = (int)( (bottomRight.Y- transY) / TILE_SIZE) + 1;
 
             // Draw tiles
             int tile = 0;
@@ -66,7 +69,7 @@ namespace monogame_experiment.Desktop.Field
 
                         g.DrawScaledBitmapRegion(bmpTileset, srcx * 64, srcy * 64, 64, 64,
                                                  tx*outline + x * TILE_SIZE, 
-                                                 ty*outline + y * TILE_SIZE, 
+                                                 ty*outline + y * TILE_SIZE + transY, 
                                                  TILE_SIZE, TILE_SIZE);
                     }
                 }
@@ -82,6 +85,9 @@ namespace monogame_experiment.Desktop.Field
             // Get current map
             map = assets.GetTilemap(index.ToString());
             bmpTileset = assets.GetBitmap("tileset");
+
+            // Compute y translation
+            transY = -map.GetHeight() * TILE_SIZE;
         }
 
 
@@ -104,7 +110,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Compute starting positions
             int sx = (int)(p.X / TILE_SIZE) - CHECK/2;
-            int sy = (int)(p.Y / TILE_SIZE) - CHECK/2;
+            int sy = (int)( (p.Y-transY) / TILE_SIZE) - CHECK/2;
 
             int ex = sx + CHECK;
             int ey = sy + CHECK;
@@ -127,23 +133,27 @@ namespace monogame_experiment.Desktop.Field
                         if (map.GetTile(0, x, y - 1) == 0)
                         {
                             pl.GetFloorCollision(x * TILE_SIZE - widthPlus,
-                                                 y * TILE_SIZE,
+                                                 y * TILE_SIZE + transY,
                                                  TILE_SIZE + widthPlus * 2, tm);
                         }
 
                         if (map.GetTile(0, x, y + 1) == 0)
                         {
-                            pl.GetCeilingCollision(x * TILE_SIZE, (y + 1) * TILE_SIZE, TILE_SIZE, tm);
+                            pl.GetCeilingCollision(x * TILE_SIZE, 
+                                                   (y + 1) * TILE_SIZE + transY,
+                                                   TILE_SIZE, tm);
                         }
 
                         if (map.GetTile(0, x - 1, y) == 0)
                         {
-                            pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, 1, tm);
+                            pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE + transY,
+                                                TILE_SIZE, 1, tm);
                         }
 
                         if (map.GetTile(0, x + 1, y) == 0)
                         {
-                            pl.GetWallCollision((x + 1) * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, -1, tm);
+                            pl.GetWallCollision((x + 1) * TILE_SIZE, y * TILE_SIZE + transY,
+                                                TILE_SIZE, -1, tm);
                         }
                     }
                 }

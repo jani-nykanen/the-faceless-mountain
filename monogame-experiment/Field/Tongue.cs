@@ -214,5 +214,14 @@ namespace monogame_experiment.Desktop.Field
         {
             return exist && stuck;
         }
+
+
+        // Kill your tongue
+        public void Kill()
+        {
+            exist = false;
+            stuck = false;
+            returning = false;
+        }
     }
 }
