@@ -164,7 +164,8 @@ namespace monogame_experiment.Desktop.Field
         {
             if (!exist) return;
 
-            const int HEIGHT = 12;
+            const int HEIGHT = 8;
+            const int TIP_SIZE = 24;
 
             // Calculate angle
             float angle = (float)Math.Atan2(pos.Y - startPos.Y, pos.X - startPos.X);
@@ -192,7 +193,7 @@ namespace monogame_experiment.Desktop.Field
             g.BeginDrawing();
 
             g.SetColor(0.75f, 0, 1);
-            g.FillRect(-16, -16, 32, 32);
+            g.FillRect(-TIP_SIZE/2, -TIP_SIZE/2, TIP_SIZE, TIP_SIZE);
             g.SetColor();
 
             g.EndDrawing();

@@ -12,16 +12,16 @@ namespace monogame_experiment.Desktop.Field
 	// Player object
     public class Player : GameObject
     {
-		const float SCALE = 48.0f;
-        const float WIDTH = 40.0f;
-        const float HEIGHT = 80.0f;
+		const float SCALE = 32.0f;
+        const float WIDTH = 24.0f;
+        const float HEIGHT = 64.0f;
 
-        const float TARGET_X = 3.5f;
-        const float ACC_X = 0.125f;
-        const float ACC_Y = 0.625f;
+        const float TARGET_X = 2.5f;
+        const float ACC_X = 0.100f;
+        const float ACC_Y = 0.50f;
 
         const float GRAVITY = 7.0f;
-        const float JUMP_HEIGHT = 8.0f;
+        const float JUMP_HEIGHT = 6.0f;
         const float JUMP_TIME_MAX = 20.0f;
 
 		// Animated figure ("skeleton")
@@ -68,7 +68,7 @@ namespace monogame_experiment.Desktop.Field
 			const float DELTA = 0.01f;
 
             const float RUN_PLUS = 2.0f;
-            const float TONGUE_SPEED = 32.0f;
+            const float TONGUE_SPEED = 24.0f;
             const float JUMP_SPEED_BONUS = 6.0f;
 
             float jumpHeight = JUMP_HEIGHT + (float)Math.Abs(speed.X) / JUMP_SPEED_BONUS;
@@ -156,7 +156,7 @@ namespace monogame_experiment.Desktop.Field
         // Animate
         private void Animate(float tm)
 		{
-			const float ANIM_SPEED_STEP = 0.045f;
+			const float ANIM_SPEED_STEP = 0.060f;
 			const float DELTA = 0.5f;
 
 			float animSpeed = 0.0f;
@@ -291,9 +291,9 @@ namespace monogame_experiment.Desktop.Field
 
             const float BASE_SCALE = 1.5f;
             const float MIN_SCALE = 1.25f;
-            const float SPEED_SCALE_FACTOR = 8.0f;
+            const float SPEED_SCALE_FACTOR = 7.0f;
             const float SPEED_SCALE = BASE_SCALE - MIN_SCALE;
-            const float SCALE_SPEED = 0.00125f;
+            const float SCALE_SPEED = 0.0015f;
 
             float dx = pos.X;
             float dy = pos.Y - SCALE*Y_CENTER_MUL;

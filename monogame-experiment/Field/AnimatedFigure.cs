@@ -215,10 +215,12 @@ namespace monogame_experiment.Desktop.Field
 
             g.FillRect(-w / 2, -h / 2, w, h);
 
-			// TEMP eyes
+            // TEMP eyes
+            float s = size / 48.0f;
+            int d = (int)(6 * s);
 			g.SetColor(0, 0, 0);
-			g.FillRect(0, -12, 6, 6);
-			g.FillRect(16, -12, 6, 6);
+            g.FillRect(0, (int)(-12*s), d, d);
+			g.FillRect((int)(16 * s), (int)(-12 * s), d, d);
 
             g.EndDrawing();
             g.Pop();
