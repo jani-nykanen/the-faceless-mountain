@@ -91,7 +91,7 @@ namespace monogame_experiment.Desktop.Field
 			cam.Use(g);
 
             // Draw stage
-            stage.Draw(g, cam);
+            stage.Draw(g, cam, true);
 
 			// Draw player
 			player.Draw(g);

@@ -18,13 +18,16 @@ namespace monogame_experiment.Desktop.Field
 
         // Bitmaps
         private Bitmap bmpTileset;
+        private Bitmap bmpTilesetOff;
 
         // Y translation
         private int transY;
 
 
         // Draw tilemap
-        private void DrawTilemap(Graphics g, Camera cam, int tx = 0, int ty = 0, int outline = 0, bool black=false)
+        private void DrawTilemap(Bitmap bmp, Graphics g, Camera cam, 
+                                 int tx = 0, int ty = 0, int outline = 0, bool black = false, 
+                                 int xpad = 0, int ypad = 0)
         {
             g.BeginDrawing();
 
@@ -43,6 +46,9 @@ namespace monogame_experiment.Desktop.Field
             // Draw tiles
             int tile = 0;
             int srcx, srcy;
+
+            // TODO: Get info from the bitmap!
+            float scaleFactor = 64 / TILE_SIZE;
 
             for (int y = sy; y <= ey; ++y)
             {
@@ -67,10 +73,13 @@ namespace monogame_experiment.Desktop.Field
                         srcx = tile % 16;
                         srcy = tile / 16;
 
-                        g.DrawScaledBitmapRegion(bmpTileset, srcx * 64, srcy * 64, 64, 64,
+                        g.DrawScaledBitmapRegion(bmp, 
+                                                 srcx * (64+xpad*2), srcy * (64+ypad*2) , 
+                                                 64, 64,
                                                  tx*outline + x * TILE_SIZE, 
                                                  ty*outline + y * TILE_SIZE + transY, 
-                                                 TILE_SIZE, TILE_SIZE);
+                                                 TILE_SIZE + scaleFactor, 
+                                                 TILE_SIZE + scaleFactor);
                     }
                 }
             }
@@ -85,6 +94,7 @@ namespace monogame_experiment.Desktop.Field
             // Get current map
             map = assets.GetTilemap(index.ToString());
             bmpTileset = assets.GetBitmap("tileset");
+            bmpTilesetOff = assets.GetBitmap("tilesetPadded");
 
             // Compute y translation
             transY = -map.GetHeight() * TILE_SIZE;
@@ -163,9 +173,13 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw
-        public void Draw(Graphics g, Camera cam)
+        public void Draw(Graphics g, Camera cam, bool usePadded = false)
         {
             const int OUTLINE = 2;
+            const int PADDING = 1;
+
+            Bitmap bmp = usePadded ? bmpTilesetOff : bmpTileset;
+            int padding = usePadded ? PADDING : 0;
 
             // Draw black outlines
             g.SetColor(0, 0, 0);
@@ -175,14 +189,14 @@ namespace monogame_experiment.Desktop.Field
                 {
                     if (x == y && x == 0) continue;
 
-                    DrawTilemap(g, cam, x, y, OUTLINE, true);
+                    DrawTilemap(bmp, g, cam, x, y, OUTLINE, true, padding, padding);
                 }
             }
 
 
             // Draw with colors
             g.SetColor();
-            DrawTilemap(g, cam);
+            DrawTilemap(bmp, g, cam, 0, 0,0, false, padding, padding);
         }
     }
 }
