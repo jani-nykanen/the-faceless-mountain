@@ -95,7 +95,7 @@ namespace monogame_experiment.Desktop.Field
                 return;
 
             // Check if the surface is between old & new value
-            if (pos.Y > y - DELTA * tm && oldPos.Y < y + DELTA * tm)
+            if (pos.Y > y - DELTA * tm && oldPos.Y < y + DELTA*2 * tm)
             {
                 OnFloorCollision(pos.X, y);
                 OnAnyCollision(pos.X, y);
