@@ -10,13 +10,11 @@ namespace monogame_experiment.Desktop.Field
     public class Tongue : GameObject
     {
         // Global bitmaps
-        static private Bitmap bmpBody;
         static private Bitmap bmpTongue;
 
         // Initialize global content
         static public void Init(AssetPack assets)
         {
-            bmpBody = assets.GetBitmap("body");
             bmpTongue = assets.GetBitmap("tongue");
         }
 
@@ -221,14 +219,9 @@ namespace monogame_experiment.Desktop.Field
             int w = (int)(tipSize * SCALE_FACTOR);
             int h = w;
 
-            // Black backgroun
-            g.SetColor(0, 0, 0);
-            g.DrawScaledBitmapRegion(bmpBody, 128, 0, 64, 64,
-                                    -w / 2, -h / 2, w, h);
-
-            // Actual "tip"
+            // "Tip"
             g.SetColor();
-            g.DrawScaledBitmapRegion(bmpBody, 0, 0, 64, 64,
+            g.DrawScaledBitmapRegion(bmpTongue, 64, 0, 64, 64,
                                      -w / 2, -h / 2, w, h);
 
             g.EndDrawing();
