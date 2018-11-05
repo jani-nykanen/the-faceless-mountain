@@ -11,6 +11,16 @@ namespace monogame_experiment.Desktop.Field
     // Procedurally animated figure
 	public class AnimatedFigure
     {
+        // Global bitmaps
+        static private Bitmap bmpBody;
+
+        // Initialize global content
+        static public void Init(AssetPack assets)
+        {
+            bmpBody = assets.GetBitmap("body");
+        }
+
+
 		// Animation mode for the figure
 		public enum AnimationMode
 		{
@@ -24,7 +34,7 @@ namespace monogame_experiment.Desktop.Field
 		{
 			public Vector2 pos;
 			public float angle;
-		
+
             // Constructors
 			public Joint(Vector2 p, float a)
 			{
@@ -35,6 +45,8 @@ namespace monogame_experiment.Desktop.Field
       
 		// Animation timer
 		private float animTimer;
+        // Is jumping
+        private bool jumping;
               
 		// Feet
 		private Joint rightFoot;
@@ -125,7 +137,7 @@ namespace monogame_experiment.Desktop.Field
         {
             const float pi_f = (float)Math.PI;
             const float FOOT_HEIGHT = -0.5f;
-
+           
             Joint ret;
 
             float t = (speed + 1.0f) * pi_f / 2.0f + pi_f / 2.0f;
@@ -139,10 +151,10 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw a foot
-		private void DrawFoot(Graphics g, Joint foot, float xoff = 0.0f)
+		private void DrawFoot(Graphics g, Joint foot, float xoff = 0.0f, bool black = false)
 		{
-			const float FOOT_WIDTH = 0.75f;
-            const float FOOT_HEIGHT = 0.50f;
+			const float FOOT_WIDTH = 1.1f;
+            const float FOOT_HEIGHT = 1.1f;
             
             // Compute size & pos
 			Vector2 p = foot.pos * size;
@@ -150,12 +162,16 @@ namespace monogame_experiment.Desktop.Field
             int h = (int)(FOOT_HEIGHT * size);
 
             // Draw foot
-			g.Push();
+            g.Push();
+
 			g.Translate(p.X + xoff*size, p.Y);
 			g.Rotate(foot.angle);
             g.BeginDrawing();
-            
-            g.FillRect(-w / 2, -h, w, h);
+
+            g.SetColor();
+            g.DrawScaledBitmapRegion(bmpBody, 128 + (jumping ? 64 : 0), 
+                                     128, 64, 64,
+                                     -w / 2, -h, w, h);
 
             g.EndDrawing();
 			g.Pop();
@@ -163,9 +179,9 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw a hand
-		private void DrawHand(Graphics g, Joint hand, float x = 0.0f, float y = 0.0f)
+		private void DrawHand(Graphics g, Joint hand, float x = 0.0f, float y = 0.0f, bool left = true)
 		{
-			const float HAND_SIZE = 0.50f;
+			const float HAND_SIZE = 1.1f;
 
             // Position
 			int dx = (int)((hand.pos.X + x) * size);
@@ -178,10 +194,12 @@ namespace monogame_experiment.Desktop.Field
             // Draw hand
 			g.Push();
             g.Translate(dx, dy);
-            g.Rotate(hand.angle);
+            g.Rotate(hand.angle - (float)Math.PI/2.0f);
             g.BeginDrawing();
 
-            g.FillRect(-w / 2, -h / 2, w, h);
+            g.SetColor();
+            g.DrawScaledBitmapRegion(bmpBody, 128 + (left ? 64 : 0), 64, 64, 64,
+                                     -w / 2, -h / 2, w, h);
 
             g.EndDrawing();
             g.Pop();
@@ -193,34 +211,34 @@ namespace monogame_experiment.Desktop.Field
 		{
 			g.BeginDrawing();
 
-			int w = (int)(width * size);
-			int h = (int)(height* size);
+			int w = (int)(width * size * 2.0f);
+			int h = (int)(height* size * 2.0f);
             int y = (int)( (yoff + torsoPos) * size);
 
-            g.FillRect(-w / 2, -h + y, w, h);
+            g.SetColor();
+            g.DrawScaledBitmapRegion(bmpBody, 0, 64, 128, 128,
+                                     -w / 2, -h, w, h);
+
             g.EndDrawing();
 		}
 
 
 		// Draw head
-        private void DrawHead(Graphics g, float x, float y, float dim, float angle)
+        private void DrawHead(Graphics g, float x, float y, float dim, float angle, bool black = false)
         {
-            int w = (int)(dim * size);
-			int h = (int)(dim * size);
+            const float SCALE_FACTOR = 1.5f;
+
+            int w = (int)(dim * size * SCALE_FACTOR);
+			int h = (int)(dim * size * SCALE_FACTOR);
                         
 			g.Push();
             g.Translate(x*size, (y+ torsoPos) * size);
             g.Rotate(-angle);
             g.BeginDrawing();
 
-            g.FillRect(-w / 2, -h / 2, w, h);
-
-            // TEMP eyes
-            float s = size / 48.0f;
-            int d = (int)(6 * s);
-			g.SetColor(0, 0, 0);
-            g.FillRect(0, (int)(-12*s), d, d);
-			g.FillRect((int)(16 * s), (int)(-12 * s), d, d);
+            g.SetColor();
+            g.DrawScaledBitmapRegion(bmpBody, black ? 128 : 0, 0, 64, 64,
+                                     -w / 2, -h / 2, w, h);
 
             g.EndDrawing();
             g.Pop();
@@ -267,7 +285,12 @@ namespace monogame_experiment.Desktop.Field
 		{
 			const float pi_f = (float)Math.PI;
             const float HEAD_TARGET = pi_f / 4.0f;
-			
+
+            // Speed limit when jumping
+            const float SPEED_LIMIT = 0.75f;
+
+            jumping = animMode == AnimationMode.Jump;
+
             // Should never change
             torsoPos = 0.0f;
 
@@ -310,9 +333,16 @@ namespace monogame_experiment.Desktop.Field
 
                 // Jumping
 				case AnimationMode.Jump:
+                
+                    if (animSpeed > SPEED_LIMIT)
+                        animSpeed = SPEED_LIMIT;
 
-					// Set head angle
-					if (headDir == 0)
+                    else if (animSpeed < -SPEED_LIMIT)
+                        animSpeed = -SPEED_LIMIT;
+
+
+                    // Set head angle
+                    if (headDir == 0)
 						headTarget = -HEAD_TARGET * (animSpeed < 0.0f ? -1 : 1);
 
                     // Set hand positions
@@ -356,34 +386,28 @@ namespace monogame_experiment.Desktop.Field
 			const float HAND_Y = -1.25f;
 
 			const float TORSO_WIDTH = 1.0f;
-			const float TORSO_HEIGHT = 1.5f;
-			const float TORSO_YOFF = -0.5f;
+			const float TORSO_HEIGHT = 1.0f;
+			const float TORSO_YOFF = -0.75f;
 
 			const float HEAD_X = 0.25f;
-			const float HEAD_Y = -TORSO_HEIGHT + TORSO_YOFF / 2.0f;
+			const float HEAD_Y = -TORSO_HEIGHT - 0.5f + TORSO_YOFF / 2.0f;
 			const float HEAD_DIM = 1.0f;
-            
-			// Draw left foot
-			g.SetColor(0, 0.625f, 0);
-			DrawFoot(g, leftFoot, FEET_OFF);
-			// Draw left hand
-            g.SetColor(0.625f, 0, 0);
+
+            // Draw black head background
+            DrawHead(g, HEAD_X, HEAD_Y, HEAD_DIM, headAngle, true);
+
+            // Draw left hand & foot
+            DrawFoot(g, leftFoot, FEET_OFF);
 			DrawHand(g, leftHand, FEET_OFF, HAND_Y);
 
-			// Draw torso
-			g.SetColor(0.0f, 0.25f, 0.75f);
-			DrawTorso(g, TORSO_WIDTH, TORSO_HEIGHT, TORSO_YOFF);
-
+            // Draw torso
+            DrawTorso(g, TORSO_WIDTH, TORSO_HEIGHT, TORSO_YOFF);
 			// Draw head
-			g.SetColor(1.0f, 0.75f, 0.0f);
 			DrawHead(g, HEAD_X, HEAD_Y, HEAD_DIM, headAngle);
 
-            // Draw right foot
-			g.SetColor(0, 1.0f, 0);
+            // Draw right hand & foot
 			DrawFoot(g, rightFoot, -FEET_OFF);
-			// Draw right hand
-			g.SetColor(1.0f, 0.0f, 0);
-			DrawHand(g, rightHand, -FEET_OFF, HAND_Y);
+			DrawHand(g, rightHand, -FEET_OFF, HAND_Y, false);
          
             // Reset color
 			g.SetColor();

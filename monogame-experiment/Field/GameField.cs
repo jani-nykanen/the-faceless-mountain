@@ -43,6 +43,9 @@ namespace monogame_experiment.Desktop.Field
 			// Get key configuration
 			keyConf = gs.GetKeyConfig();
 
+            // Initialize global content for objects
+            AnimatedFigure.Init(assets);
+
 			// Create game objects
             player = new Player(new Vector2(6*64,-2*64-1));
 			cam = new Camera();
