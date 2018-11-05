@@ -9,6 +9,17 @@ namespace monogame_experiment.Desktop.Field
     // Player tongue
     public class Tongue : GameObject
     {
+        // Global bitmaps
+        static private Bitmap bmpBody;
+        static private Bitmap bmpTongue;
+
+        // Initialize global content
+        static public void Init(AssetPack assets)
+        {
+            bmpBody = assets.GetBitmap("body");
+            bmpTongue = assets.GetBitmap("tongue");
+        }
+
 
         // After this time the tongue will disappear
         const float DISAPPEAR_TIMER = 17.5f;
@@ -32,6 +43,13 @@ namespace monogame_experiment.Desktop.Field
 
         // Flicker timer (it's beam, after all!)
         private float flicker;
+
+        // Tip size
+        private float tipSize;
+        // Tip angle
+        private float tipAngle;
+        // Tip flip
+        private bool flipTip;
 
 
         // Constructor
@@ -131,7 +149,7 @@ namespace monogame_experiment.Desktop.Field
 
                 // Update timer
                 timer += 1.0f * tm;
-                if(timer >= DISAPPEAR_TIMER)
+                if(timer >= DISAPPEAR_TIMER || input.GetButton("fire3") == State.Up)
                 {
                     returning = true;
                 }
@@ -164,8 +182,8 @@ namespace monogame_experiment.Desktop.Field
         {
             if (!exist) return;
 
-            const int HEIGHT = 8;
-            const int TIP_SIZE = 24;
+            const int HEIGHT = 24;
+            const float SCALE_FACTOR = 1.5f;
 
             // Calculate angle
             float angle = (float)Math.Atan2(pos.Y - startPos.Y, pos.X - startPos.X);
@@ -177,24 +195,41 @@ namespace monogame_experiment.Desktop.Field
 
             g.BeginDrawing();
 
-            float alpha = (float)Math.Sin(flicker) * 0.25f + 0.75f;
-            g.SetColor(0.66f, 0.40f, 1.0f, alpha);
-            g.FillRect(0, -HEIGHT / 2, (int)length, HEIGHT);
-            g.SetColor();
-
+            // Draw integer parts
+            int i = 0;
+            for (; i < (int)(length / 64); ++ i)
+            {
+                g.DrawScaledBitmapRegion(bmpTongue, 0, i == 0 ? 32 : 0, 64, 32,
+                                         i * 64, -HEIGHT/2, 64, HEIGHT);
+            }
+            // Draw remainder
+            int rem = (int)length - (int)(length / 64)*64;
+            g.DrawScaledBitmapRegion(bmpTongue, 0, i == 0 ? 32 : 0, rem, 32,
+                                         i * 64, -HEIGHT / 2, rem, HEIGHT);
+                                     
             g.EndDrawing();
-
             g.Pop();
 
-            // Draw rectangle in the true position
+            // Draw "tip" in the true position
             g.Push();
 
             g.Translate(pos.X, pos.Y);
+            g.Rotate(tipAngle);
+            g.Scale(flipTip ? -1 : 1, 1);
             g.BeginDrawing();
 
-            g.SetColor(0.75f, 0, 1);
-            g.FillRect(-TIP_SIZE/2, -TIP_SIZE/2, TIP_SIZE, TIP_SIZE);
+            int w = (int)(tipSize * SCALE_FACTOR);
+            int h = w;
+
+            // Black backgroun
+            g.SetColor(0, 0, 0);
+            g.DrawScaledBitmapRegion(bmpBody, 128, 0, 64, 64,
+                                    -w / 2, -h / 2, w, h);
+
+            // Actual "tip"
             g.SetColor();
+            g.DrawScaledBitmapRegion(bmpBody, 0, 0, 64, 64,
+                                     -w / 2, -h / 2, w, h);
 
             g.EndDrawing();
 
@@ -213,6 +248,15 @@ namespace monogame_experiment.Desktop.Field
         public bool IsStuck()
         {
             return exist && stuck;
+        }
+
+
+        // Set tongue tip information
+        public void SetTip(float size, float angle, bool flip)
+        {
+            tipSize = size;
+            tipAngle = angle;
+            flipTip = flip;
         }
 
 

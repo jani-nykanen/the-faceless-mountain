@@ -24,6 +24,9 @@ namespace monogame_experiment.Desktop.Field
         const float JUMP_HEIGHT = 6.0f;
         const float JUMP_TIME_MAX = 20.0f;
 
+        const float MOUTH_X = 8.0f;
+        const float MOUTH_Y = -60.0f;
+
         // Starting position
         private Vector2 startPos;
 
@@ -151,7 +154,8 @@ namespace monogame_experiment.Desktop.Field
                     speed.Y = -headDir * TONGUE_SPEED;
                 }
 
-                tongue.Create(pos - new Vector2(0, SCALE), speed);
+                tongue.Create(pos + new Vector2(MOUTH_X*direction, MOUTH_Y), speed);
+                tongue.SetTip(SCALE, -skeleton.GetHeadAngle() * direction, direction != 1);
             }
         }
 
@@ -229,7 +233,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Update tongue
             tongue.Update(tm, input);
-            tongue.UpdateStartPos(pos - new Vector2(0, SCALE));
+            tongue.UpdateStartPos(pos + new Vector2(MOUTH_X*direction, MOUTH_Y));
             GetTongueMovement(tm);
 
             // Check if outside the game area
@@ -364,7 +368,7 @@ namespace monogame_experiment.Desktop.Field
 			g.Scale(direction, 1.0f);
          
 			// Draw figure
-			skeleton.Draw(g);
+            skeleton.Draw(g, tongue.DoesExist());
 
 			g.Pop();
 

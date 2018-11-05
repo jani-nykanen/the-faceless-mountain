@@ -168,7 +168,6 @@ namespace monogame_experiment.Desktop.Field
 			g.Rotate(foot.angle);
             g.BeginDrawing();
 
-            g.SetColor();
             g.DrawScaledBitmapRegion(bmpBody, 128 + (jumping ? 64 : 0), 
                                      128, 64, 64,
                                      -w / 2, -h, w, h);
@@ -197,7 +196,6 @@ namespace monogame_experiment.Desktop.Field
             g.Rotate(hand.angle - (float)Math.PI/2.0f);
             g.BeginDrawing();
 
-            g.SetColor();
             g.DrawScaledBitmapRegion(bmpBody, 128 + (left ? 64 : 0), 64, 64, 64,
                                      -w / 2, -h / 2, w, h);
 
@@ -224,12 +222,13 @@ namespace monogame_experiment.Desktop.Field
 
 
 		// Draw head
-        private void DrawHead(Graphics g, float x, float y, float dim, float angle, bool black = false)
+        private void DrawHead(Graphics g, float x, float y, float angle, bool black = false, bool spcHead = false)
         {
             const float SCALE_FACTOR = 1.5f;
+            const float HEAD_DIM = 1.0f;
 
-            int w = (int)(dim * size * SCALE_FACTOR);
-			int h = (int)(dim * size * SCALE_FACTOR);
+            int w = (int)(HEAD_DIM * size * SCALE_FACTOR);
+			int h = (int)(HEAD_DIM * size * SCALE_FACTOR);
                         
 			g.Push();
             g.Translate(x*size, (y+ torsoPos) * size);
@@ -237,7 +236,9 @@ namespace monogame_experiment.Desktop.Field
             g.BeginDrawing();
 
             g.SetColor();
-            g.DrawScaledBitmapRegion(bmpBody, black ? 128 : 0, 0, 64, 64,
+            g.DrawScaledBitmapRegion(bmpBody, 
+                                     (black ? 128 : 0) + (spcHead ? 64 : 0), 
+                                     0, 64, 64,
                                      -w / 2, -h / 2, w, h);
 
             g.EndDrawing();
@@ -379,7 +380,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, bool spcHead = false)
 		{
 			const float FEET_OFF = 0.25f;
 
@@ -391,19 +392,22 @@ namespace monogame_experiment.Desktop.Field
 
 			const float HEAD_X = 0.25f;
 			const float HEAD_Y = -TORSO_HEIGHT - 0.5f + TORSO_YOFF / 2.0f;
-			const float HEAD_DIM = 1.0f;
+
+            const float DARKEN = 0.90f;
 
             // Draw black head background
-            DrawHead(g, HEAD_X, HEAD_Y, HEAD_DIM, headAngle, true);
+            DrawHead(g, HEAD_X, HEAD_Y, headAngle, true, spcHead);
 
             // Draw left hand & foot
+            g.SetColor(DARKEN, DARKEN, DARKEN);
             DrawFoot(g, leftFoot, FEET_OFF);
 			DrawHand(g, leftHand, FEET_OFF, HAND_Y);
+            g.SetColor();
 
             // Draw torso
             DrawTorso(g, TORSO_WIDTH, TORSO_HEIGHT, TORSO_YOFF);
 			// Draw head
-			DrawHead(g, HEAD_X, HEAD_Y, HEAD_DIM, headAngle);
+            DrawHead(g, HEAD_X, HEAD_Y, headAngle, false, spcHead);
 
             // Draw right hand & foot
 			DrawFoot(g, rightFoot, -FEET_OFF);
@@ -412,5 +416,12 @@ namespace monogame_experiment.Desktop.Field
             // Reset color
 			g.SetColor();
 		}
+    
+    
+        // Get head angle
+        public float GetHeadAngle()
+        {
+            return headAngle;
+        }
     }
 }

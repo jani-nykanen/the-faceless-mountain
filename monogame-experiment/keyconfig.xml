@@ -7,5 +7,5 @@
     
     <key name="fire1" code="88" button="0"/>
     <key name="fire2" code="90" button="1"/>
-    <key name="fire3" code="67" button="4"/>
+    <key name="fire3" code="67" button="5"/>
 </keyconfig>
