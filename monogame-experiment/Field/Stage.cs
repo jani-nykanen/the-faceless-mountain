@@ -19,9 +19,14 @@ namespace monogame_experiment.Desktop.Field
         // Bitmaps
         private Bitmap bmpTileset;
         private Bitmap bmpTilesetOff;
+        private Bitmap bmpWater;
 
         // Y translation
-        private int transY;
+        private int transY = 0;
+        // Water position
+        private float waterPos = 0.0f;
+        // Water wave
+        private float waterWave = 0.0f;
 
 
         // Draw tilemap
@@ -88,6 +93,47 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Draw water
+        private void DrawWater(Graphics g, Camera cam, bool background = false)
+        {
+            const float WAVE_AMPL = 8.0f;
+            const int MOVE_X = 32;
+            const float MOVE_WAVE = (float)Math.PI / 2.0f;
+
+            float ypos = background  ? - TILE_SIZE : -TILE_SIZE/1.5f;
+
+            g.BeginDrawing();
+
+            // Get top left corner & viewport
+            Vector2 topLeft = cam.GetTopLeftCorner();
+            Vector2 bottomRight = cam.GetBottomRightCorner();
+            Vector2 view = cam.GetViewport();
+
+            // Compute starting & ending positions
+            int sx = (int)(topLeft.X / TILE_SIZE) - 1;
+            int ex = (int)(bottomRight.X / TILE_SIZE) + 2;
+            int ey = (int)((bottomRight.Y - transY) / TILE_SIZE) + 1;
+
+            if (ey < 0) return;
+
+            // Compute wave "height"
+            float wavePlus = background ? 0.0f : MOVE_WAVE;
+            int wave = (int)((float)Math.Sin(waterWave + wavePlus)  * WAVE_AMPL);
+
+            // Draw water
+            int xpos = (int)waterPos + (background ? 0 : MOVE_X);
+            for (int i = sx; i <= ex; ++ i)
+            {
+                g.DrawScaledBitmapRegion(bmpWater, 0, background ? 80 : 0, 64, 64,
+                                         i * TILE_SIZE - xpos, 
+                                         (int)ypos + wave, 
+                                         TILE_SIZE, TILE_SIZE);
+            }
+
+            g.EndDrawing();
+        }
+
+
         // Map
         public Stage(AssetPack assets, int index)
         {
@@ -95,6 +141,7 @@ namespace monogame_experiment.Desktop.Field
             map = assets.GetTilemap(index.ToString());
             bmpTileset = assets.GetBitmap("tileset");
             bmpTilesetOff = assets.GetBitmap("tilesetPadded");
+            bmpWater = assets.GetBitmap("water");
 
             // Compute y translation
             transY = -map.GetHeight() * TILE_SIZE;
@@ -104,7 +151,13 @@ namespace monogame_experiment.Desktop.Field
         // Update
         public void Update(float tm)
         {
-            // ...
+            const float WATER_SPEED = 1.0f;
+            const float WATER_WAVE = 0.025f;
+
+            // Update water
+            waterPos += WATER_SPEED * tm;
+            waterPos %= 64;
+            waterWave += WATER_WAVE * tm;
         }
 
 
@@ -181,6 +234,9 @@ namespace monogame_experiment.Desktop.Field
             Bitmap bmp = usePadded ? bmpTilesetOff : bmpTileset;
             int padding = usePadded ? PADDING : 0;
 
+            // Draw background water
+            DrawWater(g, cam, true);
+
             // Draw black outlines
             g.SetColor(0, 0, 0);
             for (int y = -1; y <= 1; ++ y)
@@ -197,6 +253,14 @@ namespace monogame_experiment.Desktop.Field
             // Draw with colors
             g.SetColor();
             DrawTilemap(bmp, g, cam, 0, 0,0, false, padding, padding);
+        }
+
+
+        // Post-draw
+        public void PostDraw(Graphics g, Camera cam)
+        {
+            // Draw the front layer of water
+            DrawWater(g, cam);
         }
     }
 }

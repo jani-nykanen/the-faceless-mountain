@@ -100,8 +100,11 @@ namespace monogame_experiment.Desktop.Field
 			// Draw player
 			player.Draw(g);
 
-			// Draw HUD elements etc
-			g.IdentityWorld();
+            // Post-draw stage
+            stage.PostDraw(g, cam);
+
+            // Draw HUD elements etc
+            g.IdentityWorld();
 			g.Identity();
 
 			g.BeginDrawing();
