@@ -12,6 +12,9 @@ namespace monogame_experiment.Desktop.Field
     {
         // Tile size
         const int TILE_SIZE = 64;
+        // Cloud sizes
+        const int CLOUD_WIDTH = 768;
+        const int CLOUD_HEIGHT = 192;
 
         // Tilemap
         private Tilemap map;
@@ -20,6 +23,8 @@ namespace monogame_experiment.Desktop.Field
         private Bitmap bmpTileset;
         private Bitmap bmpTilesetOff;
         private Bitmap bmpWater;
+        private Bitmap bmpCloud;
+        private Bitmap bmpSky;
 
         // Y translation
         private int transY = 0;
@@ -27,6 +32,9 @@ namespace monogame_experiment.Desktop.Field
         private float waterPos = 0.0f;
         // Water wave
         private float waterWave = 0.0f;
+
+        // Cloud positions
+        private float[] cloudPos;
 
 
         // Draw tilemap
@@ -134,6 +142,40 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Draw a cloud layer
+        private void DrawCloudLayer(Graphics g, float pos, int y)
+        {
+            int w = (int)g.GetViewport().X;
+            int h = (int)g.GetViewport().Y;
+
+            for (int i = 0; i <= w / CLOUD_WIDTH +1; ++i)
+            {
+                g.DrawScaledBitmap(bmpCloud, i * CLOUD_WIDTH + (int)pos,
+                                   h - CLOUD_HEIGHT + y,
+                                   CLOUD_WIDTH, CLOUD_HEIGHT);
+            }
+        }
+
+
+        // Draw clouds
+        private void DrawClouds(Graphics g)
+        {
+            const int BOTTOM = 128;
+            const int YOFF = 64;
+
+            g.SetColor(0.30f, 0.50f, 0.90f);
+            DrawCloudLayer(g, -cloudPos[0], -BOTTOM);
+
+            g.SetColor(0.45f, 0.625f, 0.95f);
+            DrawCloudLayer(g, -cloudPos[1], -BOTTOM + YOFF);
+
+            g.SetColor(0.70f, 0.80f, 1.0f);
+            DrawCloudLayer(g, -cloudPos[2], -BOTTOM + 2* YOFF);
+
+            g.SetColor();
+        }
+
+
         // Map
         public Stage(AssetPack assets, int index)
         {
@@ -142,9 +184,19 @@ namespace monogame_experiment.Desktop.Field
             bmpTileset = assets.GetBitmap("tileset");
             bmpTilesetOff = assets.GetBitmap("tilesetPadded");
             bmpWater = assets.GetBitmap("water");
+            bmpCloud = assets.GetBitmap("cloud");
+            bmpSky = assets.GetBitmap("sky");
 
             // Compute y translation
             transY = -map.GetHeight() * TILE_SIZE;
+
+            // Create cloud positions
+            cloudPos = new float[3];
+            int xoff = CLOUD_WIDTH / 3;
+            for (int i = 0; i < 3; ++ i)
+            {
+                cloudPos[i] += i * xoff;
+            }
         }
 
 
@@ -153,11 +205,19 @@ namespace monogame_experiment.Desktop.Field
         {
             const float WATER_SPEED = 1.0f;
             const float WATER_WAVE = 0.025f;
+            const float BASE_CLOUD_SPEED = 2.0f;
 
             // Update water
             waterPos += WATER_SPEED * tm;
             waterPos %= 64;
             waterWave += WATER_WAVE * tm;
+
+            // Update clouds
+            for (int i = 0; i < 3; ++ i)
+            {
+                cloudPos[i] += BASE_CLOUD_SPEED * (i+1) * tm;
+                cloudPos[i] %= CLOUD_WIDTH;
+            }
         }
 
 
@@ -222,6 +282,32 @@ namespace monogame_experiment.Desktop.Field
                 }
             }
 
+        }
+
+
+        // Draw background
+        public void DrawBackground(Graphics g)
+        {
+            const int SKY_WIDTH = 320;
+            const int SKY_HEIGHT = 640;
+
+            g.Identity();
+            g.IdentityWorld();
+            g.BeginDrawing();
+
+            // Draw sky
+            int max = (int)(g.GetViewport().X / SKY_WIDTH);
+            for (int i = 0; i < max; ++ i)
+            {
+                g.DrawScaledBitmapRegion(bmpSky, i == max-1 ? 240 : 0, 0, 240, 480,
+                                         i * SKY_WIDTH, 0, SKY_WIDTH, SKY_HEIGHT);
+            }
+
+
+            // Draw clouds
+            DrawClouds(g);
+
+            g.EndDrawing();
         }
 
 

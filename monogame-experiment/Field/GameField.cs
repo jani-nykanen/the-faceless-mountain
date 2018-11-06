@@ -85,14 +85,17 @@ namespace monogame_experiment.Desktop.Field
 			g.ToggleAutoBeginEnd(false);
 
 			// Clear screen
-            g.ClearScreen(170, 170, 170);
+            g.ClearScreen(8, 48, 96);
 
 			// Set matrices
 			g.Identity();
 			g.FitViewHeight(720.0f);
-         
-			// Use camera
-			cam.Use(g);
+
+            // Draw background
+            stage.DrawBackground(g);
+
+            // Use camera
+            cam.Use(g);
 
             // Draw stage
             stage.Draw(g, cam, true);
@@ -107,12 +110,7 @@ namespace monogame_experiment.Desktop.Field
             g.IdentityWorld();
 			g.Identity();
 
-			g.BeginDrawing();
-
-			// Draw some text
-            g.DrawText(bmpFont, "Testing Area", 16, 16, -16, 0, 0.75f, false);
-
-			g.EndDrawing();
+            // ...
 		}
 
 

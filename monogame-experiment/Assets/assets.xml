@@ -6,6 +6,8 @@
     <bitmap name="body" path="body.png" />
     <bitmap name="tongue" path="tongue.png" />
     <bitmap name="water" path="water.png" />
+    <bitmap name="cloud" path="cloud.png" />
+    <bitmap name="sky" path="sky.png" />
     
     <tilemap name="test" path="test.tmx" />
     <tilemap name="1" path="1.tmx" />
