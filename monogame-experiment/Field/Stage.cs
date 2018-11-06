@@ -10,6 +10,9 @@ namespace monogame_experiment.Desktop.Field
     // Stage
     public class Stage
     {
+        // Collision tile row
+        const int COLLISION_ROW = 6;
+
         // Tile size
         const int TILE_SIZE = 64;
         // Cloud sizes
@@ -21,7 +24,6 @@ namespace monogame_experiment.Desktop.Field
 
         // Bitmaps
         private Bitmap bmpTileset;
-        private Bitmap bmpTilesetOff;
         private Bitmap bmpWater;
         private Bitmap bmpCloud;
         private Bitmap bmpSky;
@@ -176,13 +178,20 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Is a solid tile
+        private bool IsSolid(int x, int y, int l = 0)
+        {
+            int v = map.GetTile(l, x, y);
+            return ( ( (v-1) / 16) != COLLISION_ROW && v == 0);
+        }
+
+
         // Map
         public Stage(AssetPack assets, int index)
         {
             // Get current map
             map = assets.GetTilemap(index.ToString());
             bmpTileset = assets.GetBitmap("tileset");
-            bmpTilesetOff = assets.GetBitmap("tilesetPadded");
             bmpWater = assets.GetBitmap("water");
             bmpCloud = assets.GetBitmap("cloud");
             bmpSky = assets.GetBitmap("sky");
@@ -227,6 +236,9 @@ namespace monogame_experiment.Desktop.Field
             const int CHECK = 5;
             const float WIDTH_PLUS = 8.0f;
 
+            const float HURT_WIDTH = 32.0f;
+            const float HURT_HEIGHT = 32.0f;
+
             float widthPlus = floorPlus ? WIDTH_PLUS : 0.0f;
 
             Vector2 p = pl.GetPos();
@@ -250,34 +262,42 @@ namespace monogame_experiment.Desktop.Field
                         continue;
                         
                     // If collision tile
-                    if(tile != 0)
+                    if(tile != 0 && (tile-1)/16 != COLLISION_ROW)
                     {
                         // Check if nearby tiles are empty
-                        if (map.GetTile(0, x, y - 1) == 0)
+                        if (!IsSolid(0, x, y - 1))
                         {
                             pl.GetFloorCollision(x * TILE_SIZE - widthPlus,
                                                  y * TILE_SIZE + transY,
                                                  TILE_SIZE + widthPlus * 2, tm);
                         }
 
-                        if (map.GetTile(0, x, y + 1) == 0)
+                        if (!IsSolid(0, x, y + 1))
                         {
                             pl.GetCeilingCollision(x * TILE_SIZE, 
                                                    (y + 1) * TILE_SIZE + transY,
                                                    TILE_SIZE, tm);
                         }
 
-                        if (map.GetTile(0, x - 1, y) <= 0)
+                        if (!IsSolid(0, x - 1, y))
                         {
                             pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE + transY,
                                                 TILE_SIZE, 1, tm);
                         }
 
-                        if (map.GetTile(0, x + 1, y) <= 0)
+                        if (!IsSolid(0, x + 1, y))
                         {
                             pl.GetWallCollision((x + 1) * TILE_SIZE, y * TILE_SIZE + transY,
                                                 TILE_SIZE, -1, tm);
                         }
+                    }
+                    else if((tile - 1) / 16 == COLLISION_ROW)
+                    {
+                        float hx = x * TILE_SIZE + (TILE_SIZE - HURT_WIDTH)/2;
+                        float hy = y * TILE_SIZE + (TILE_SIZE - HURT_HEIGHT) / 2;
+
+
+                        pl.GetHurtCollision(hx, hy + transY, HURT_WIDTH, HURT_HEIGHT);
                     }
                 }
             }
@@ -312,13 +332,10 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw
-        public void Draw(Graphics g, Camera cam, bool usePadded = false)
+        public void Draw(Graphics g, Camera cam)
         {
             const int OUTLINE = 2;
             const int PADDING = 1;
-
-            Bitmap bmp = usePadded ? bmpTilesetOff : bmpTileset;
-            int padding = usePadded ? PADDING : 0;
 
             // Draw background water
             DrawWater(g, cam, true);
@@ -331,14 +348,14 @@ namespace monogame_experiment.Desktop.Field
                 {
                     if (x == y && x == 0) continue;
 
-                    DrawTilemap(bmp, g, cam, x, y, OUTLINE, true, padding, padding);
+                    DrawTilemap(bmpTileset, g, cam, x, y, OUTLINE, true, PADDING, PADDING);
                 }
             }
 
 
             // Draw with colors
             g.SetColor();
-            DrawTilemap(bmp, g, cam, 0, 0,0, false, padding, padding);
+            DrawTilemap(bmpTileset, g, cam, 0, 0,0, false, PADDING, PADDING);
         }
 
 

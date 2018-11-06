@@ -155,6 +155,10 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Hurt collision (not defined by default)
+        virtual public void GetHurtCollision(float x, float y, float w, float h) { }
+
+
         // Get coordinates
         public Vector2 GetPos()
         {

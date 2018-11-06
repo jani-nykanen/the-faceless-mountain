@@ -254,11 +254,19 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Kill your tongue
-        public void Kill()
+        public void Kill(bool soft = false)
         {
-            exist = false;
-            stuck = false;
-            returning = false;
+            if(!soft)
+            {
+                exist = false;
+                stuck = false;
+                returning = false;
+            }
+            else
+            {
+                stuck = false;
+                returning = true;
+            }
         }
     }
 }

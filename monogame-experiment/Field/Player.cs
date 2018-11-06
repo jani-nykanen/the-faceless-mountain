@@ -12,6 +12,8 @@ namespace monogame_experiment.Desktop.Field
 	// Player object
     public class Player : GameObject
     {
+        const float HURT_MAX = 60.0f;
+
 		const float SCALE = 32.0f;
         const float WIDTH = 24.0f;
         const float HEIGHT = 64.0f;
@@ -50,6 +52,9 @@ namespace monogame_experiment.Desktop.Field
 
         // Player's tongue
         private Tongue tongue;
+
+        // Hurt timer
+        private float hurtTimer = 0.0f;
 
 
         // Get tongue movement
@@ -236,12 +241,17 @@ namespace monogame_experiment.Desktop.Field
             tongue.UpdateStartPos(pos + new Vector2(MOUTH_X*direction, MOUTH_Y));
             GetTongueMovement(tm);
 
+            // Update timers
+            if (hurtTimer > 0.0f)
+                hurtTimer -= 1.0f * tm;
+
             // Check if outside the game area
             if(pos.Y-SCALE*3.0f > 0.0f)
             {
                 pos = startPos;
                 speed = Vector2.Zero;
                 target = Vector2.Zero;
+                oldPos = startPos;
 
                 // Kill tongue
                 tongue.Kill();
@@ -289,6 +299,23 @@ namespace monogame_experiment.Desktop.Field
                 speed.X /= -BOUNCE_FACTOR;
             }
             pos.X = x;
+        }
+
+
+        // Hurt collision
+        override public void GetHurtCollision(float x, float y, float w, float h)
+        {
+            if(hurtTimer <= 0.0f &&
+               pos.X + width/2 > x && pos.X - width/2 < x + w &&
+               pos.Y > y && pos.Y-height < y+h)
+            {
+                // Hurt & make the tongue return
+                hurtTimer = HURT_MAX;
+                tongue.Kill(true);
+
+                // TODO: Knockback
+                // ...
+            }
         }
 
 
@@ -366,8 +393,13 @@ namespace monogame_experiment.Desktop.Field
             g.Identity();
 			g.Translate(pos.X, pos.Y);         
 			g.Scale(direction, 1.0f);
-         
-			// Draw figure
+
+            // Draw figure
+            if (hurtTimer < 0.0f || (float)Math.Floor(hurtTimer / 4) % 2 == 0)
+                g.SetColor();
+            else
+                g.SetColor(1, 0, 0);
+
             skeleton.Draw(g, tongue.DoesExist());
 
 			g.Pop();

@@ -213,7 +213,6 @@ namespace monogame_experiment.Desktop.Field
 			int h = (int)(height* size * 2.0f);
             int y = (int)( (yoff + torsoPos) * size);
 
-            g.SetColor();
             g.DrawScaledBitmapRegion(bmpBody, 0, 64, 128, 128,
                                      -w / 2, -h, w, h);
 
@@ -235,7 +234,6 @@ namespace monogame_experiment.Desktop.Field
             g.Rotate(-angle);
             g.BeginDrawing();
 
-            g.SetColor();
             g.DrawScaledBitmapRegion(bmpBody, 
                                      (black ? 128 : 0) + (spcHead ? 64 : 0), 
                                      0, 64, 64,
@@ -393,16 +391,16 @@ namespace monogame_experiment.Desktop.Field
 			const float HEAD_X = 0.25f;
 			const float HEAD_Y = -TORSO_HEIGHT - 0.5f + TORSO_YOFF / 2.0f;
 
-            const float DARKEN = 0.90f;
+            // const float DARKEN = 0.90f;
 
             // Draw black head background
             DrawHead(g, HEAD_X, HEAD_Y, headAngle, true, spcHead);
 
             // Draw left hand & foot
-            g.SetColor(DARKEN, DARKEN, DARKEN);
+            // g.SetColor(DARKEN, DARKEN, DARKEN);
             DrawFoot(g, leftFoot, FEET_OFF);
 			DrawHand(g, leftHand, FEET_OFF, HAND_Y);
-            g.SetColor();
+            // g.SetColor();
 
             // Draw torso
             DrawTorso(g, TORSO_WIDTH, TORSO_HEIGHT, TORSO_YOFF);
