@@ -40,7 +40,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw tilemap
-        private void DrawTilemap(Bitmap bmp, Graphics g, Camera cam, 
+        private void DrawTilemap(int layer, Bitmap bmp, Graphics g, Camera cam, 
                                  int tx = 0, int ty = 0, int outline = 0, bool black = false, 
                                  int xpad = 0, int ypad = 0)
         {
@@ -70,13 +70,13 @@ namespace monogame_experiment.Desktop.Field
                 for (int x = sx; x <= ex; ++x)
                 {
                     // Get tile
-                    tile = map.GetTile(0, x, y);
+                    tile = map.GetTile(layer, x, y);
                     if (tile == -1)
                         continue;
 
                     // If rendering black outlines, not every tile
                     // must be re-rendered
-                    if(black && ( (tile - 1) / 16) != COLLISION_ROW)
+                    if(layer == 0 && black && ( (tile - 1) / 16) != COLLISION_ROW)
                     {
                         if (!IsFree(x+ tx, y + ty) )
                             continue;
@@ -346,6 +346,9 @@ namespace monogame_experiment.Desktop.Field
             // Draw background water
             DrawWater(g, cam, true);
 
+            // Draw decorations
+            DrawTilemap(1, bmpTileset, g, cam, 0, 0, 0, false, PADDING, PADDING);
+
             // Draw black outlines
             g.SetColor(0, 0, 0);
             for (int y = -1; y <= 1; ++ y)
@@ -354,14 +357,15 @@ namespace monogame_experiment.Desktop.Field
                 {
                     if (x == y && x == 0) continue;
 
-                    DrawTilemap(bmpTileset, g, cam, x, y, OUTLINE, true, PADDING, PADDING);
+                    DrawTilemap(0, bmpTileset, g, cam, x, y, OUTLINE, true, PADDING, PADDING);
                 }
             }
 
 
             // Draw with colors
             g.SetColor();
-            DrawTilemap(bmpTileset, g, cam, 0, 0,0, false, PADDING, PADDING);
+            DrawTilemap(0, bmpTileset, g, cam, 0, 0,0, false, PADDING, PADDING);
+
         }
 
 

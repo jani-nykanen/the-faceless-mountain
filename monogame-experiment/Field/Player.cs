@@ -332,8 +332,10 @@ namespace monogame_experiment.Desktop.Field
         // Hurt collision
         override public void GetHurtCollision(float x, float y, float w, float h)
         {
-            const float KNOCKBACK_SPEED = 8.0f;
-            const float BASE_JUMP = -5.0f;
+            const float KNOCKBACK_SPEED_X = 8.0f;
+            const float KNOCKBACK_SPEED_Y = 8.0f;
+            const float BASE_JUMP = 5.0f;
+            const float BASE_H = 2.0f;
 
             if (hurtTimer <= 0.0f &&
                pos.X + width/2 > x && pos.X - width/2 < x + w &&
@@ -350,8 +352,19 @@ namespace monogame_experiment.Desktop.Field
                 float dx = (pos.X - mx) / w;
                 float dy = (pos.Y-height/2 - my) / h;
 
-                speed.X = dx * KNOCKBACK_SPEED;
-                speed.Y = dy * KNOCKBACK_SPEED + BASE_JUMP;
+                speed.X = dx * KNOCKBACK_SPEED_X;
+                speed.Y = dy * KNOCKBACK_SPEED_Y;
+
+                // Make sure the player has at least some horizontal & vertical speed
+                if (speed.X > 0.0f && speed.X < BASE_H)
+                    speed.Y = BASE_H;
+                else if (speed.X < 0.0f && speed.X > -BASE_H)
+                    speed.X = -BASE_H;
+
+                if (speed.Y > 0.0f && speed.Y < BASE_JUMP)
+                    speed.Y = BASE_JUMP;
+                else if (speed.Y < 0.0f && speed.Y > -BASE_JUMP)
+                    speed.Y = -BASE_JUMP;
 
                 target.X = speed.X;
                 target.Y = speed.Y;
