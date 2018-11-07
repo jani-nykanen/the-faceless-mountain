@@ -82,6 +82,13 @@ namespace monogame_experiment.Desktop.Field
             const float TONGUE_SPEED = 24.0f;
             const float JUMP_SPEED_BONUS = 6.0f;
 
+            // Set gravity here
+            target.Y = GRAVITY;
+
+            // No controlling while hurt
+            if (hurtTimer > 0.0f) return;
+
+            // Compute jump height
             float jumpHeight = JUMP_HEIGHT + (float)Math.Abs(speed.X) / JUMP_SPEED_BONUS;
 
 			// Get gamepad stick
@@ -113,7 +120,6 @@ namespace monogame_experiment.Desktop.Field
 			// Set speed target
 			// target.X = moveDir * TARGET_X;
 			target.X = stick.X * TARGET_X;
-			target.Y = GRAVITY;
 
             // Apply running multiplier
             if(running)
@@ -175,30 +181,40 @@ namespace monogame_experiment.Desktop.Field
 
 			AnimatedFigure.AnimationMode mode = AnimatedFigure.AnimationMode.Stand;
 
-			// Jumping
-			if (!canJump)
-			{
-				mode = AnimatedFigure.AnimationMode.Jump;
-				animSpeed = speed.Y / JUMP_HEIGHT;
-				if (animSpeed < -1.0f) animSpeed = -1.0f;
-				if (animSpeed > 1.0f) animSpeed = 1.0f;
-			}
-			else
-			{
+            // If hurt
+            if (hurtTimer > 0.0f)
+            {
+                mode = AnimatedFigure.AnimationMode.Hurt;
+            }
+            else
+            {
 
-				// Walking
-				if (moveDir != 0 || (float)Math.Abs(speed.X) > DELTA)
-				{
-					animSpeed = (float)Math.Abs(speed.X) * ANIM_SPEED_STEP;
-					mode = AnimatedFigure.AnimationMode.Run;
-				}
-				// Standing
-				else
-				{
-					animSpeed = 0;
-				}
+                // Jumping
+                if (!canJump)
+                {
+                    mode = AnimatedFigure.AnimationMode.Jump;
+                    animSpeed = speed.Y / JUMP_HEIGHT;
+                    if (animSpeed < -1.0f) animSpeed = -1.0f;
+                    if (animSpeed > 1.0f) animSpeed = 1.0f;
+                }
+                else
+                {
 
-			}
+                    // Walking
+                    if (moveDir != 0 || (float)Math.Abs(speed.X) > DELTA)
+                    {
+                        animSpeed = (float)Math.Abs(speed.X) * ANIM_SPEED_STEP;
+                        mode = AnimatedFigure.AnimationMode.Run;
+                    }
+                    // Standing
+                    else
+                    {
+                        animSpeed = 0;
+                    }
+
+                }
+
+            }
 
 			// Animate skeleton
             skeleton.Animate(mode, animSpeed, tm, headDir);
@@ -265,12 +281,20 @@ namespace monogame_experiment.Desktop.Field
         override protected void OnFloorCollision(float x, float y)
         {
 
-             pos.Y = y;
-             speed.Y = 0.0f;
-             canJump = true;
-             jumpTimer = JUMP_TIME_MAX;
+            pos.Y = y;
 
-             skeleton.ResetTimer();
+            // If hurt, just bounce
+            if (hurtTimer > 0.0f)
+                speed.Y /= -1;
+            else
+            {
+                speed.Y = 0.0f;
+                canJump = true;
+                jumpTimer = JUMP_TIME_MAX;
+
+                skeleton.ResetTimer();
+            }
+
         }
 
 
@@ -290,13 +314,16 @@ namespace monogame_experiment.Desktop.Field
             const float BOUNCE_DELTA = 2.0f;
             const float BOUNCE_FACTOR = 1.25f;
 
-            if((float)Math.Abs(speed.X) < BOUNCE_DELTA)
+            float delta = hurtTimer > 0.0f ? 0.0f : BOUNCE_DELTA;
+            float bounce = hurtTimer > 0.0f ? 1.0f : BOUNCE_FACTOR;
+
+            if((float)Math.Abs(speed.X) < delta)
             {
                 speed.X = 0.0f;
             }
             else
             {
-                speed.X /= -BOUNCE_FACTOR;
+                speed.X /= -bounce;
             }
             pos.X = x;
         }
@@ -305,7 +332,10 @@ namespace monogame_experiment.Desktop.Field
         // Hurt collision
         override public void GetHurtCollision(float x, float y, float w, float h)
         {
-            if(hurtTimer <= 0.0f &&
+            const float KNOCKBACK_SPEED = 8.0f;
+            const float BASE_JUMP = -5.0f;
+
+            if (hurtTimer <= 0.0f &&
                pos.X + width/2 > x && pos.X - width/2 < x + w &&
                pos.Y > y && pos.Y-height < y+h)
             {
@@ -313,8 +343,19 @@ namespace monogame_experiment.Desktop.Field
                 hurtTimer = HURT_MAX;
                 tongue.Kill(true);
 
-                // TODO: Knockback
-                // ...
+                // Knockback
+                float mx = x + w / 2;
+                float my = y + h / 2;
+
+                float dx = (pos.X - mx) / w;
+                float dy = (pos.Y-height/2 - my) / h;
+
+                speed.X = dx * KNOCKBACK_SPEED;
+                speed.Y = dy * KNOCKBACK_SPEED + BASE_JUMP;
+
+                target.X = speed.X;
+                target.Y = speed.Y;
+
             }
         }
 
@@ -388,6 +429,8 @@ namespace monogame_experiment.Desktop.Field
         // Draw player
         override public void Draw(Graphics g)
 		{
+            const float HURT_FACTOR = 0.5f;
+
 			g.Push();
 
             g.Identity();
@@ -395,10 +438,13 @@ namespace monogame_experiment.Desktop.Field
 			g.Scale(direction, 1.0f);
 
             // Draw figure
-            if (hurtTimer < 0.0f || (float)Math.Floor(hurtTimer / 4) % 2 == 0)
+            if (hurtTimer <= 0.0f)
                 g.SetColor();
             else
-                g.SetColor(1, 0, 0);
+            {
+                float v = 1.0f - (0.5f + (float)Math.Sin(hurtTimer* HURT_FACTOR));
+                g.SetColor(1, v, v);
+            }
 
             skeleton.Draw(g, tongue.DoesExist());
 

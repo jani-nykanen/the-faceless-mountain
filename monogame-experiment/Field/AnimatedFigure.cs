@@ -27,6 +27,7 @@ namespace monogame_experiment.Desktop.Field
 			Stand = 0,
 			Run = 1,
 			Jump = 2,
+            Hurt = 3,
 		};
 
         // Joint
@@ -338,8 +339,7 @@ namespace monogame_experiment.Desktop.Field
 
                     else if (animSpeed < -SPEED_LIMIT)
                         animSpeed = -SPEED_LIMIT;
-
-
+                        
                     // Set head angle
                     if (headDir == 0)
 						headTarget = -HEAD_TARGET * (animSpeed < 0.0f ? -1 : 1);
@@ -354,17 +354,26 @@ namespace monogame_experiment.Desktop.Field
 
                     break;
 
+                // Hurt
+                case AnimationMode.Hurt:
+
+                    headTarget = -HEAD_TARGET;
+
+                    rightFoot = GetFootJointJumping(1.0f);
+                    leftFoot = rightFoot;
+
+                    rightHand = GetHandJoint(pi_f);
+                    leftHand = rightHand;
+
+                    break;
+
                 // Ignore the rest for now
 				default:
 					break;
 			}
 
             // Update head angle
-            //if ((animMode == AnimationMode.Stand ||
-            //               animMode == AnimationMode.Run))
-            //{
 			UpdateHeadAngle(headTarget, tm);
-            //}
 
 		}
 

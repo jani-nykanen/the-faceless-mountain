@@ -76,9 +76,9 @@ namespace monogame_experiment.Desktop.Field
 
                     // If rendering black outlines, not every tile
                     // must be re-rendered
-                    if(black)
+                    if(black && ( (tile - 1) / 16) != COLLISION_ROW)
                     {
-                        if (map.GetTile(0, x + tx, y + ty) > 0)
+                        if (!IsFree(x+ tx, y + ty) )
                             continue;
                     }
 
@@ -178,11 +178,11 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
-        // Is a solid tile
-        private bool IsSolid(int x, int y, int l = 0)
+        // Is the tile free
+        private bool IsFree(int x, int y, int l = 0)
         {
             int v = map.GetTile(l, x, y);
-            return ( ( (v-1) / 16) != COLLISION_ROW && v == 0);
+            return (v - 1) / 16 == COLLISION_ROW || v <= 0;
         }
 
 
@@ -245,16 +245,22 @@ namespace monogame_experiment.Desktop.Field
 
             // Compute starting positions
             int sx = (int)(p.X / TILE_SIZE) - CHECK/2;
+            if (sx < 0) sx = 0;
+
             int sy = (int)( (p.Y-transY) / TILE_SIZE) - CHECK/2;
+            if (sy < 0) sy = 0;
 
             int ex = sx + CHECK;
+            if (ex >= map.GetWidth()) ex = map.GetWidth() - 1;
+
             int ey = sy + CHECK;
+            if (ey >= map.GetHeight()) ey = map.GetHeight() - 1;
 
             // Check solid tiles in this area
             int tile = 0;
-            for (int y = sy; y <= ey; ++y)
+            for (int y = sy; y <= ey; ++ y)
             {
-                for (int x = sx; x <= ex; ++x)
+                for (int x = sx; x <= ex; ++ x)
                 {
                     // Get tile
                     tile = map.GetTile(0, x, y);
@@ -265,27 +271,27 @@ namespace monogame_experiment.Desktop.Field
                     if(tile != 0 && (tile-1)/16 != COLLISION_ROW)
                     {
                         // Check if nearby tiles are empty
-                        if (!IsSolid(0, x, y - 1))
+                        if (IsFree(x, y - 1))
                         {
                             pl.GetFloorCollision(x * TILE_SIZE - widthPlus,
                                                  y * TILE_SIZE + transY,
                                                  TILE_SIZE + widthPlus * 2, tm);
                         }
 
-                        if (!IsSolid(0, x, y + 1))
+                        if (IsFree(x, y + 1))
                         {
                             pl.GetCeilingCollision(x * TILE_SIZE, 
                                                    (y + 1) * TILE_SIZE + transY,
                                                    TILE_SIZE, tm);
                         }
 
-                        if (!IsSolid(0, x - 1, y))
+                        if (IsFree(x - 1, y))
                         {
                             pl.GetWallCollision(x * TILE_SIZE, y * TILE_SIZE + transY,
                                                 TILE_SIZE, 1, tm);
                         }
 
-                        if (!IsSolid(0, x + 1, y))
+                        if (IsFree(x + 1, y))
                         {
                             pl.GetWallCollision((x + 1) * TILE_SIZE, y * TILE_SIZE + transY,
                                                 TILE_SIZE, -1, tm);

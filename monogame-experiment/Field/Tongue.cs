@@ -108,6 +108,8 @@ namespace monogame_experiment.Desktop.Field
             this.speed = speed;
             target = speed;
 
+            retSpeed = (float)Math.Sqrt(speed.X * speed.X + speed.Y * speed.Y);
+
             timer = 0.0f;
 
             exist = true;
@@ -262,7 +264,7 @@ namespace monogame_experiment.Desktop.Field
                 stuck = false;
                 returning = false;
             }
-            else
+            else if(exist)
             {
                 stuck = false;
                 returning = true;
