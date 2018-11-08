@@ -174,7 +174,7 @@ namespace monogame_experiment.Desktop.Field
         // Animate
         private void Animate(float tm)
 		{
-			const float ANIM_SPEED_STEP = 0.060f;
+			const float ANIM_SPEED_STEP = 0.05f;
 			const float DELTA = 0.5f;
 
 			float animSpeed = 0.0f;

@@ -38,9 +38,8 @@ namespace monogame_experiment.Desktop.Field
         private Vector2 startPos;
         // Length
         private float length;
-
-        // Flicker timer (it's beam, after all!)
-        private float flicker;
+        // Rendering length
+        private float renderLength;
 
         // Tip size
         private float tipSize;
@@ -61,7 +60,6 @@ namespace monogame_experiment.Desktop.Field
             height = 2.0f;
 
             centerY = 1.0f;
-            flicker = 0.0f;
         }
 
 
@@ -121,8 +119,6 @@ namespace monogame_experiment.Desktop.Field
         // Update
         public override void Update(float tm, InputManager input = null)
         {
-            const float FLICKER_SPEED = 0.2f;
-
             if (!exist) return;
 
             // Calculate length
@@ -135,11 +131,17 @@ namespace monogame_experiment.Desktop.Field
             {
                 ReturnBack(tm);
                 Move(tm);
+
+                // Calculate rendering length
+                renderLength = (float)Math.Sqrt(
+                     Math.Pow(pos.X - startPos.X, 2)
+                   + Math.Pow(pos.Y - startPos.Y, 2));
+
                 return;
             }
-                
+
             // If not stuck, update timer & move
-            if(!stuck)
+            if (!stuck)
             {
                 // Store total speed for future
                 retSpeed = totalSpeed;
@@ -165,8 +167,10 @@ namespace monogame_experiment.Desktop.Field
                 }
             }
 
-            // Update flickering
-            flicker += FLICKER_SPEED * tm;
+            // Calculate rendering length
+            renderLength = (float)Math.Sqrt(
+                 Math.Pow(pos.X - startPos.X, 2)
+               + Math.Pow(pos.Y - startPos.Y, 2));
         }
 
 
@@ -197,13 +201,13 @@ namespace monogame_experiment.Desktop.Field
 
             // Draw integer parts
             int i = 0;
-            for (; i < (int)(length / 64); ++ i)
+            for (; i < (int)(renderLength / 64); ++ i)
             {
                 g.DrawScaledBitmapRegion(bmpTongue, 0, i == 0 ? 32 : 0, 64, 32,
                                          i * 64, -HEIGHT/2, 64, HEIGHT);
             }
             // Draw remainder
-            int rem = (int)length - (int)(length / 64)*64;
+            int rem = (int)renderLength - (int)(renderLength / 64)*64;
             g.DrawScaledBitmapRegion(bmpTongue, 0, i == 0 ? 32 : 0, rem, 32,
                                          i * 64, -HEIGHT / 2, rem, HEIGHT);
                                      
