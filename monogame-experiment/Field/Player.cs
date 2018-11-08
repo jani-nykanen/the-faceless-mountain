@@ -18,7 +18,7 @@ namespace monogame_experiment.Desktop.Field
         const float WIDTH = 24.0f;
         const float HEIGHT = 64.0f;
 
-        const float TARGET_X = 2.5f;
+        const float TARGET_X = 3.0f;
         const float ACC_X = 0.100f;
         const float ACC_Y = 0.50f;
 
@@ -60,7 +60,7 @@ namespace monogame_experiment.Desktop.Field
         // Get tongue movement
         private void GetTongueMovement(float tm)
         {
-            const float SPEED_X = 0.375f;
+            const float SPEED_X = 0.40f;
             const float SPEED_Y = SPEED_X + (ACC_Y - ACC_X);
 
             if (!tongue.IsStuck()) return;
