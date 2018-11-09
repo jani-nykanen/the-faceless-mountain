@@ -55,6 +55,8 @@ namespace monogame_experiment.Desktop.Field
 
         // Hurt timer
         private float hurtTimer = 0.0f;
+        // Is dead
+        private bool dead;
 
         // A reference to the game object
         private GameField gameRef;
@@ -227,7 +229,11 @@ namespace monogame_experiment.Desktop.Field
         // Kill
         private void Kill()
         {
-            gameRef.Reset();
+            dead = true;
+
+            // Reset game
+            if (gameRef != null)
+                gameRef.Reset();
         }
 
 
@@ -245,6 +251,8 @@ namespace monogame_experiment.Desktop.Field
 
             acc.X = ACC_X;
             acc.Y = ACC_Y;
+
+            dead = false;
 
             gameRef = rf;
 
@@ -392,6 +400,8 @@ namespace monogame_experiment.Desktop.Field
         // Set camera following
         public void SetCameraFollowing(Camera cam, float tm)
         {
+            if (dead) return;
+
             const float DELTA = 1.0f;
 
             const float CAM_SPEED_X = 32.0f;

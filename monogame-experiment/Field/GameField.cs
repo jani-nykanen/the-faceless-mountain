@@ -102,6 +102,7 @@ namespace monogame_experiment.Desktop.Field
                 // Set camera following
                 player.SetCameraFollowing(cam, tm);
 
+
                 // Player collisions
                 stage.GetObjectCollision(player, tm, false);
                 // Player tongue collisions
@@ -175,8 +176,12 @@ namespace monogame_experiment.Desktop.Field
         public void Reset()
         {
             const float TRANS_SPEED = 2.0f;
+            const float CAM_TARGET = 2.0f;
+            const float CAM_SPEED = 0.0050f * TRANS_SPEED;
 
+            cam.SetScaleTarget(CAM_TARGET, CAM_TARGET, CAM_SPEED, CAM_SPEED);
             trans.Activate(Transition.Mode.In, TRANS_SPEED, ResetGame);
+           
         }
     }
 }
