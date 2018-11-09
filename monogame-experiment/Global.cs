@@ -15,6 +15,9 @@ namespace monogame_experiment.Desktop
 
 		// Global key configuration
 		private KeyConfig keyConf;
+
+        // Transition
+        private Transition trans;
             
 
 		// Constructor
@@ -35,6 +38,9 @@ namespace monogame_experiment.Desktop
             // it to input manager
 			keyConf = new KeyConfig(keyconfPath);
 			input.BindKeyConfig(keyConf);
+
+            // Create transition
+            trans = new Transition();
         }
 
 
@@ -56,13 +62,17 @@ namespace monogame_experiment.Desktop
             {
 				eventMan.ToggleFullscreen();
             }
+
+            // Update transition
+            trans.Update(tm);
         }
 
 
         // Draw scene
 		override public void Draw(Graphics g)
         {
-
+            // Draw transition
+            trans.Draw(g);
         }
 
 
@@ -92,5 +102,12 @@ namespace monogame_experiment.Desktop
 		{
 			return keyConf;
 		}
+
+
+        // Get transition manager
+        public Transition GetTransition()
+        {
+            return trans;
+        }
     }
 }

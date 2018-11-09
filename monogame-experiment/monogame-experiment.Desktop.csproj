@@ -70,6 +70,7 @@
     <Compile Include="Field\GameObject.cs" />
     <Compile Include="Field\Tongue.cs" />
     <Compile Include="Field\HUD.cs" />
+    <Compile Include="Transition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

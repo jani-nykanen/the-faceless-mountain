@@ -56,6 +56,9 @@ namespace monogame_experiment.Desktop.Field
         // Hurt timer
         private float hurtTimer = 0.0f;
 
+        // A reference to the game object
+        private GameField gameRef;
+
 
         // Get tongue movement
         private void GetTongueMovement(float tm)
@@ -221,8 +224,15 @@ namespace monogame_experiment.Desktop.Field
 		}
 
 
+        // Kill
+        private void Kill()
+        {
+            gameRef.Reset();
+        }
+
+
         // Constructor
-        public Player(Vector2 pos)
+        public Player(Vector2 pos, GameField rf = null)
         {
 			skeleton = new AnimatedFigure(SCALE);
             tongue = new Tongue();
@@ -236,8 +246,13 @@ namespace monogame_experiment.Desktop.Field
             acc.X = ACC_X;
             acc.Y = ACC_Y;
 
+            gameRef = rf;
+
             // Store starting position
             startPos = pos;
+
+            // Set space animation
+            skeleton.Animate(AnimatedFigure.AnimationMode.Stand, 0.0f, 1.0f, 0);
 
         }
 		public Player() : this(Vector2.Zero) { }
@@ -264,13 +279,7 @@ namespace monogame_experiment.Desktop.Field
             // Check if outside the game area
             if(pos.Y-SCALE*3.0f > 0.0f)
             {
-                pos = startPos;
-                speed = Vector2.Zero;
-                target = Vector2.Zero;
-                oldPos = startPos;
-
-                // Kill tongue
-                tongue.Kill();
+                Kill();
             }
 
             canJump = false;

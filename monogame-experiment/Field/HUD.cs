@@ -69,10 +69,10 @@ namespace monogame_experiment.Desktop.Field
 
             float vw = g.GetViewport().X;
 
+            // Draw time texts
             g.SetColor(1.0f, 1.0f, 0.5f, ALPHA);
             g.DrawText(bmpFont, "TIME", (int)(vw / 2), TEXT_YPOS, XOFF, 0, TEXT_SCALE, true);
             g.DrawText(bmpFont, GetTimeString(), (int)(vw / 2), TIME_YPOS, XOFF, 0, TIME_SCALE, true);
-
 
             g.SetColor();
             g.EndDrawing();
