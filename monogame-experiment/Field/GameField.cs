@@ -25,7 +25,8 @@ namespace monogame_experiment.Desktop.Field
 		private Player player;
         // Game stage
         private Stage stage;
-
+        // HUD
+        private HUD hud;
 
 		// Constructor
 		public GameField() { /* ... */ }
@@ -51,6 +52,7 @@ namespace monogame_experiment.Desktop.Field
             player = new Player(new Vector2(6*64,-2*64-1));
 			cam = new Camera();
             stage = new Stage(assets, 1);
+            hud = new HUD(assets);
 
             // Set initial camera scale
             cam.Scale(1.5f, 1.5f);
@@ -76,6 +78,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Update camera
             cam.Update(tm);
+
+            // Update HUD (and time!)
+            hud.Update(tm);
         }
       
 
@@ -110,7 +115,8 @@ namespace monogame_experiment.Desktop.Field
             g.IdentityWorld();
 			g.Identity();
 
-            // ...
+            // Draw HUD
+            hud.Draw(g);
 		}
 
 

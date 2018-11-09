@@ -69,6 +69,7 @@
     <Compile Include="Field\CollisionObject.cs" />
     <Compile Include="Field\GameObject.cs" />
     <Compile Include="Field\Tongue.cs" />
+    <Compile Include="Field\HUD.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
