@@ -15,7 +15,7 @@ namespace monogame_experiment.Desktop.Core
         // Mouse button count
 		const int MOUSE_BUTTON_COUNT = 3;
 		// Max gamepad button count
-		const int GAMEPAD_BUTTON_COUNT = 8;
+		const int GAMEPAD_BUTTON_COUNT = 10;
 
 		// Key states
 		private State[] keyStates;
@@ -185,7 +185,9 @@ namespace monogame_experiment.Desktop.Core
 		// Update 
 		public void Update()
 		{
-         
+
+            const float TRIGGER_DELTA = 0.25f;
+
 			// Go through all the damn keys and check
 			// status changes
 			for (int i = 0; i < LAST_KEY; ++i)
@@ -229,15 +231,24 @@ namespace monogame_experiment.Desktop.Core
 			// Update gamepad button states
 			GamePadButtons buttons = padState.Buttons;
 			bool[] padPressed = {
+
 				buttons.A == ButtonState.Pressed,
 				buttons.X == ButtonState.Pressed,
 				buttons.B == ButtonState.Pressed,
 				buttons.Y == ButtonState.Pressed,
+
 				buttons.LeftShoulder == ButtonState.Pressed,
 				buttons.RightShoulder == ButtonState.Pressed,
-				buttons.Back == ButtonState.Pressed,
+
+                padState.Triggers.Left >= TRIGGER_DELTA,
+                padState.Triggers.Right >= TRIGGER_DELTA,
+
+
+                buttons.Back == ButtonState.Pressed,
 				buttons.Start == ButtonState.Pressed,
-			};
+
+
+            };
 			CheckSpecialButtons(padPressed, oldPadStates, gamePadStates);
 		}
 
