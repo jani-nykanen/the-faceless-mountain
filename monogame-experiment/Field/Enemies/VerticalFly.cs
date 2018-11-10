@@ -28,7 +28,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         public VerticalFly(float x, float y) : base(x, y)
         {
             const float SPEED_Y = 2.5f;
-            const float ACC_Y = 0.50f;
+            const float ACC_Y = 0.30f;
 
             // Set speed
             target.Y= ((int)(y / Stage.TILE_SIZE) % 2 == 0 ? -1 : 1)

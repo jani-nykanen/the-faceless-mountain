@@ -293,5 +293,12 @@ namespace monogame_experiment.Desktop.Field
             if (stuck) return;
             colObj = o;
         }
+
+
+        // Get collision object
+        public GameObject GetCollisionObject()
+        {
+            return colObj;
+        }
     }
 }

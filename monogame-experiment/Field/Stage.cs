@@ -41,8 +41,8 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw tilemap
-        private void DrawTilemap(int layer, Bitmap bmp, Graphics g, Camera cam, 
-                                 int tx = 0, int ty = 0, int outline = 0, bool black = false, 
+        private void DrawTilemap(int layer, Bitmap bmp, Graphics g, Camera cam,
+                                 int tx = 0, int ty = 0, int outline = 0, bool black = false,
                                  int xpad = 0, int ypad = 0)
         {
             g.BeginDrawing();
@@ -54,10 +54,10 @@ namespace monogame_experiment.Desktop.Field
 
             // Compute starting positions
             int sx = (int)(topLeft.X / TILE_SIZE) - 1;
-            int sy = (int)( (topLeft.Y-transY) / TILE_SIZE) - 1;
+            int sy = (int)((topLeft.Y - transY) / TILE_SIZE) - 1;
 
             int ex = (int)(bottomRight.X / TILE_SIZE) + 1;
-            int ey = (int)( (bottomRight.Y- transY) / TILE_SIZE) + 1;
+            int ey = (int)((bottomRight.Y - transY) / TILE_SIZE) + 1;
 
             // Draw tiles
             int tile = 0;
@@ -77,9 +77,9 @@ namespace monogame_experiment.Desktop.Field
 
                     // If rendering black outlines, not every tile
                     // must be re-rendered
-                    if(layer == 0 && black && ( (tile - 1) / 16) != COLLISION_ROW)
+                    if (layer == 0 && black && ((tile - 1) / 16) != COLLISION_ROW)
                     {
-                        if (!IsFree(x+ tx, y + ty) )
+                        if (!IsFree(x + tx, y + ty))
                             continue;
                     }
 
@@ -89,12 +89,12 @@ namespace monogame_experiment.Desktop.Field
                         srcx = tile % 16;
                         srcy = tile / 16;
 
-                        g.DrawScaledBitmapRegion(bmp, 
-                                                 srcx * (64+xpad*2), srcy * (64+ypad*2) , 
+                        g.DrawScaledBitmapRegion(bmp,
+                                                 srcx * (64 + xpad * 2), srcy * (64 + ypad * 2),
                                                  64, 64,
-                                                 tx*outline + x * TILE_SIZE, 
-                                                 ty*outline + y * TILE_SIZE + transY, 
-                                                 TILE_SIZE + scaleFactor, 
+                                                 tx * outline + x * TILE_SIZE,
+                                                 ty * outline + y * TILE_SIZE + transY,
+                                                 TILE_SIZE + scaleFactor,
                                                  TILE_SIZE + scaleFactor);
                     }
                 }
@@ -111,7 +111,7 @@ namespace monogame_experiment.Desktop.Field
             const int MOVE_X = 32;
             const float MOVE_WAVE = (float)Math.PI / 2.0f;
 
-            float ypos = background  ? - TILE_SIZE : -TILE_SIZE/1.5f;
+            float ypos = background ? -TILE_SIZE : -TILE_SIZE / 1.5f;
 
             g.BeginDrawing();
 
@@ -129,15 +129,15 @@ namespace monogame_experiment.Desktop.Field
 
             // Compute wave "height"
             float wavePlus = background ? 0.0f : MOVE_WAVE;
-            int wave = (int)((float)Math.Sin(waterWave + wavePlus)  * WAVE_AMPL);
+            int wave = (int)((float)Math.Sin(waterWave + wavePlus) * WAVE_AMPL);
 
             // Draw water
             int xpos = (int)waterPos + (background ? 0 : MOVE_X);
-            for (int i = sx; i <= ex; ++ i)
+            for (int i = sx; i <= ex; ++i)
             {
                 g.DrawScaledBitmapRegion(bmpWater, 0, background ? 80 : 0, 64, 64,
-                                         i * TILE_SIZE - xpos, 
-                                         (int)ypos + wave, 
+                                         i * TILE_SIZE - xpos,
+                                         (int)ypos + wave,
                                          TILE_SIZE, TILE_SIZE);
             }
 
@@ -151,7 +151,7 @@ namespace monogame_experiment.Desktop.Field
             int w = (int)g.GetViewport().X;
             int h = (int)g.GetViewport().Y;
 
-            for (int i = 0; i <= w / CLOUD_WIDTH +1; ++i)
+            for (int i = 0; i <= w / CLOUD_WIDTH + 1; ++i)
             {
                 g.DrawScaledBitmap(bmpCloud, i * CLOUD_WIDTH + (int)pos,
                                    h - CLOUD_HEIGHT + y,
@@ -173,7 +173,7 @@ namespace monogame_experiment.Desktop.Field
             DrawCloudLayer(g, -cloudPos[1], -BOTTOM + YOFF);
 
             g.SetColor(0.70f, 0.80f, 1.0f);
-            DrawCloudLayer(g, -cloudPos[2], -BOTTOM + 2* YOFF);
+            DrawCloudLayer(g, -cloudPos[2], -BOTTOM + 2 * YOFF);
 
             g.SetColor();
         }
@@ -203,7 +203,7 @@ namespace monogame_experiment.Desktop.Field
             // Create cloud positions
             cloudPos = new float[3];
             int xoff = CLOUD_WIDTH / 3;
-            for (int i = 0; i < 3; ++ i)
+            for (int i = 0; i < 3; ++i)
             {
                 cloudPos[i] += i * xoff;
             }
@@ -223,9 +223,9 @@ namespace monogame_experiment.Desktop.Field
             waterWave += WATER_WAVE * tm;
 
             // Update clouds
-            for (int i = 0; i < 3; ++ i)
+            for (int i = 0; i < 3; ++i)
             {
-                cloudPos[i] += BASE_CLOUD_SPEED * (i+1) * tm;
+                cloudPos[i] += BASE_CLOUD_SPEED * (i + 1) * tm;
                 cloudPos[i] %= CLOUD_WIDTH;
             }
         }
@@ -245,10 +245,10 @@ namespace monogame_experiment.Desktop.Field
             Vector2 p = pl.GetPos();
 
             // Compute starting positions
-            int sx = (int)(p.X / TILE_SIZE) - CHECK/2;
+            int sx = (int)(p.X / TILE_SIZE) - CHECK / 2;
             if (sx < 0) sx = 0;
 
-            int sy = (int)( (p.Y-transY) / TILE_SIZE) - CHECK/2;
+            int sy = (int)((p.Y - transY) / TILE_SIZE) - CHECK / 2;
             if (sy < 0) sy = 0;
 
             int ex = sx + CHECK;
@@ -259,17 +259,17 @@ namespace monogame_experiment.Desktop.Field
 
             // Check solid tiles in this area
             int tile = 0;
-            for (int y = sy; y <= ey; ++ y)
+            for (int y = sy; y <= ey; ++y)
             {
-                for (int x = sx; x <= ex; ++ x)
+                for (int x = sx; x <= ex; ++x)
                 {
                     // Get tile
                     tile = map.GetTile(0, x, y);
                     if (tile == -1)
                         continue;
-                        
+
                     // If collision tile
-                    if(tile != 0 && (tile-1)/16 != COLLISION_ROW)
+                    if (tile != 0 && (tile - 1) / 16 != COLLISION_ROW)
                     {
                         // Check if nearby tiles are empty
                         if (IsFree(x, y - 1))
@@ -281,7 +281,7 @@ namespace monogame_experiment.Desktop.Field
 
                         if (IsFree(x, y + 1))
                         {
-                            pl.GetCeilingCollision(x * TILE_SIZE, 
+                            pl.GetCeilingCollision(x * TILE_SIZE,
                                                    (y + 1) * TILE_SIZE + transY,
                                                    TILE_SIZE, tm);
                         }
@@ -298,9 +298,9 @@ namespace monogame_experiment.Desktop.Field
                                                 TILE_SIZE, -1, tm);
                         }
                     }
-                    else if((tile - 1) / 16 == COLLISION_ROW)
+                    else if ((tile - 1) / 16 == COLLISION_ROW)
                     {
-                        float hx = x * TILE_SIZE + (TILE_SIZE - HURT_WIDTH)/2;
+                        float hx = x * TILE_SIZE + (TILE_SIZE - HURT_WIDTH) / 2;
                         float hy = y * TILE_SIZE + (TILE_SIZE - HURT_HEIGHT) / 2;
 
 
@@ -325,9 +325,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Draw sky
             int max = (int)(g.GetViewport().X / SKY_WIDTH);
-            for (int i = 0; i < max; ++ i)
+            for (int i = 0; i < max; ++i)
             {
-                g.DrawScaledBitmapRegion(bmpSky, i == max-1 ? 240 : 0, 0, 240, 480,
+                g.DrawScaledBitmapRegion(bmpSky, i == max - 1 ? 240 : 0, 0, 240, 480,
                                          i * SKY_WIDTH, 0, SKY_WIDTH, SKY_HEIGHT);
             }
 
@@ -353,9 +353,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Draw black outlines
             g.SetColor(0, 0, 0);
-            for (int y = -1; y <= 1; ++ y)
+            for (int y = -1; y <= 1; ++y)
             {
-                for (int x = -1; x <= 1; ++ x)
+                for (int x = -1; x <= 1; ++x)
                 {
                     if (x == y && x == 0) continue;
 
@@ -366,7 +366,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Draw with colors
             g.SetColor();
-            DrawTilemap(0, bmpTileset, g, cam, 0, 0,0, false, PADDING, PADDING);
+            DrawTilemap(0, bmpTileset, g, cam, 0, 0, 0, false, PADDING, PADDING);
 
         }
 
@@ -385,6 +385,8 @@ namespace monogame_experiment.Desktop.Field
             const int ENEMY_INDEX = 9 * 16;
             const int LAYER = 2;
 
+            Enemy e = null;
+            Vector2 target;
 
             // Go through tiles and find enemies
             int tile = 0;
@@ -400,8 +402,8 @@ namespace monogame_experiment.Desktop.Field
                     tile -= ENEMY_INDEX;
 
                     // Add enemy
-                    Enemy e = null;
-                    Vector2 target = new Vector2(x * TILE_SIZE + TILE_SIZE / 2,
+                    e = null;
+                    target = new Vector2(x * TILE_SIZE + TILE_SIZE / 2,
                                                  (y + 1) * TILE_SIZE + transY);
                     switch (tile)
                     {
@@ -415,6 +417,21 @@ namespace monogame_experiment.Desktop.Field
                         case 1:
 
                             e = new VerticalFly(target.X, target.Y);
+                            break;
+
+                        // Falling fly, no flip
+                        case 2:
+                            e = new FallingFly(target.X, target.Y);
+                            break;
+
+                        // Falling fly, flip vertical
+                        case 3:
+                            e = new FallingFly(target.X, target.Y, Graphics.Flip.Vertical);
+                            break;
+
+                        // Static fly
+                        case 4:
+                            e = new StaticFly(target.X, target.Y);
                             break;
 
                         default:

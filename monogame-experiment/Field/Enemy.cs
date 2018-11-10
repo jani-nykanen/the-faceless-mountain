@@ -30,16 +30,26 @@ namespace monogame_experiment.Desktop.Field
 
         // Sprite
         protected Sprite spr;
+        // Flip
+        protected Graphics.Flip flip;
 
         // Movement direction
         protected int moveDir;
+        // Is "hooked"
+        protected bool hooked;
+
+        // Start position
+        protected Vector2 startPos;
 
 
         // Constructor
-        public Enemy(float x, float y)
+        public Enemy(float x, float y, Graphics.Flip flip = Graphics.Flip.None)
         {
+
             pos.X = x;
             pos.Y = y;
+            startPos = pos;
+
             exist = true;
             inCamera = true;
 
@@ -54,9 +64,10 @@ namespace monogame_experiment.Desktop.Field
             acc.Y = 1.0f;
 
             moveDir = 1;
-
+           
             // Create sprite
             spr = new Sprite(SPRITE_WIDTH, SPRITE_HEIGHT);
+            this.flip = flip;
         }
 
 
@@ -91,12 +102,13 @@ namespace monogame_experiment.Desktop.Field
 
             g.Push();
             g.Translate(pos.X, pos.Y);
-
             g.BeginDrawing();
 
             // Draw sprite
             // g.FillRect(-s / 2, -s, s, s);
-            spr.Draw(g, bmpEnemy, -spr.GetWidth() / 2, -Stage.TILE_SIZE - (spr.GetHeight()-Stage.TILE_SIZE)/2);
+            spr.Draw(g, bmpEnemy, -spr.GetWidth() / 2, 
+                     -Stage.TILE_SIZE - (spr.GetHeight()-Stage.TILE_SIZE)/2,
+                     flip);
 
             g.SetColor();
             g.EndDrawing();
@@ -152,6 +164,9 @@ namespace monogame_experiment.Desktop.Field
             // Bottom right
             Vector2 br = new Vector2(pos.X + TONGUE_COL_SIZE / 2, 
                                      pos.Y - Stage.TILE_SIZE / 2 + TONGUE_COL_SIZE / 2);
+
+            // Check if hooked
+            hooked = t.GetCollisionObject() == this;
 
             t.SetCollisionObject(this);
 

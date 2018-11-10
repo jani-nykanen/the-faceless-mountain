@@ -28,7 +28,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         public HorizontalFly(float x, float y) : base(x, y)
         {
             const float SPEED_X = 2.5f;
-            const float ACC_X = 0.50f;
+            const float ACC_X = 0.30f;
 
             // Set speed
             target.X = ((int)(y / Stage.TILE_SIZE) % 2 == 0 ? -1 : 1)
