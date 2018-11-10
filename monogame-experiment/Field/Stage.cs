@@ -3,6 +3,7 @@
 using Microsoft.Xna.Framework;
 
 using monogame_experiment.Desktop.Core;
+using monogame_experiment.Desktop.Field.Enemies;
 
 
 namespace monogame_experiment.Desktop.Field
@@ -14,7 +15,7 @@ namespace monogame_experiment.Desktop.Field
         const int COLLISION_ROW = 6;
 
         // Tile size
-        const int TILE_SIZE = 64;
+        public const int TILE_SIZE = 64;
         // Cloud sizes
         const int CLOUD_WIDTH = 768;
         const int CLOUD_HEIGHT = 192;
@@ -374,6 +375,51 @@ namespace monogame_experiment.Desktop.Field
         {
             // Draw the front layer of water
             DrawWater(g, cam);
+        }
+
+
+        // Parse objects
+        public void ParseObjects(ObjectManager objMan)
+        {
+            const int ENEMY_INDEX = 9 * 16;
+            const int LAYER = 2;
+
+
+            // Go through tiles and find enemies
+            int tile = 0;
+            for (int y = 0; y < map.GetHeight(); ++y)
+            {
+                for (int x = 0; x < map.GetWidth(); ++x)
+                {
+                    tile = map.GetTile(LAYER, x, y) - 1;
+                    if (tile < ENEMY_INDEX || tile >= ENEMY_INDEX + 16)
+                    {
+                        continue;
+                    }
+                    tile -= ENEMY_INDEX;
+
+                    // Add enemy
+                    Enemy e = null;
+                    switch (tile)
+                    {
+                        // Horizontal fly
+                        case 0:
+                            Console.Write("Beep boop!");
+                            e = new HorizontalFly(x * TILE_SIZE + TILE_SIZE / 2, 
+                                                  (y + 1) * TILE_SIZE + transY);
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    // If not null, add
+                    if (e != null)
+                    {
+                        objMan.AddEnemy(e);
+                    }
+                }
+            }
         }
     }
 }

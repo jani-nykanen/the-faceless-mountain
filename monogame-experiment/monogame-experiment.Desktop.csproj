@@ -72,6 +72,8 @@
     <Compile Include="Field\HUD.cs" />
     <Compile Include="Transition.cs" />
     <Compile Include="Field\ObjectManager.cs" />
+    <Compile Include="Field\Enemy.cs" />
+    <Compile Include="Field\Enemies\HorizontalFly.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -135,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Field\" />
+    <Folder Include="Field\Enemies\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Bitmaps\font.png">

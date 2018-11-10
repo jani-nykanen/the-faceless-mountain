@@ -48,6 +48,8 @@ namespace monogame_experiment.Desktop.Field
 
             // Create object manager
             objMan = new ObjectManager(cam, assets, this);
+            // Add objects
+            stage.ParseObjects(objMan);
 
             // Set initial camera scale
             cam.Scale(INITIAL_CAM_SCALE, INITIAL_CAM_SCALE);

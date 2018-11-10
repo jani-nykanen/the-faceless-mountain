@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using monogame_experiment.Desktop.Core;
 using Microsoft.Xna.Framework;
@@ -11,6 +12,10 @@ namespace monogame_experiment.Desktop.Field
         // Player
         private Player player;
 
+        // Enemies
+        private List<Enemy> enemies;
+
+
         // Constructor
         public ObjectManager(Camera cam, AssetPack assets, GameField rf = null)
         {
@@ -21,6 +26,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Set camera position
             cam.MoveTo(player.GetPos().X, player.GetPos().Y - 32);
+
+            // Create list of enemies
+            enemies = new List<Enemy>();
         }
 
 
@@ -36,13 +44,37 @@ namespace monogame_experiment.Desktop.Field
             stage.GetObjectCollision(player, tm, false);
             // Player tongue collisions
             stage.GetObjectCollision(player.GetTongue(), tm);
+
+            // Update enemies
+            foreach(Enemy e in enemies)
+            {
+                e.Update(tm);
+                e.GetPlayerCollision(player);
+                stage.GetObjectCollision(e, tm);
+            }
         }
 
 
         // Draw
         public void Draw(Graphics g, Camera cam = null)
         {
+            // Draw enemies
+            g.BeginDrawing();
+            foreach(Enemy e in enemies)
+            {
+                e.Draw(g);
+            }
+            g.EndDrawing();
+
+            // Draw player
             player.Draw(g);
+        }
+
+
+        // Add an enemy
+        public void AddEnemy(Enemy e)
+        {
+            enemies.Add(e);
         }
     }
 }
