@@ -71,6 +71,7 @@
     <Compile Include="Field\Tongue.cs" />
     <Compile Include="Field\HUD.cs" />
     <Compile Include="Transition.cs" />
+    <Compile Include="Field\ObjectManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -25,8 +25,8 @@ namespace monogame_experiment.Desktop.Field
 
 		// Camera
 		private Camera cam;
-		// Player object
-		private Player player;
+        // Object manager
+        private ObjectManager objMan;
         // Game stage
         private Stage stage;
         // HUD
@@ -42,18 +42,18 @@ namespace monogame_experiment.Desktop.Field
             const float TRANS_SPEED = 2.0f;
 
             // Create game objects
-            player = new Player(new Vector2(6 * 64, -2 * 64 - 1), this);
             cam = new Camera();
             stage = new Stage(assets, 1);
             hud = new HUD(assets);
+
+            // Create object manager
+            objMan = new ObjectManager(cam, assets, this);
 
             // Set initial camera scale
             cam.Scale(INITIAL_CAM_SCALE, INITIAL_CAM_SCALE);
             cam.SetScaleTarget(CAM_SCALE_TARGET, CAM_SCALE_TARGET,
                                CAM_SCALE_SPEED* TRANS_SPEED, 
                                CAM_SCALE_SPEED* TRANS_SPEED);
-
-            cam.MoveTo(player.GetPos().X, player.GetPos().Y - 32);
 
             // Set transition
             trans.Activate(Transition.Mode.Out, TRANS_SPEED, null);
@@ -67,7 +67,6 @@ namespace monogame_experiment.Desktop.Field
 		// Initialize scene
 		override public void Init()
         {
-
 
             Global gs = (Global)globalScene;
 			assets = gs.GetAssets();
@@ -97,16 +96,8 @@ namespace monogame_experiment.Desktop.Field
             // Skip certain things if transitioning
             if (!trans.IsActive())
             {
-                // Update player
-                player.Update(tm, input);
-                // Set camera following
-                player.SetCameraFollowing(cam, tm);
-
-
-                // Player collisions
-                stage.GetObjectCollision(player, tm, false);
-                // Player tongue collisions
-                stage.GetObjectCollision(player.GetTongue(), tm);
+                // Update game objects
+                objMan.Update(stage, cam, input, tm);
 
                 // Update HUD (and time!)
                 hud.Update(tm);
@@ -143,8 +134,8 @@ namespace monogame_experiment.Desktop.Field
             // Draw stage
             stage.Draw(g, cam);
 
-			// Draw player
-			player.Draw(g);
+            // Draw game objects
+            objMan.Draw(g, cam);
 
             // Post-draw stage
             stage.PostDraw(g, cam);
