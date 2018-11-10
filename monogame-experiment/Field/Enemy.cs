@@ -29,7 +29,7 @@ namespace monogame_experiment.Desktop.Field
         private bool inCamera;
 
         // Sprite
-        private Sprite spr;
+        protected Sprite spr;
 
         // Movement direction
         protected int moveDir;
@@ -89,16 +89,14 @@ namespace monogame_experiment.Desktop.Field
         {
             if (!exist || !inCamera) return;
 
-            int s = Stage.TILE_SIZE;
-
             g.Push();
             g.Translate(pos.X, pos.Y);
 
             g.BeginDrawing();
-            g.SetColor(1, 0, 0);
 
             // Draw sprite
-            g.FillRect(-s / 2, -s, s, s);
+            // g.FillRect(-s / 2, -s, s, s);
+            spr.Draw(g, bmpEnemy, -spr.GetWidth() / 2, -Stage.TILE_SIZE - (spr.GetHeight()-Stage.TILE_SIZE)/2);
 
             g.SetColor();
             g.EndDrawing();
@@ -127,15 +125,44 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Player collision
-        public void GetPlayerCollision(Player pl)
+        public void GetPlayerCollision(Player pl, float tm)
         {
+            // Note: we do not use widht, height here
             const float HURT_SIZE = 40.0f;
 
+            // Tongue collision
+            GetTongueCollision(pl.GetTongue(), tm);
+
+            // Player collision
             pl.GetHurtCollision(pos.X - HURT_SIZE / 2, 
                                 pos.Y - Stage.TILE_SIZE + HURT_SIZE / 2,
                                 HURT_SIZE, HURT_SIZE);
+
         }
 
 
+        // Tongue collision
+        public void GetTongueCollision(Tongue t, float tm)
+        {
+            const float TONGUE_COL_SIZE = Stage.TILE_SIZE;
+
+            // Top left
+            Vector2 tl = new Vector2(pos.X - TONGUE_COL_SIZE / 2, 
+                                     pos.Y - Stage.TILE_SIZE/2 - TONGUE_COL_SIZE / 2);
+            // Bottom right
+            Vector2 br = new Vector2(pos.X + TONGUE_COL_SIZE / 2, 
+                                     pos.Y - Stage.TILE_SIZE / 2 + TONGUE_COL_SIZE / 2);
+
+            t.SetCollisionObject(this);
+
+            // Collide
+            t.GetFloorCollision(tl.X, tl.Y, TONGUE_COL_SIZE, tm);
+            t.GetCeilingCollision(tl.X, br.Y, TONGUE_COL_SIZE, tm);
+            t.GetWallCollision(tl.X, tl.Y, TONGUE_COL_SIZE, 1, tm);
+            t.GetWallCollision(br.X, tl.Y, TONGUE_COL_SIZE, -1, tm);
+
+            t.SetCollisionObject(null);
+
+        }
     }
 }

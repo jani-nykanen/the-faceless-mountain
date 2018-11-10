@@ -318,6 +318,7 @@ namespace monogame_experiment.Desktop.Field
             const int SKY_WIDTH = 320;
             const int SKY_HEIGHT = 640;
 
+            g.SetColor();
             g.Identity();
             g.IdentityWorld();
             g.BeginDrawing();

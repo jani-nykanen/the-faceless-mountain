@@ -20,7 +20,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Animate
         protected override void Animate(float tm)
         {
-            // ...
+            spr.Animate(1, 0, 0, 0, tm);
         }
 
 

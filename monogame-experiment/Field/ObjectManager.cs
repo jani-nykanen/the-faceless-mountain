@@ -52,7 +52,7 @@ namespace monogame_experiment.Desktop.Field
                 e.CheckCamera(cam);
 
                 // Collisions
-                e.GetPlayerCollision(player);
+                e.GetPlayerCollision(player, tm);
                 stage.GetObjectCollision(e, tm, false);
             }
         }

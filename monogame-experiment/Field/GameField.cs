@@ -84,6 +84,7 @@ namespace monogame_experiment.Desktop.Field
             // Initialize global content for objects
             AnimatedFigure.Init(assets);
             Tongue.Init(assets);
+            Enemy.Init(assets);
 
             // (Re)set game objects & stuff
             ResetGame();

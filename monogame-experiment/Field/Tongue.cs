@@ -48,6 +48,9 @@ namespace monogame_experiment.Desktop.Field
         // Tip flip
         private bool flipTip;
 
+        // Collision object
+        private GameObject colObj = null;
+
 
         // Constructor
         public Tongue()
@@ -160,10 +163,18 @@ namespace monogame_experiment.Desktop.Field
             // disappear
             else
             {
+
                 if(input.GetButton("fire3") == State.Up)
                 {
                     returning = true;
                     stuck = false;
+                }
+
+                // Check if stuck on an object
+                if(colObj != null)
+                {
+                    pos.X += colObj.GetSpeed().X * tm;
+                    pos.Y += colObj.GetSpeed().Y * tm;
                 }
             }
 
@@ -273,6 +284,14 @@ namespace monogame_experiment.Desktop.Field
                 stuck = false;
                 returning = true;
             }
+        }
+    
+
+        // Set collision object
+        public void SetCollisionObject(GameObject o)
+        {
+            if (stuck) return;
+            colObj = o;
         }
     }
 }

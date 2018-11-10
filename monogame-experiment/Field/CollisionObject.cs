@@ -164,5 +164,12 @@ namespace monogame_experiment.Desktop.Field
         {
             return pos;
         }
+    
+
+        // Get speed
+        public Vector2 GetSpeed()
+        {
+            return speed;
+        }
     }
 }
