@@ -121,5 +121,19 @@ namespace monogame_experiment.Desktop.Core
         {
             DrawFrame(g, bmp, frame, row, dx, dy, flip);
         }
+
+
+        // Get width
+        public int GetWidth()
+        {
+            return w;
+        }
+
+
+        // Get height
+        public int GetHeight()
+        {
+            return h;
+        }
     }
 }

@@ -74,6 +74,7 @@
     <Compile Include="Field\ObjectManager.cs" />
     <Compile Include="Field\Enemy.cs" />
     <Compile Include="Field\Enemies\HorizontalFly.cs" />
+    <Compile Include="Field\Enemies\VerticalFly.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

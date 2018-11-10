@@ -41,7 +41,7 @@ namespace monogame_experiment.Desktop.Field
             pos.X = x;
             pos.Y = y;
             exist = true;
-            inCamera = false;
+            inCamera = true;
 
             width = Stage.TILE_SIZE;
             height = Stage.TILE_SIZE;
@@ -89,26 +89,47 @@ namespace monogame_experiment.Desktop.Field
         {
             if (!exist || !inCamera) return;
 
-            // Draw sprite
             int s = Stage.TILE_SIZE;
+
+            g.Push();
+            g.Translate(pos.X, pos.Y);
+
+            g.BeginDrawing();
             g.SetColor(1, 0, 0);
-            g.FillRect((int)pos.X - s/2, (int)pos.Y - s, s, s);
+
+            // Draw sprite
+            g.FillRect(-s / 2, -s, s, s);
+
             g.SetColor();
+            g.EndDrawing();
+
+            g.Pop();
+
         }
 
 
         // Check camera
         public void CheckCamera(Camera cam)
         {
+
             // Check if in the camera
-            inCamera = true;
+
+            Vector2 topLeft = cam.GetTopLeftCorner();
+            Vector2 bottomRight = cam.GetBottomRightCorner();
+
+            float middleY = pos.Y - Stage.TILE_SIZE / 2;
+
+            inCamera = pos.X + spr.GetWidth() / 2 > topLeft.X
+                          && pos.X - spr.GetWidth() / 2 < bottomRight.X
+                          && middleY + spr.GetHeight() / 2 > topLeft.Y
+                          && middleY - spr.GetHeight() / 2 < bottomRight.Y;
         }
 
 
         // Player collision
         public void GetPlayerCollision(Player pl)
         {
-            const float HURT_SIZE = 48.0f;
+            const float HURT_SIZE = 40.0f;
 
             pl.GetHurtCollision(pos.X - HURT_SIZE / 2, 
                                 pos.Y - Stage.TILE_SIZE + HURT_SIZE / 2,

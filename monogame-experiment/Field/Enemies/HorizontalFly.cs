@@ -36,7 +36,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
             speed.X = target.X;
 
             acc.X = ACC_X;
-
+            height /= 2;
         }
 
 

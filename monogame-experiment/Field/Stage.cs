@@ -400,13 +400,20 @@ namespace monogame_experiment.Desktop.Field
 
                     // Add enemy
                     Enemy e = null;
+                    Vector2 target = new Vector2(x * TILE_SIZE + TILE_SIZE / 2,
+                                                 (y + 1) * TILE_SIZE + transY);
                     switch (tile)
                     {
                         // Horizontal fly
                         case 0:
-                            Console.Write("Beep boop!");
-                            e = new HorizontalFly(x * TILE_SIZE + TILE_SIZE / 2, 
-                                                  (y + 1) * TILE_SIZE + transY);
+
+                            e = new HorizontalFly(target.X, target.Y);
+                            break;
+
+                        // Vertical fly
+                        case 1:
+
+                            e = new VerticalFly(target.X, target.Y);
                             break;
 
                         default:

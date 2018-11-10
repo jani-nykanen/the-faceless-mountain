@@ -41,7 +41,7 @@ namespace monogame_experiment.Desktop.Field
             player.SetCameraFollowing(cam, tm);
 
             // Player collisions
-            stage.GetObjectCollision(player, tm, false);
+            stage.GetObjectCollision(player, tm, true);
             // Player tongue collisions
             stage.GetObjectCollision(player.GetTongue(), tm);
 
@@ -49,8 +49,11 @@ namespace monogame_experiment.Desktop.Field
             foreach(Enemy e in enemies)
             {
                 e.Update(tm);
+                e.CheckCamera(cam);
+
+                // Collisions
                 e.GetPlayerCollision(player);
-                stage.GetObjectCollision(e, tm);
+                stage.GetObjectCollision(e, tm, false);
             }
         }
 
@@ -59,12 +62,10 @@ namespace monogame_experiment.Desktop.Field
         public void Draw(Graphics g, Camera cam = null)
         {
             // Draw enemies
-            g.BeginDrawing();
             foreach(Enemy e in enemies)
             {
                 e.Draw(g);
             }
-            g.EndDrawing();
 
             // Draw player
             player.Draw(g);
