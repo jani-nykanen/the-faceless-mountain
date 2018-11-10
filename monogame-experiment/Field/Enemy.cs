@@ -77,6 +77,9 @@ namespace monogame_experiment.Desktop.Field
         // Animate
         virtual protected void Animate(float tm) {}
 
+        // Player event
+        virtual protected void OnPlayerEvent(Player pl) {}
+
 
         // Update
         override public void Update(float tm, InputManager input = null)
@@ -139,6 +142,9 @@ namespace monogame_experiment.Desktop.Field
         // Player collision
         public void GetPlayerCollision(Player pl, float tm)
         {
+            // Custom event
+            OnPlayerEvent(pl);
+
             // Note: we do not use widht, height here
             const float HURT_SIZE = 40.0f;
 

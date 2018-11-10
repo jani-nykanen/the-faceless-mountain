@@ -77,6 +77,8 @@
     <Compile Include="Field\Enemies\VerticalFly.cs" />
     <Compile Include="Field\Enemies\FallingFly.cs" />
     <Compile Include="Field\Enemies\StaticFly.cs" />
+    <Compile Include="Field\Enemies\HorizontalFollower.cs" />
+    <Compile Include="Field\Enemies\VerticalFollower.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

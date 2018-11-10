@@ -6,38 +6,47 @@ using monogame_experiment.Desktop.Core;
 
 namespace monogame_experiment.Desktop.Field.Enemies
 {
-    // A vertically flying fly
-    public class VerticalFly : Enemy
+    public class VerticalFollower : Enemy
     {
+
+        // Player direction from object's pov
+        private int plDir;
+
+
+        // Player event
+        protected override void OnPlayerEvent(Player pl)
+        {
+            plDir = (pl.GetPos().Y > pos.Y) ? 1 : -1;
+        }
+
+
 
         // Update AI
         protected override void UpdateAI(float tm)
         {
-            // ...
+            const float SPEED_Y = 3.0f;
+
+            target.Y = plDir * SPEED_Y;
         }
 
 
         // Animate
         protected override void Animate(float tm)
         {
-            spr.Animate(1, 0, 0, 0, tm);
+            spr.Animate(5, 0, 0, 0, tm);
         }
 
 
         // Constructor
-        public VerticalFly(float x, float y) : base(x, y)
+        public VerticalFollower(float x, float y) : base(x, y)
         {
-            const float SPEED_Y = 2.0f;
-            const float ACC_Y = 0.15f;
 
-            // Set speed
-            target.Y= ((int)(y / Stage.TILE_SIZE) % 2 == 0 ? -1 : 1)
-                        * SPEED_Y;
-            speed.Y = target.Y;
+            const float ACC_Y = 0.05f;
 
             acc.Y = ACC_Y;
             width /= 2;
 
+            plDir = 0;
         }
 
 
@@ -47,8 +56,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
             if (speed.Y < 0.0f) return;
 
             pos.Y = y;
-            target.Y *= -1;
-            speed.Y = 0.0f;
+            speed.Y *= -1;
         }
 
 
@@ -58,8 +66,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
             if (speed.Y > 0.0f) return;
 
             pos.Y = y;
-            target.Y *= -1;
-            speed.Y = 0.0f;
+            speed.Y *= -1;
         }
     }
 }

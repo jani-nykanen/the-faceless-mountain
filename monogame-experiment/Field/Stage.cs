@@ -434,6 +434,16 @@ namespace monogame_experiment.Desktop.Field
                             e = new StaticFly(target.X, target.Y);
                             break;
 
+                        // Horizontal follower
+                        case 5:
+                            e = new HorizontalFollower(target.X, target.Y);
+                            break;
+
+                        // Vertical follower
+                        case 6:
+                            e = new VerticalFollower(target.X, target.Y);
+                            break;
+
                         default:
                             break;
                     }

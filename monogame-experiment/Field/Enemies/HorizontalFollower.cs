@@ -6,49 +6,55 @@ using monogame_experiment.Desktop.Core;
 
 namespace monogame_experiment.Desktop.Field.Enemies
 {
-    // A horizontally flying fly
-    public class HorizontalFly : Enemy
+    public class HorizontalFollower : Enemy
     {
+
+        // Player direction from object's pov
+        private int plDir;
+
+
+        // Player event
+        protected override void OnPlayerEvent(Player pl)
+        {
+            plDir = (pl.GetPos().X > pos.X) ? 1 : -1;
+        }
+
+
 
         // Update AI
         protected override void UpdateAI(float tm)
         {
-            // ...
+            const float SPEED_X = 3.0f;
+
+            target.X = plDir * SPEED_X;
         }
 
 
         // Animate
         protected override void Animate(float tm)
         {
-            spr.Animate(0, 0, 0, 0, tm);
+            spr.Animate(4, 0, 0, 0, tm);
         }
 
 
         // Constructor
-        public HorizontalFly(float x, float y) : base(x, y)
+        public HorizontalFollower(float x, float y) : base(x, y)
         {
-            const float SPEED_X = 2.0f;
-            const float ACC_X = 0.15f;
 
-            // Set speed
-            target.X = ((int)(y / Stage.TILE_SIZE) % 2 == 0 ? -1 : 1)
-                        * SPEED_X;
-            speed.X = target.X;
+            const float ACC_X = 0.05f;
 
             acc.X = ACC_X;
             height /= 2;
+
+            plDir = 0;
         }
 
 
         // On wall collision
         protected override void OnWallCollision(float x, float y, int dir)
         {
-            if (moveDir != dir) return;
-
             pos.X = x;
-            target.X *= -1;
-            speed.X = 0.0f;
-
+            speed.X /= -1.0f;
         }
     }
 }
