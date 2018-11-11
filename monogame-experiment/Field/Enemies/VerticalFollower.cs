@@ -6,6 +6,7 @@ using monogame_experiment.Desktop.Core;
 
 namespace monogame_experiment.Desktop.Field.Enemies
 {
+    // Vertical follower
     public class VerticalFollower : Enemy
     {
 
@@ -24,7 +25,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Update AI
         protected override void UpdateAI(float tm)
         {
-            const float SPEED_Y = 3.0f;
+            const float SPEED_Y = 2.5f;
 
             target.Y = plDir * SPEED_Y;
         }
@@ -41,7 +42,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         public VerticalFollower(float x, float y) : base(x, y)
         {
 
-            const float ACC_Y = 0.05f;
+            const float ACC_Y = 0.1f;
 
             acc.Y = ACC_Y;
             width /= 2;

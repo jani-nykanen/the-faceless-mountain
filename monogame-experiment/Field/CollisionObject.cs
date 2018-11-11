@@ -171,5 +171,19 @@ namespace monogame_experiment.Desktop.Field
         {
             return speed;
         }
+
+
+        // Get width
+        public float GetWidth()
+        {
+            return width;
+        }
+
+
+        // Get height
+        public float GetHeight()
+        {
+            return height;
+        }
     }
 }

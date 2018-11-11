@@ -444,6 +444,26 @@ namespace monogame_experiment.Desktop.Field
                             e = new VerticalFollower(target.X, target.Y);
                             break;
 
+                        // Vertical thwomp
+                        case 7:
+                            e = new VerticalThwomp(target.X, target.Y);
+                            break;
+
+                        // Vertical thwomp, flip
+                        case 8:
+                            e = new VerticalThwomp(target.X, target.Y, Graphics.Flip.Vertical);
+                            break;
+
+                        // Horizontal thwomp
+                        case 9:
+                            e = new HorizontalThwomp(target.X, target.Y);
+                            break;
+
+                        // Horizontal thwomp, flip
+                        case 10:
+                            e = new HorizontalThwomp(target.X, target.Y, Graphics.Flip.Horizontal);
+                            break;
+
                         default:
                             break;
                     }

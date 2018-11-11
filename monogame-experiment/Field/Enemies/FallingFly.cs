@@ -20,8 +20,8 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Update AI
         protected override void UpdateAI(float tm)
         {
-            const float GRAV_ACC_Y = 0.10f;
-            const float RET_ACC_Y = 0.05f;
+            const float GRAV_ACC_Y = 0.15f;
+            const float RET_ACC_Y = 0.10f;
 
             const float GRAVITY = 6.0f;
             const float RETURN_SPEED = -8.0f;

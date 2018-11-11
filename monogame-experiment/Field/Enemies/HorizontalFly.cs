@@ -27,7 +27,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Constructor
         public HorizontalFly(float x, float y) : base(x, y)
         {
-            const float SPEED_X = 2.0f;
+            const float SPEED_X = 2.5f;
             const float ACC_X = 0.15f;
 
             // Set speed

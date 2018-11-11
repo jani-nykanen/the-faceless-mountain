@@ -6,6 +6,7 @@ using monogame_experiment.Desktop.Core;
 
 namespace monogame_experiment.Desktop.Field.Enemies
 {
+    // Horizontal follower
     public class HorizontalFollower : Enemy
     {
 
@@ -24,7 +25,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Update AI
         protected override void UpdateAI(float tm)
         {
-            const float SPEED_X = 3.0f;
+            const float SPEED_X = 2.5f;
 
             target.X = plDir * SPEED_X;
         }
@@ -41,7 +42,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         public HorizontalFollower(float x, float y) : base(x, y)
         {
 
-            const float ACC_X = 0.05f;
+            const float ACC_X = 0.1f;
 
             acc.X = ACC_X;
             height /= 2;

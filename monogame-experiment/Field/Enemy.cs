@@ -26,7 +26,7 @@ namespace monogame_experiment.Desktop.Field
         // Does exists
         private bool exist;
         // If in the camera
-        private bool inCamera;
+        protected bool inCamera;
 
         // Sprite
         protected Sprite spr;
