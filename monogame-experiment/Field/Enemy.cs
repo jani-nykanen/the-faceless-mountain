@@ -41,14 +41,26 @@ namespace monogame_experiment.Desktop.Field
         // Start position
         protected Vector2 startPos;
 
+        // Wave timer
+        protected float wave;
+        // Wave speed
+        protected float waveSpeed;
+        // Is waving enabled
+        protected bool waving;
+
 
         // Constructor
         public Enemy(float x, float y, Graphics.Flip flip = Graphics.Flip.None)
         {
+            const float DEFAULT_WAVE_SPEED = 0.15f;
 
             pos.X = x;
             pos.Y = y;
             startPos = pos;
+
+            wave = 0.0f;
+            waveSpeed = DEFAULT_WAVE_SPEED;
+            waving = true;
 
             exist = true;
             inCamera = true;
@@ -97,6 +109,13 @@ namespace monogame_experiment.Desktop.Field
             // Animate
             Animate(tm);
 
+            // Update wave
+            if (waving)
+            {
+                wave += waveSpeed * tm;
+                wave %= (float)(Math.PI * 2.0f);
+            }
+
             // Determine movement direction
             moveDir = target.X >= 0.0f ? 1 : -1;
         }
@@ -105,10 +124,14 @@ namespace monogame_experiment.Desktop.Field
         // Draw
         override public void Draw(Graphics g)
         {
+            const float AMPLITUDE = 5.0f;
+
             if (!exist || !inCamera) return;
 
+            float w = waving ? (float)Math.Sin(wave) * AMPLITUDE : 0.0f;
+
             g.Push();
-            g.Translate(pos.X, pos.Y);
+            g.Translate(pos.X, pos.Y + w);
             g.BeginDrawing();
 
             // Draw sprite
