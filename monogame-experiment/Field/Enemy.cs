@@ -68,6 +68,10 @@ namespace monogame_experiment.Desktop.Field
             // Create sprite
             spr = new Sprite(SPRITE_WIDTH, SPRITE_HEIGHT);
             this.flip = flip;
+
+            // Animate (to get the correct frame for rendering
+            // before updated)
+            Animate(0.0f);
         }
 
 

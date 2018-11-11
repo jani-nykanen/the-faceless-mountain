@@ -325,7 +325,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Draw sky
             int max = (int)(g.GetViewport().X / SKY_WIDTH);
-            for (int i = 0; i < max; ++i)
+            for (int i = 0; i <= max; ++i)
             {
                 g.DrawScaledBitmapRegion(bmpSky, i == max - 1 ? 240 : 0, 0, 240, 480,
                                          i * SKY_WIDTH, 0, SKY_WIDTH, SKY_HEIGHT);

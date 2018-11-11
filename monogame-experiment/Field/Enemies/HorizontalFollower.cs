@@ -34,7 +34,9 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Animate
         protected override void Animate(float tm)
         {
-            spr.Animate(4, 0, 0, 0, tm);
+            const float ANIM_SPEED = 6.0f;
+
+            spr.Animate(5, 0, 3, ANIM_SPEED, tm);
         }
 
 
