@@ -24,6 +24,8 @@ namespace monogame_experiment.Desktop.Field.Enemies
             width /= 2;
             target.Y = 0.0f;
             speed.Y = 0.0f;
+
+            waving = false;
         }
 
 
@@ -116,7 +118,8 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Animate
         protected override void Animate(float tm)
         {
-            spr.Animate(6, 0, 0, 0, tm);
+            int frame = (thwomping && thwompMode < 2) ? 1 : 0;
+            spr.Animate(6, frame, frame, 0, tm);
         }
 
 
