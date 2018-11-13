@@ -57,6 +57,10 @@ namespace monogame_experiment.Desktop.Field
         private float hurtTimer = 0.0f;
         // Is dead
         private bool dead;
+        // Angle
+        private float angle;
+        // Special scale
+        private float spcScale;
 
         // A reference to the game object
         private GameField gameRef;
@@ -269,6 +273,9 @@ namespace monogame_experiment.Desktop.Field
         // Update player
         override public void Update(float tm, InputManager input = null)
 		{
+            // Set transition values to default
+            spcScale = 1.0f;
+            angle = 0.0f;
 
             // Update player stuff
 			Control(input, tm);
@@ -462,12 +469,20 @@ namespace monogame_experiment.Desktop.Field
         override public void Draw(Graphics g)
 		{
             const float HURT_FACTOR = 0.5f;
+            const float MIDDLE = 32.0f;
 
 			g.Push();
 
             g.Identity();
-			g.Translate(pos.X, pos.Y);         
-			g.Scale(direction, 1.0f);
+            // Translate to the point
+			g.Translate(pos.X, pos.Y);
+            // Rotate
+            g.Translate(0.0f, -MIDDLE);
+            g.Rotate(angle);
+            g.Translate(0.0f, MIDDLE);
+            // Scale
+            g.Scale(direction, 1.0f);
+            g.Scale(spcScale, spcScale);
 
             // Draw figure
             if (hurtTimer <= 0.0f)
@@ -485,6 +500,14 @@ namespace monogame_experiment.Desktop.Field
             // Draw tongue
             tongue.Draw(g);
 		}
+
+
+        // Update transition events
+        public void TransitionEvents(float t)
+        {
+            angle = (float)(Math.PI * 2) * (1.0f-t);
+            spcScale = 1.0f-t;
+        }
 
     }
 }

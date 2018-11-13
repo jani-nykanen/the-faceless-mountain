@@ -17,6 +17,9 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Thwomp wait
         private float thwompWait;
 
+        // Shake
+        private bool shake;
+
 
         // Constructor
         public VerticalThwomp(float x, float y, Graphics.Flip flip = Graphics.Flip.None) : base(x, y, flip)
@@ -26,6 +29,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
             speed.Y = 0.0f;
 
             waving = false;
+            shake = false;
         }
 
 
@@ -50,6 +54,20 @@ namespace monogame_experiment.Desktop.Field.Enemies
             {
                 thwomping = true;
                 thwompMode = 0;
+            }
+        }
+
+
+        // Camera event
+        protected override void OnCameraEvent(Camera cam)
+        {
+            const float SHAKE_TIME = 60.0f;
+            const float SHAKE_VAL = 16.0f;
+
+            if(shake)
+            {
+                cam.Shake(SHAKE_TIME, SHAKE_VAL);
+                shake = false;
             }
         }
 
@@ -136,6 +154,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
             {
                 thwompMode = 1;
                 thwompWait = WAIT_TIME;
+                shake = true;
             }
             // Or if flipped, stop
             else if (thwompMode == 2 && flip == Graphics.Flip.Vertical)
@@ -165,6 +184,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
             {
                 thwompMode = 1;
                 thwompWait = WAIT_TIME;
+                shake = true;
             }
         }
     }

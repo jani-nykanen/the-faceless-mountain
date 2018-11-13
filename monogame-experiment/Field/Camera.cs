@@ -27,6 +27,14 @@ namespace monogame_experiment.Desktop.Field
         // Viewport size
         private Vector2 viewport;
 
+        // Shake timer
+        private float shakeTimer;
+        // Shake max
+        private float shakeMax;
+
+        // Random number generator
+        private Random rand;
+
 
         // Update scale
         private float UpdateScale(float scale, float acc, float target, float tm)
@@ -57,6 +65,8 @@ namespace monogame_experiment.Desktop.Field
 
             viewport = new Vector2(1, 1);
             topLeft = new Vector2(1, 1);
+
+            rand = new Random();
         }
 
 
@@ -115,8 +125,17 @@ namespace monogame_experiment.Desktop.Field
             topLeft = pos - t;
             bottomRight = pos + t;
 
+            float shakeX = 0.0f, shakeY = 0.0f;
+            // Shake
+            if(shakeTimer > 0.0f)
+            {
+                shakeX = (float)(rand.NextDouble() * 2.0 - 1.0) * shakeMax;
+                shakeY = (float)(rand.NextDouble() * 2.0 - 1.0) * shakeMax;
+            }
+
+
             g.IdentityWorld();
-			g.TranslateWorld(view.X / 2.0f, view.Y / 2.0f);
+			g.TranslateWorld(view.X / 2.0f + shakeX, view.Y / 2.0f + shakeY);
             g.ScaleWorld(scale.X, scale.Y);
             g.TranslateWorld(-pos.X, -pos.Y);
 
@@ -171,6 +190,20 @@ namespace monogame_experiment.Desktop.Field
             {
                 pos.Y = -viewport.Y/2;
             }
+        
+            // Update shake
+            if(shakeTimer > 0.0f)
+            {
+                shakeTimer -= 1.0f * tm;
+            }
+        }
+
+
+        // Shake
+        public void Shake(float time, float strength)
+        {
+            shakeTimer = time;
+            shakeMax = strength;
         }
     }
 }

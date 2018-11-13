@@ -123,5 +123,12 @@ namespace monogame_experiment.Desktop
             g.SetColor();
             g.EndDrawing();
         }
+
+
+        // Get transition value in [0,1]
+        public float GetValue()
+        {
+            return timer / TIME_MAX;
+        }
     }
 }

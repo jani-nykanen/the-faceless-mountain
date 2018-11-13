@@ -22,7 +22,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Create player
             // TODO: Get position from the maps or something
-            player = new Player(new Vector2(6 * 64, -2 * 64 - 1), rf);
+            player = new Player(new Vector2(6 * 64, -3 * 64 - 1), rf);
 
             // Set camera position
             cam.MoveTo(player.GetPos().X, player.GetPos().Y - 32);
@@ -55,6 +55,13 @@ namespace monogame_experiment.Desktop.Field
                 e.GetPlayerCollision(player, tm);
                 stage.GetObjectCollision(e, tm, false);
             }
+        }
+
+
+        // Update transition events
+        public void TransitionEvents(float t)
+        {
+            player.TransitionEvents(t);
         }
 
 

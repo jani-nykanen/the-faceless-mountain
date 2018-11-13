@@ -105,6 +105,10 @@ namespace monogame_experiment.Desktop.Field
                 // Update HUD (and time!)
                 hud.Update(tm);
             }
+            else
+            {
+                objMan.TransitionEvents(trans.GetValue());
+            }
 
             // Update stage
             stage.Update(tm);

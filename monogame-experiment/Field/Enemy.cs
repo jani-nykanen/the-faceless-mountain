@@ -58,7 +58,7 @@ namespace monogame_experiment.Desktop.Field
             pos.Y = y;
             startPos = pos;
 
-            wave = 0.0f;
+            wave = (float)((new Random()).NextDouble() * Math.PI * 2);
             waveSpeed = DEFAULT_WAVE_SPEED;
             waving = true;
 
@@ -96,6 +96,9 @@ namespace monogame_experiment.Desktop.Field
         // Player event
         virtual protected void OnPlayerEvent(Player pl) {}
 
+        // Camera event
+        virtual protected void OnCameraEvent(Camera cam) {}
+
 
         // Update
         override public void Update(float tm, InputManager input = null)
@@ -114,6 +117,10 @@ namespace monogame_experiment.Desktop.Field
             {
                 wave += waveSpeed * tm;
                 wave %= (float)(Math.PI * 2.0f);
+            }
+            else
+            {
+                wave = 0.0f;
             }
 
             // Determine movement direction
@@ -152,8 +159,10 @@ namespace monogame_experiment.Desktop.Field
         public void CheckCamera(Camera cam)
         {
 
-            // Check if in the camera
+            // Custom camera event
+            OnCameraEvent(cam);
 
+            // Check if in the camera
             Vector2 topLeft = cam.GetTopLeftCorner();
             Vector2 bottomRight = cam.GetBottomRightCorner();
 
