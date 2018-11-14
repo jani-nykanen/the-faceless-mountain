@@ -20,10 +20,13 @@ namespace monogame_experiment.Desktop.Core
 		private InputManager input;
 		// Configuration
 		private Configuration conf;
+        // Audio manager
+        private AudioManager audio;
 
 
 		// Constructor
-		public SceneManager(InputManager input, WeakEventManager eventMan, Configuration conf)
+        public SceneManager(InputManager input, WeakEventManager eventMan, 
+                            Configuration conf, AudioManager audio)
         {
 			scenes = new List<Scene>();
 			globalScene = null;
@@ -33,6 +36,7 @@ namespace monogame_experiment.Desktop.Core
 			this.input = input;
 			this.eventMan = eventMan;
 			this.conf = conf;
+            this.audio = audio;
         }
 
 
@@ -59,7 +63,7 @@ namespace monogame_experiment.Desktop.Core
 
 			// Pass references to certain objects to the
 			// scene
-			scene.Ready(input, eventMan, conf);
+			scene.Ready(input, eventMan, conf, audio);
 		}
 
 

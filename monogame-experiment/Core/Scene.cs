@@ -12,17 +12,22 @@ namespace monogame_experiment.Desktop.Core
 		protected WeakEventManager eventMan;
 		// Configuration data
 		protected Configuration conf;
+        // Audio manager
+        protected AudioManager audio;
 
-		// A refrence to a global scene
-		protected Scene globalScene;
+        // A refrence to a global scene
+        protected Scene globalScene;
 
 
         // Make ready for use
-		public void Ready(InputManager input, WeakEventManager eventMan, Configuration conf) {
+        public void Ready(InputManager input, WeakEventManager eventMan, 
+                          Configuration conf, AudioManager audio) 
+        {
 
 			this.input = input;
 			this.eventMan = eventMan;
 			this.conf = conf;
+            this.audio = audio;
 		}
 
 
@@ -47,6 +52,19 @@ namespace monogame_experiment.Desktop.Core
         }
 
 
+        // Toggle audio
+        public void ToggleAudio()
+        {
+            audio.ToggleAudio();
+        }
+
+
+        // Is audio renabled
+        public bool IsAudioEnabled()
+        {
+            return audio.IsEnabled();
+        }
+
         // Initialize scene
 		public abstract void Init();
 		// Update scene
@@ -58,6 +76,5 @@ namespace monogame_experiment.Desktop.Core
 
 		// Get name
 		public abstract String GetName();
-
     }
 }

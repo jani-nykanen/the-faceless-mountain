@@ -31,6 +31,8 @@ namespace monogame_experiment.Desktop.Core
 		private InputManager input;
 		// Weak event manager
 		private WeakEventManager eventMan;
+        // Audio manager
+        private AudioManager audio;
 
 
 		// Configurate application
@@ -69,8 +71,10 @@ namespace monogame_experiment.Desktop.Core
 			input = new InputManager();
 			// Create event manager
 			eventMan = new WeakEventManager(this);
+            // Create audio manager
+            audio = new AudioManager();
 			// Create scene manager
-			sceneMan = new SceneManager(input, eventMan, conf);
+			sceneMan = new SceneManager(input, eventMan, conf, audio);
         }
 
 

@@ -84,6 +84,7 @@
     <Compile Include="Field\Spiral.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Pause.cs" />
+    <Compile Include="Core\AudioManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

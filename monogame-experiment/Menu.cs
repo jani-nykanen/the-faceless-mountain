@@ -120,5 +120,14 @@ namespace monogame_experiment.Desktop
 
             cursorPos = p;
         }
+
+
+        // Rename a button
+        public void RenameButton(int index, String name)
+        {
+            if (index < 0 || index >= text.Length) return;
+
+            text[index] = name;
+        }
     }
 }

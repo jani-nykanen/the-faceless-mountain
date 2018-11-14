@@ -166,7 +166,7 @@ namespace monogame_experiment.Desktop.Field
             stage.DrawBackground(g);
 
             // Use camera
-            cam.Use(g);
+            cam.Use(g, pause.IsActive());
 
             // Draw stage
             stage.Draw(g, cam);

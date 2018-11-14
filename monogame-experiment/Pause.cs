@@ -71,7 +71,11 @@ namespace monogame_experiment.Desktop
                         gf.Reset();
                     },
                     // Settings
-                    null, 
+                    delegate(Object self)
+                    {
+                        Pause p = (Pause)self;
+                        p.inSettings = true;
+                    },
                     // Quit
                     delegate(Object self) 
                     {
@@ -81,14 +85,26 @@ namespace monogame_experiment.Desktop
                 }
             );
 
+            // Create settings
             settings = new Menu(
                 new String[] {
-                    "Toggle Fullscreen",
+                    "Fullscreen",
                     "Audio: On",
                     "Back"
                 },
                 new Menu.Callback[] {
-                    null, null, null, null,
+                    // Fullscreen
+                    delegate(Object o) { baseScene.ToggleFullscreen(); }, 
+                    // Audio
+                    delegate(Object o) {
+                    Pause p = (Pause)o;
+                    p.baseScene.ToggleAudio();
+                    bool state = p.baseScene.IsAudioEnabled();
+                    p.settings.RenameButton(1,"Audio: " + (state ? "On" : "Off"));
+
+                    }, 
+                    // Quit
+                    delegate(Object o) { ((Pause)o).inSettings = false; },
                 }
             );
         }
@@ -121,7 +137,11 @@ namespace monogame_experiment.Desktop
         {
             if (!active) return;
 
-            baseMenu.Update(input, (Object)this);
+            // Update either settings or the base pause menu
+            if (inSettings)
+                settings.Update(input, (Object)this);
+            else
+                baseMenu.Update(input, (Object)this);
         }
 
 
@@ -131,15 +151,20 @@ namespace monogame_experiment.Desktop
             const int PAUSE_WIDTH = 480;
             const int PAUSE_HEIGHT = 320;
 
+            const int SETTINGS_WIDTH = 576;
+            const int SETTINGS_HEIGHT = 256;
+
             if (!active) return;
 
             Vector2 view = g.GetViewport();
 
             // Draw box
-            DrawBox(g, PAUSE_WIDTH, PAUSE_HEIGHT);
+            DrawBox(g, 
+                    inSettings ? SETTINGS_WIDTH : PAUSE_WIDTH, 
+                    inSettings ? SETTINGS_HEIGHT : PAUSE_HEIGHT);
 
-            // Draw menu
-            baseMenu.Draw(g, view.X / 2, view.Y / 2);
+            // Draw menu or settings
+            (inSettings ? settings : baseMenu).Draw(g, view.X / 2, view.Y / 2);
         }
     }
 }

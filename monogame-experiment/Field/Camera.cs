@@ -114,7 +114,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Use camera
-		public void Use(Graphics g)
+		public void Use(Graphics g, bool disableShake = false)
 		{
 			Vector2 view = g.GetViewport();
 
@@ -127,7 +127,7 @@ namespace monogame_experiment.Desktop.Field
 
             float shakeX = 0.0f, shakeY = 0.0f;
             // Shake
-            if(shakeTimer > 0.0f)
+            if(shakeTimer > 0.0f && !disableShake)
             {
                 shakeX = (float)(rand.NextDouble() * 2.0 - 1.0) * shakeMax;
                 shakeY = (float)(rand.NextDouble() * 2.0 - 1.0) * shakeMax;
