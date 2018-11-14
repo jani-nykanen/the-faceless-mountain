@@ -137,6 +137,13 @@ namespace monogame_experiment.Desktop
         {
             if (!active) return;
 
+            // Check cancel key (back or esc, really)
+            if(input.GetButton("cancel") == State.Pressed)
+            {
+                Disable();
+                return;
+            }
+
             // Update either settings or the base pause menu
             if (inSettings)
                 settings.Update(input, (Object)this);

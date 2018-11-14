@@ -66,7 +66,8 @@ namespace monogame_experiment.Desktop
             }
 
             // Check button down
-            if(input.GetKey("start") == State.Pressed)
+            if(input.GetButton("start") == State.Pressed ||
+               input.GetButton("fire1") == State.Pressed)
             {
                 if(cbs[cursorPos] != null)
                 {

@@ -118,7 +118,8 @@ namespace monogame_experiment.Desktop.Field
                 // Make active
                 else 
                 {
-                    if(input.GetKey("start") == State.Pressed)
+                    if(input.GetButton("start") == State.Pressed
+                       || input.GetButton("cancel") == State.Pressed)
                     {
                         pause.Activate();
                         return;
