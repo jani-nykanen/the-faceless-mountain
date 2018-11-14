@@ -39,6 +39,9 @@ namespace monogame_experiment.Desktop.Field
         // Cloud positions
         private float[] cloudPos;
 
+        // Player starting position
+        private Vector2 startPos;
+
 
         // Draw tilemap
         private void DrawTilemap(int layer, Bitmap bmp, Graphics g, Camera cam,
@@ -379,6 +382,13 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Get player starting position
+        public Vector2 GetStartPos()
+        {
+            return startPos;
+        }
+
+
         // Parse objects
         public void ParseObjects(ObjectManager objMan)
         {
@@ -462,6 +472,12 @@ namespace monogame_experiment.Desktop.Field
                         // Horizontal thwomp, flip
                         case 10:
                             e = new HorizontalThwomp(target.X, target.Y, Graphics.Flip.Horizontal);
+                            break;
+
+                        // Player starting position
+                        case 15:
+                            startPos = new Vector2(target.X, target.Y);
+                            e = null;
                             break;
 
                         default:

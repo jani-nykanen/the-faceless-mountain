@@ -47,9 +47,11 @@ namespace monogame_experiment.Desktop.Field
             hud = new HUD(assets);
 
             // Create object manager
-            objMan = new ObjectManager(cam, assets, this);
+            objMan = new ObjectManager(assets);
             // Add objects
             stage.ParseObjects(objMan);
+            // Set player
+            objMan.SetPlayer(cam, stage, this);
 
             // Set initial camera scale
             cam.Scale(INITIAL_CAM_SCALE, INITIAL_CAM_SCALE);
@@ -107,7 +109,7 @@ namespace monogame_experiment.Desktop.Field
             }
             else
             {
-                objMan.TransitionEvents(trans.GetValue());
+                objMan.TransitionEvents(trans.GetValue(), tm);
             }
 
             // Update stage

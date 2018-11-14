@@ -81,6 +81,7 @@
     <Compile Include="Field\Enemies\VerticalFollower.cs" />
     <Compile Include="Field\Enemies\VerticalThwomp.cs" />
     <Compile Include="Field\Enemies\HorizontalThwomp.cs" />
+    <Compile Include="Field\Spiral.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -187,6 +188,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Bitmaps\enemy.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Bitmaps\spiral.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

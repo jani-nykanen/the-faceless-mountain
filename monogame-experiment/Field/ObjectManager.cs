@@ -11,30 +11,45 @@ namespace monogame_experiment.Desktop.Field
     {
         // Player
         private Player player;
+        // Spiral
+        private Spiral spiral;
 
         // Enemies
         private List<Enemy> enemies;
 
 
         // Constructor
-        public ObjectManager(Camera cam, AssetPack assets, GameField rf = null)
+        public ObjectManager(AssetPack assets)
         {
-
-            // Create player
-            // TODO: Get position from the maps or something
-            player = new Player(new Vector2(6 * 64, -3 * 64 - 1), rf);
-
-            // Set camera position
-            cam.MoveTo(player.GetPos().X, player.GetPos().Y - 32);
+            // Create spiral
+            spiral = new Spiral(assets);
 
             // Create list of enemies
             enemies = new List<Enemy>();
+        }
+
+        // Set player
+        public void SetPlayer(Camera cam, Stage stage, GameField rf)
+        {
+            Vector2 plPos = stage.GetStartPos();
+
+            // Create player
+            // TODO: Get position from the maps or something
+            player = new Player(plPos, rf);
+            // Set spiral position
+            spiral.Create(plPos + new Vector2(0, -Stage.TILE_SIZE / 2 * 1.5f));
+
+            // Set camera position
+            cam.MoveTo(player.GetPos().X, player.GetPos().Y - Stage.TILE_SIZE / 2);
         }
 
 
         // Update
         public void Update(Stage stage, Camera cam, InputManager input, float tm)
         {
+            // Update spiral
+            spiral.Update(tm, true);
+
             // Update player
             player.Update(tm, input);
             // Set camera following
@@ -59,8 +74,9 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Update transition events
-        public void TransitionEvents(float t)
+        public void TransitionEvents(float t, float tm)
         {
+            spiral.Update(tm);
             player.TransitionEvents(t);
         }
 
@@ -68,6 +84,9 @@ namespace monogame_experiment.Desktop.Field
         // Draw
         public void Draw(Graphics g, Camera cam = null)
         {
+            // Draw spiral
+            spiral.Draw(g);
+
             // Draw enemies
             foreach(Enemy e in enemies)
             {
