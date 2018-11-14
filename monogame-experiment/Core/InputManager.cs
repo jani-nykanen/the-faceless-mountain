@@ -40,6 +40,8 @@ namespace monogame_experiment.Desktop.Core
 
 		// Virtual gamepad stick
 		private Vector2 stick;
+        // Stick delta
+        private Vector2 stickDelta;
 
 		// Reference to graphics
 		private Graphics graph;
@@ -114,6 +116,9 @@ namespace monogame_experiment.Desktop.Core
 		{
 			const float DELTA = 0.1f;
 
+            // Store old stick
+            Vector2 oldStick = stick;
+
 			stick = Vector2.Zero;
 
             // Check arrow keys
@@ -149,7 +154,11 @@ namespace monogame_experiment.Desktop.Core
                 stick.Y = -1.0f;
 			else if (dpad.Down == ButtonState.Pressed)
                 stick.Y = 1.0f;
-		}
+
+            // Calculate delta
+            stickDelta = stick - oldStick;
+
+        }
 
 
 		// Constructor
@@ -356,5 +365,12 @@ namespace monogame_experiment.Desktop.Core
 		{
 			return stick;
 		}
+
+
+        // Get stick delta
+        public Vector2 GetStickDelta()
+        {
+            return stickDelta;
+        }
 	}
 }

@@ -8,4 +8,7 @@
     <key name="fire1" code="88" button="0"/>
     <key name="fire2" code="90" button="1"/>
     <key name="fire3" code="67" button="7"/>
+    
+    <key name="start" code="13" button="9"/>
+    <key name="cancel" code="27" button="8"/>
 </keyconfig>

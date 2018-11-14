@@ -33,6 +33,20 @@ namespace monogame_experiment.Desktop.Core
 		}
 
 
+        // Quit
+        public void Quit()
+        {
+            eventMan.Terminate();
+        }
+
+
+        // Toggle fullscreen
+        public void ToggleFullscreen()
+        {
+            eventMan.ToggleFullscreen();
+        }
+
+
         // Initialize scene
 		public abstract void Init();
 		// Update scene
@@ -43,7 +57,7 @@ namespace monogame_experiment.Desktop.Core
 		public abstract void Destroy();
 
 		// Get name
-		public abstract String getName();
+		public abstract String GetName();
 
     }
 }

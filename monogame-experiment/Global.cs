@@ -41,6 +41,9 @@ namespace monogame_experiment.Desktop
 
             // Create transition
             trans = new Transition();
+
+            // Initialize some global stuff
+            Menu.Init(assets);
         }
 
 
@@ -84,7 +87,7 @@ namespace monogame_experiment.Desktop
 
 
         // Get name
-		override public String getName()
+		override public String GetName()
         {
             return "global";
         }

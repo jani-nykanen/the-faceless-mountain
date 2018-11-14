@@ -82,6 +82,8 @@
     <Compile Include="Field\Enemies\VerticalThwomp.cs" />
     <Compile Include="Field\Enemies\HorizontalThwomp.cs" />
     <Compile Include="Field\Spiral.cs" />
+    <Compile Include="Menu.cs" />
+    <Compile Include="Pause.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

@@ -31,7 +31,8 @@ namespace monogame_experiment.Desktop.Field
         private Stage stage;
         // HUD
         private HUD hud;
-
+        // Pause screen
+        private Pause pause;
 
         // Reset scene
         private void ResetGame()
@@ -58,6 +59,9 @@ namespace monogame_experiment.Desktop.Field
             cam.SetScaleTarget(CAM_SCALE_TARGET, CAM_SCALE_TARGET,
                                CAM_SCALE_SPEED* TRANS_SPEED, 
                                CAM_SCALE_SPEED* TRANS_SPEED);
+
+            // Disable pause
+            pause.Disable();
 
             // Set transition
             trans.Activate(Transition.Mode.Out, TRANS_SPEED, null);
@@ -88,6 +92,9 @@ namespace monogame_experiment.Desktop.Field
             Tongue.Init(assets);
             Enemy.Init(assets);
 
+            // Create pause
+            pause = new Pause(this);
+
             // (Re)set game objects & stuff
             ResetGame();
 
@@ -97,26 +104,47 @@ namespace monogame_experiment.Desktop.Field
         // Update scene
 		override public void Update(float tm)
         {
+            // TODO: Unnecessary pause.IsActive calls?
 
             // Skip certain things if transitioning
             if (!trans.IsActive())
             {
+                // If paused, skip the rest
+                if (pause.IsActive())
+                {
+                    pause.Update(input);
+                    return;
+                }
+                // Make active
+                else 
+                {
+                    if(input.GetKey("start") == State.Pressed)
+                    {
+                        pause.Activate();
+                        return;
+                    }
+                }
+
                 // Update game objects
                 objMan.Update(stage, cam, input, tm);
 
                 // Update HUD (and time!)
                 hud.Update(tm);
             }
-            else
+            else if(!pause.IsActive())
             {
                 objMan.TransitionEvents(trans.GetValue(), tm);
             }
 
-            // Update stage
-            stage.Update(tm);
+            // In the case transitioning & pause active
+            if (!pause.IsActive())
+            {
+                // Update stage
+                stage.Update(tm);
 
-            // Update camera
-            cam.Update(tm);
+                // Update camera
+                cam.Update(tm);
+            }
 
 
         }
@@ -155,6 +183,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Draw HUD
             hud.Draw(g);
+
+            // Draw pause
+            pause.Draw(g);
 		}
 
 
@@ -166,7 +197,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Get name
-		override public String getName()
+		override public String GetName()
 		{
 			return "game";
 		}
@@ -179,9 +210,20 @@ namespace monogame_experiment.Desktop.Field
             const float CAM_TARGET = 2.0f;
             const float CAM_SPEED = 0.0050f * TRANS_SPEED;
 
-            cam.SetScaleTarget(CAM_TARGET, CAM_TARGET, CAM_SPEED, CAM_SPEED);
+            if(!pause.IsActive())
+                cam.SetScaleTarget(CAM_TARGET, CAM_TARGET, CAM_SPEED, CAM_SPEED);
+
             trans.Activate(Transition.Mode.In, TRANS_SPEED, ResetGame);
            
+        }
+
+
+        // Start quitting
+        public void StartQuitting()
+        {
+            const float TRANS_SPEED = 2.0f;
+
+            trans.Activate(Transition.Mode.In, TRANS_SPEED, Quit);
         }
     }
 }
