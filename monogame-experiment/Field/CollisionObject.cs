@@ -19,6 +19,9 @@ namespace monogame_experiment.Desktop.Field
         // Acceleration
         protected Vector2 acc;
 
+        // Get collision
+        protected bool getCollision = true;
+
         // Dimensions
         protected float width;
         protected float height;
@@ -184,6 +187,19 @@ namespace monogame_experiment.Desktop.Field
         public float GetHeight()
         {
             return height;
+        }
+
+
+        // Set position
+        public void SetPos(Vector2 p)
+        {
+            pos = p;
+        }
+
+        // Does get collision
+        public bool DoesGetCollision()
+        {
+            return getCollision;
         }
     }
 }

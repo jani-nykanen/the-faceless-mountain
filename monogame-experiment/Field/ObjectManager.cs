@@ -70,6 +70,13 @@ namespace monogame_experiment.Desktop.Field
                 e.GetPlayerCollision(player, tm);
                 stage.GetObjectCollision(e, tm, false);
             }
+
+            // TEMPORARY!
+            // TODO: DEBUG, remove
+            if(input.GetButton("debug") == State.Pressed)
+            {
+                stage.ToNextCheckpoint(player);
+            }
         }
 
 

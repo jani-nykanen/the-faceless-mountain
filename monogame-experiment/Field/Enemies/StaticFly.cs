@@ -8,7 +8,7 @@ namespace monogame_experiment.Desktop.Field.Enemies
         // Constructor
         public StaticFly(float x, float y) : base(x, y)
         {
-            // ...
+            getCollision = false;
         }
 
 

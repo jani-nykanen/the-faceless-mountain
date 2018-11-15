@@ -23,7 +23,6 @@ namespace monogame_experiment.Desktop.Field
 
         // Tilemaps
         private List<Tilemap> maps;
-        private Tilemap map;
 
         // Bitmaps
         private Bitmap bmpTileset;
@@ -41,8 +40,9 @@ namespace monogame_experiment.Desktop.Field
         // Cloud positions
         private float[] cloudPos;
 
-        // Player starting position
-        private Vector2 startPos;
+        // Checkpoints (only the first one is needed in 
+        // the final game, other ones are for debugging)
+        private List<Vector2> checkpoints;
 
 
         // Get map tile
@@ -54,7 +54,7 @@ namespace monogame_experiment.Desktop.Field
 
             return maps[mapIndex].GetTile(layer, x, y + mapIndex*h);
         }
-
+        
 
         // Parse objects
         private void ParseMapObjects(int index, ObjectManager objMan)
@@ -145,7 +145,7 @@ namespace monogame_experiment.Desktop.Field
 
                         // Player starting position
                         case 15:
-                            startPos = new Vector2(target.X, target.Y);
+                            checkpoints.Add(target);
                             e = null;
                             break;
 
@@ -322,9 +322,7 @@ namespace monogame_experiment.Desktop.Field
             {
                 maps.Add(m);
             }
-
-            // Get current map
-            map = maps[0];
+            checkpoints = new List<Vector2>();
 
             // Get bitmaps
             bmpTileset = assets.GetBitmap("tileset");
@@ -333,7 +331,7 @@ namespace monogame_experiment.Desktop.Field
             bmpSky = assets.GetBitmap("sky");
 
             // Compute y translation
-            transY = -map.GetHeight() * TILE_SIZE;
+            transY = -maps[0].GetHeight() * TILE_SIZE;
 
             // Create cloud positions
             cloudPos = new float[3];
@@ -369,6 +367,8 @@ namespace monogame_experiment.Desktop.Field
         // Player collision
         public void GetObjectCollision(CollisionObject pl, float tm, bool floorPlus = false)
         {
+            if (!pl.DoesGetCollision()) return;
+
             const int CHECK = 5;
             const float WIDTH_PLUS = 8.0f;
 
@@ -387,7 +387,7 @@ namespace monogame_experiment.Desktop.Field
             // if (sy < 0) sy = 0;
 
             int ex = sx + CHECK;
-            if (ex >= map.GetWidth()) ex = map.GetWidth() - 1;
+            if (ex >= maps[0].GetWidth()) ex = maps[0].GetWidth() - 1;
 
             int ey = sy + CHECK;
             // if (ey >= map.GetHeight()) ey = map.GetHeight() - 1;
@@ -517,7 +517,7 @@ namespace monogame_experiment.Desktop.Field
         // Get player starting position
         public Vector2 GetStartPos()
         {
-            return startPos;
+            return checkpoints[0];
         }
 
 
@@ -528,6 +528,19 @@ namespace monogame_experiment.Desktop.Field
             {
                 ParseMapObjects(i, objMan);
             }
+        }
+
+
+        // Move to the next check point
+        public void ToNextCheckpoint(CollisionObject obj)
+        {
+
+            int h = maps[0].GetHeight();
+            int y = (int)( (obj.GetPos().Y-transY) / TILE_SIZE);
+            int mapIndex = -((y + 1) - h) / h +1;
+            if (mapIndex >= checkpoints.Count) return;
+
+            obj.SetPos(checkpoints[mapIndex]);
         }
     }
 }

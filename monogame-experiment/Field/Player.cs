@@ -335,7 +335,7 @@ namespace monogame_experiment.Desktop.Field
         // Wall collision
         override protected void OnWallCollision(float x, float y, int dir)
         {
-            const float BOUNCE_DELTA = 2.0f;
+            const float BOUNCE_DELTA = 3.0f;
             const float BOUNCE_FACTOR = 1.25f;
 
             float delta = hurtTimer > 0.0f ? 0.0f : BOUNCE_DELTA;

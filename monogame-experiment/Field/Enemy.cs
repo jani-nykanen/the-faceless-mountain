@@ -64,6 +64,7 @@ namespace monogame_experiment.Desktop.Field
 
             exist = true;
             inCamera = true;
+            getCollision = true;
 
             width = Stage.TILE_SIZE;
             height = Stage.TILE_SIZE;
