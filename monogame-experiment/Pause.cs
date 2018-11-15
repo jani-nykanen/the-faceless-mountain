@@ -75,6 +75,7 @@ namespace monogame_experiment.Desktop
                     {
                         Pause p = (Pause)self;
                         p.inSettings = true;
+                        p.settings.SetCursorPos(2);
                     },
                     // Quit
                     delegate(Object self) 

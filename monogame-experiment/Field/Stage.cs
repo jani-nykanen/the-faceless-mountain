@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 
@@ -20,7 +21,8 @@ namespace monogame_experiment.Desktop.Field
         const int CLOUD_WIDTH = 768;
         const int CLOUD_HEIGHT = 192;
 
-        // Tilemap
+        // Tilemaps
+        private List<Tilemap> maps;
         private Tilemap map;
 
         // Bitmaps
@@ -41,6 +43,124 @@ namespace monogame_experiment.Desktop.Field
 
         // Player starting position
         private Vector2 startPos;
+
+
+        // Get map tile
+        private int GetMapTile(int layer, int x, int y)
+        {
+            int h = maps[0].GetHeight();
+            int mapIndex = -( (y+1) - h) / h;
+            if (mapIndex >= maps.Count) return -1;
+
+            return maps[mapIndex].GetTile(layer, x, y + mapIndex*h);
+        }
+
+
+        // Parse objects
+        private void ParseMapObjects(int index, ObjectManager objMan)
+        {
+            const int ENEMY_INDEX = 9 * 16;
+            const int LAYER = 2;
+
+            Enemy e = null;
+            Vector2 target;
+
+            Tilemap map = maps[index];
+
+            // Go through tiles and find enemies
+            int tile = 0;
+            for (int y = 0; y < map.GetHeight(); ++y)
+            {
+                for (int x = 0; x < map.GetWidth(); ++x)
+                {
+                    tile = map.GetTile(LAYER, x, y) - 1;
+                    if (tile < ENEMY_INDEX || tile >= ENEMY_INDEX + 16)
+                    {
+                        continue;
+                    }
+                    tile -= ENEMY_INDEX;
+
+                    // Add enemy
+                    e = null;
+                    target = new Vector2(x * TILE_SIZE + TILE_SIZE / 2,
+                                         (y + 1 - index * map.GetHeight()) * TILE_SIZE + transY);
+                    switch (tile)
+                    {
+                        // Horizontal fly
+                        case 0:
+
+                            e = new HorizontalFly(target.X, target.Y);
+                            break;
+
+                        // Vertical fly
+                        case 1:
+
+                            e = new VerticalFly(target.X, target.Y);
+                            break;
+
+                        // Falling fly, no flip
+                        case 2:
+                            e = new FallingFly(target.X, target.Y);
+                            break;
+
+                        // Falling fly, flip vertical
+                        case 3:
+                            e = new FallingFly(target.X, target.Y, Graphics.Flip.Vertical);
+                            break;
+
+                        // Static fly
+                        case 4:
+                            e = new StaticFly(target.X, target.Y);
+                            break;
+
+                        // Horizontal follower
+                        case 5:
+                            e = new HorizontalFollower(target.X, target.Y);
+                            break;
+
+                        // Vertical follower
+                        case 6:
+                            e = new VerticalFollower(target.X, target.Y);
+                            break;
+
+                        // Vertical thwomp
+                        case 7:
+                            e = new VerticalThwomp(target.X, target.Y);
+                            break;
+
+                        // Vertical thwomp, flip
+                        case 8:
+                            e = new VerticalThwomp(target.X, target.Y, Graphics.Flip.Vertical);
+                            break;
+
+                        // Horizontal thwomp
+                        case 9:
+                            e = new HorizontalThwomp(target.X, target.Y);
+                            break;
+
+                        // Horizontal thwomp, flip
+                        case 10:
+                            e = new HorizontalThwomp(target.X, target.Y, Graphics.Flip.Horizontal);
+                            break;
+
+                        // Player starting position
+                        case 15:
+                            startPos = new Vector2(target.X, target.Y);
+                            e = null;
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    // If not null, add
+                    if (e != null)
+                    {
+                        objMan.AddEnemy(e);
+                    }
+                }
+            }
+        }
 
 
         // Draw tilemap
@@ -74,7 +194,7 @@ namespace monogame_experiment.Desktop.Field
                 for (int x = sx; x <= ex; ++x)
                 {
                     // Get tile
-                    tile = map.GetTile(layer, x, y);
+                    tile = GetMapTile(layer, x, y);
                     if (tile == -1)
                         continue;
 
@@ -116,7 +236,7 @@ namespace monogame_experiment.Desktop.Field
 
             float ypos = background ? -TILE_SIZE : -TILE_SIZE / 1.5f;
 
-            g.BeginDrawing();
+           
 
             // Get top left corner & viewport
             Vector2 topLeft = cam.GetTopLeftCorner();
@@ -135,6 +255,7 @@ namespace monogame_experiment.Desktop.Field
             int wave = (int)((float)Math.Sin(waterWave + wavePlus) * WAVE_AMPL);
 
             // Draw water
+            g.BeginDrawing();
             int xpos = (int)waterPos + (background ? 0 : MOVE_X);
             for (int i = sx; i <= ex; ++i)
             {
@@ -185,16 +306,27 @@ namespace monogame_experiment.Desktop.Field
         // Is the tile free
         private bool IsFree(int x, int y, int l = 0)
         {
-            int v = map.GetTile(l, x, y);
+            int v = GetMapTile(l, x, y);
             return (v - 1) / 16 == COLLISION_ROW || v <= 0;
         }
 
 
         // Map
-        public Stage(AssetPack assets, int index)
+        public Stage(AssetPack assets)
         {
+            // Get maps
+            Tilemap m;
+            maps = new List<Tilemap>();
+            int index = 0;
+            while((m = assets.GetTilemap((index ++).ToString())) != null)
+            {
+                maps.Add(m);
+            }
+
             // Get current map
-            map = assets.GetTilemap(index.ToString());
+            map = maps[0];
+
+            // Get bitmaps
             bmpTileset = assets.GetBitmap("tileset");
             bmpWater = assets.GetBitmap("water");
             bmpCloud = assets.GetBitmap("cloud");
@@ -252,13 +384,13 @@ namespace monogame_experiment.Desktop.Field
             if (sx < 0) sx = 0;
 
             int sy = (int)((p.Y - transY) / TILE_SIZE) - CHECK / 2;
-            if (sy < 0) sy = 0;
+            // if (sy < 0) sy = 0;
 
             int ex = sx + CHECK;
             if (ex >= map.GetWidth()) ex = map.GetWidth() - 1;
 
             int ey = sy + CHECK;
-            if (ey >= map.GetHeight()) ey = map.GetHeight() - 1;
+            // if (ey >= map.GetHeight()) ey = map.GetHeight() - 1;
 
             // Check solid tiles in this area
             int tile = 0;
@@ -267,7 +399,7 @@ namespace monogame_experiment.Desktop.Field
                 for (int x = sx; x <= ex; ++x)
                 {
                     // Get tile
-                    tile = map.GetTile(0, x, y);
+                    tile = GetMapTile(0, x, y);
                     if (tile == -1)
                         continue;
 
@@ -392,104 +524,9 @@ namespace monogame_experiment.Desktop.Field
         // Parse objects
         public void ParseObjects(ObjectManager objMan)
         {
-            const int ENEMY_INDEX = 9 * 16;
-            const int LAYER = 2;
-
-            Enemy e = null;
-            Vector2 target;
-
-            // Go through tiles and find enemies
-            int tile = 0;
-            for (int y = 0; y < map.GetHeight(); ++y)
+            for (int i = 0; i < maps.Count; ++ i)
             {
-                for (int x = 0; x < map.GetWidth(); ++x)
-                {
-                    tile = map.GetTile(LAYER, x, y) - 1;
-                    if (tile < ENEMY_INDEX || tile >= ENEMY_INDEX + 16)
-                    {
-                        continue;
-                    }
-                    tile -= ENEMY_INDEX;
-
-                    // Add enemy
-                    e = null;
-                    target = new Vector2(x * TILE_SIZE + TILE_SIZE / 2,
-                                                 (y + 1) * TILE_SIZE + transY);
-                    switch (tile)
-                    {
-                        // Horizontal fly
-                        case 0:
-
-                            e = new HorizontalFly(target.X, target.Y);
-                            break;
-
-                        // Vertical fly
-                        case 1:
-
-                            e = new VerticalFly(target.X, target.Y);
-                            break;
-
-                        // Falling fly, no flip
-                        case 2:
-                            e = new FallingFly(target.X, target.Y);
-                            break;
-
-                        // Falling fly, flip vertical
-                        case 3:
-                            e = new FallingFly(target.X, target.Y, Graphics.Flip.Vertical);
-                            break;
-
-                        // Static fly
-                        case 4:
-                            e = new StaticFly(target.X, target.Y);
-                            break;
-
-                        // Horizontal follower
-                        case 5:
-                            e = new HorizontalFollower(target.X, target.Y);
-                            break;
-
-                        // Vertical follower
-                        case 6:
-                            e = new VerticalFollower(target.X, target.Y);
-                            break;
-
-                        // Vertical thwomp
-                        case 7:
-                            e = new VerticalThwomp(target.X, target.Y);
-                            break;
-
-                        // Vertical thwomp, flip
-                        case 8:
-                            e = new VerticalThwomp(target.X, target.Y, Graphics.Flip.Vertical);
-                            break;
-
-                        // Horizontal thwomp
-                        case 9:
-                            e = new HorizontalThwomp(target.X, target.Y);
-                            break;
-
-                        // Horizontal thwomp, flip
-                        case 10:
-                            e = new HorizontalThwomp(target.X, target.Y, Graphics.Flip.Horizontal);
-                            break;
-
-                        // Player starting position
-                        case 15:
-                            startPos = new Vector2(target.X, target.Y);
-                            e = null;
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    // If not null, add
-                    if (e != null)
-                    {
-                        objMan.AddEnemy(e);
-                    }
-                }
+                ParseMapObjects(i, objMan);
             }
         }
     }
