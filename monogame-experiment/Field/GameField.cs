@@ -44,7 +44,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Create game objects
             cam = new Camera();
-            stage = new Stage(assets, 1);
+            stage = new Stage(assets, 0);
             hud = new HUD(assets);
 
             // Create object manager
