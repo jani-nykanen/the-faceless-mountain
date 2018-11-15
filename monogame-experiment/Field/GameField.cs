@@ -164,7 +164,7 @@ namespace monogame_experiment.Desktop.Field
 			g.FitViewHeight(720.0f);
 
             // Draw background
-            stage.DrawBackground(g);
+            stage.DrawBackground(g, cam);
 
             // Use camera
             cam.Use(g, pause.IsActive());

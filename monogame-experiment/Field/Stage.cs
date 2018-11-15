@@ -23,6 +23,8 @@ namespace monogame_experiment.Desktop.Field
 
         // Tilemaps
         private List<Tilemap> maps;
+        // Total map height
+        private int mapHeight;
 
         // Bitmaps
         private Bitmap bmpTileset;
@@ -236,8 +238,6 @@ namespace monogame_experiment.Desktop.Field
 
             float ypos = background ? -TILE_SIZE : -TILE_SIZE / 1.5f;
 
-           
-
             // Get top left corner & viewport
             Vector2 topLeft = cam.GetTopLeftCorner();
             Vector2 bottomRight = cam.GetBottomRightCorner();
@@ -321,6 +321,7 @@ namespace monogame_experiment.Desktop.Field
             while((m = assets.GetTilemap((index ++).ToString())) != null)
             {
                 maps.Add(m);
+                mapHeight += m.GetHeight() * TILE_SIZE;
             }
             checkpoints = new List<Vector2>();
 
@@ -448,10 +449,15 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw background
-        public void DrawBackground(Graphics g)
+        public void DrawBackground(Graphics g, Camera cam)
         {
             const int SKY_WIDTH = 320;
             const int SKY_HEIGHT = 640;
+            const float CLOUD_TRANSITION = -192.0f;
+            const float BASE_TRANSITION = -128.0f;
+            const int STRIP_HEIGHT = 128;
+
+            float tr = BASE_TRANSITION + cam.GetPos().Y / (float)mapHeight * CLOUD_TRANSITION;
 
             g.SetColor();
             g.Identity();
@@ -466,11 +472,25 @@ namespace monogame_experiment.Desktop.Field
                                          i * SKY_WIDTH, 0, SKY_WIDTH, SKY_HEIGHT);
             }
 
-
-            // Draw clouds
-            DrawClouds(g);
+            // Draw a strip that has the same color
+            // as the front cloud
+            Vector2 view = g.GetViewport();
+            g.SetColor(0.70f, 0.80f, 1.0f);
+            g.FillRect(0, (int)view.Y - STRIP_HEIGHT, (int)view.X, STRIP_HEIGHT);
 
             g.EndDrawing();
+
+            // Draw clouds
+            g.Push();
+            g.Translate(0, tr);
+            g.BeginDrawing();
+
+            DrawClouds(g);
+
+            g.Pop();
+            g.EndDrawing();
+
+
         }
 
 
