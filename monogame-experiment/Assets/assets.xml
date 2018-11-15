@@ -12,6 +12,7 @@
     
     <tilemap name="0" path="0.tmx" />
     <tilemap name="1" path="1.tmx" />
-    
+    <tilemap name="2" path="2.tmx" />
+    <tilemap name="3" path="3.tmx" />
 </assets>
 
