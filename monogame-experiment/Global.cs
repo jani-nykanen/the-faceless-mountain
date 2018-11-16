@@ -44,6 +44,7 @@ namespace monogame_experiment.Desktop
 
             // Initialize some global stuff
             Menu.Init(assets);
+            Pause.Init(assets);
         }
 
 

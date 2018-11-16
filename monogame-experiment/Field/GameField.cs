@@ -12,7 +12,15 @@ namespace monogame_experiment.Desktop.Field
 	// Game field scene
 	public class GameField : Scene
     {
-      
+
+        // Music volumes
+        const float MUSIC_VOL_BASE = 0.45f;
+        const float MUSIC_VOL_PAUSE = 0.25f;
+
+        // Samples
+        private Sample sMusic;
+        private Sample sPause;
+
 		// Bitmaps
 		private Bitmap bmpFont;
       
@@ -65,6 +73,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Set transition
             trans.Activate(Transition.Mode.Out, TRANS_SPEED, null);
+
+            // Reset music volume
+            sMusic.SetVolume(MUSIC_VOL_BASE);
         }
 
 
@@ -75,8 +86,6 @@ namespace monogame_experiment.Desktop.Field
 		// Initialize scene
 		override public void Init()
         {
-            const float MUSIC_VOL = 0.45f;
-
             Global gs = (Global)globalScene;
 			assets = gs.GetAssets();
 
@@ -94,9 +103,12 @@ namespace monogame_experiment.Desktop.Field
             Enemy.Init(assets, audio);
             Player.Init(assets);
 
+            // Get samples
+            sMusic = assets.GetSample("theme");
+            sPause = assets.GetSample("pause");
+
             // Play music
-            Sample sMusic = assets.GetSample("theme");
-            audio.FadeSample(sMusic,1000, 0.0f, MUSIC_VOL, true);
+            audio.FadeSample(sMusic,1000, 0.0f, MUSIC_VOL_BASE, true);
 
             // Create pause
             pause = new Pause(this);
@@ -118,7 +130,12 @@ namespace monogame_experiment.Desktop.Field
                 // If paused, skip the rest
                 if (pause.IsActive())
                 {
-                    pause.Update(input);
+                    pause.Update(input, audio);
+
+                    // Reset music volume
+                    if (!pause.IsActive())
+                        sMusic.SetVolume(MUSIC_VOL_BASE);
+
                     return;
                 }
                 // Make active
@@ -127,6 +144,12 @@ namespace monogame_experiment.Desktop.Field
                     if(input.GetButton("start") == State.Pressed
                        || input.GetButton("cancel") == State.Pressed)
                     {
+                        // Reduce music volume
+                        sMusic.SetVolume(MUSIC_VOL_PAUSE);
+                        // Pause sound
+                        audio.PlaySample(sPause, 1.00f);
+
+                        // Pause
                         pause.Activate();
                         return;
                     }

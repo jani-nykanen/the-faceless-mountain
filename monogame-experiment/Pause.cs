@@ -11,6 +11,18 @@ namespace monogame_experiment.Desktop
     // the title screen, too
     public class Pause
     {
+
+        // Global samples
+        private static Sample sCancel;
+
+
+        // Initialize global content
+        public static void Init(AssetPack assets)
+        {
+            sCancel = assets.GetSample("cancel");
+        }
+
+
         // Is active
         private bool active;
 
@@ -113,6 +125,7 @@ namespace monogame_experiment.Desktop
         // Disable
         public void Disable()
         {
+
             active = false;
         }
 
@@ -134,22 +147,25 @@ namespace monogame_experiment.Desktop
 
 
         // Update
-        public void Update(InputManager input)
+        public void Update(InputManager input, AudioManager audio)
         {
             if (!active) return;
 
             // Check cancel key (back or esc, really)
             if(input.GetButton("cancel") == State.Pressed)
             {
+                // Play cancel sound
+                audio.PlaySample(sCancel, 0.90f);
+
                 Disable();
                 return;
             }
 
             // Update either settings or the base pause menu
             if (inSettings)
-                settings.Update(input, (Object)this);
+                settings.Update(input, audio, (Object)this);
             else
-                baseMenu.Update(input, (Object)this);
+                baseMenu.Update(input, audio, (Object)this);
         }
 
 

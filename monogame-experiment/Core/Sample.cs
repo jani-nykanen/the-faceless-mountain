@@ -59,5 +59,19 @@ namespace monogame_experiment.Desktop.Core
 
             instance.Volume = v;
         }
+
+
+        // Pause
+        public void Pause()
+        {
+            instance.Pause();
+        }
+
+
+        // Resume
+        public void Resume()
+        {
+            instance.Resume();
+        }
     }
 }

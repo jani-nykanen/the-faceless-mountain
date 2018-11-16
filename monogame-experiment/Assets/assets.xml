@@ -21,5 +21,10 @@
     <sample name="hurt" path="hurt.wav" />
     <sample name="die" path="die.wav" />
     <sample name="thwomp" path="thwomp.wav" />
+    <sample name="spawn" path="spawn.wav" />
+    <sample name="accept" path="accept.wav" />
+    <sample name="select" path="select.wav" />
+    <sample name="pause" path="pause.wav" />
+    <sample name="cancel" path="cancel.wav" />
 </assets>
 

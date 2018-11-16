@@ -10,11 +10,18 @@ namespace monogame_experiment.Desktop
     {
         // Global bitmaps
         static private Bitmap bmpFont;
+        // Global samples
+        static private Sample sSelect;
+        static private Sample sAccept;
+
 
         // Initialize global content
         static public void Init(AssetPack assets)
         {
             bmpFont = assets.GetBitmap("font");
+
+            sSelect = assets.GetSample("select");
+            sAccept = assets.GetSample("accept");
         }
 
 
@@ -44,13 +51,14 @@ namespace monogame_experiment.Desktop
 
 
         // Update
-        public void Update(InputManager input, Object self = null)
+        public void Update(InputManager input, AudioManager audio, Object self = null)
         {
             const float DELTA = 0.25f;
 
             float sdelta = input.GetStickDelta().Y;
             float stick = input.GetStick().Y;
 
+            int old = cursorPos;
             // Up
             if(sdelta < -DELTA && stick < -DELTA)
             {
@@ -65,14 +73,24 @@ namespace monogame_experiment.Desktop
                 cursorPos %= length;
             }
 
+            // If cursor pos changed, play sound
+            if(old != cursorPos)
+            {
+                audio.PlaySample(sSelect, 1.0f);
+            }
+
             // Check button down
             if(input.GetButton("start") == State.Pressed ||
                input.GetButton("fire1") == State.Pressed)
             {
+                // Callback
                 if(cbs[cursorPos] != null)
                 {
                     cbs[cursorPos](self);
                 }
+
+                // Sound
+                audio.PlaySample(sAccept, 0.90f);
             }
         }
 

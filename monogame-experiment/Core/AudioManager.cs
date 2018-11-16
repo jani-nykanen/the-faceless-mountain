@@ -16,6 +16,8 @@ namespace monogame_experiment.Desktop.Core
         private float fadeSpeed;
         // Fade target
         private float fadeTarget;
+        // Looped sample, presumably music
+        private Sample loopedTrack;
 
 
         // Constructor
@@ -30,6 +32,15 @@ namespace monogame_experiment.Desktop.Core
         public void ToggleAudio()
         {
             enabled = !enabled;
+
+            if (loopedTrack != null)
+            {
+                if (!enabled)
+                    loopedTrack.Pause();
+                else
+                    loopedTrack.Resume();
+            }
+
         }
 
 
@@ -50,6 +61,19 @@ namespace monogame_experiment.Desktop.Core
         // Play a sample
         public void PlaySample(Sample s, float vol, bool loop = false)
         {
+            // See below
+            if (loop)
+            {
+                loopedTrack = s;
+                if (!enabled)
+                {
+                    s.Play(vol * volume, loop);
+                    s.Pause();
+                }
+            }
+
+            if (!enabled) return;
+
             s.Play(vol * volume, loop);
         }
 
@@ -57,6 +81,21 @@ namespace monogame_experiment.Desktop.Core
         // Fade a sample
         public void FadeSample(Sample s, int ms, float start, float target, bool loop = false)
         {
+            // Store looped track, so we can
+            // continue playing it if audio
+            // is disabled and then re-enabled
+            if (loop)
+            {
+                loopedTrack = s;
+                if (!enabled)
+                {
+                    s.Play(target * volume, loop);
+                    s.Pause();
+                }
+            }
+
+            if (!enabled) return;
+
             fadingSample = s;
 
             // Compute speed

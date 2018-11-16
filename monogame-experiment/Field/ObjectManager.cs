@@ -9,6 +9,9 @@ namespace monogame_experiment.Desktop.Field
     // Game object manager
     public class ObjectManager
     {
+        // Spawn sound
+        private Sample sSpawn;
+
         // Player
         private Player player;
         // Spiral
@@ -26,7 +29,11 @@ namespace monogame_experiment.Desktop.Field
 
             // Create list of enemies
             enemies = new List<Enemy>();
+
+            // Get assets
+            sSpawn = assets.GetSample("spawn");
         }
+
 
         // Set player
         public void SetPlayer(Camera cam, Stage stage, GameField rf, AudioManager audio, AssetPack assets)
@@ -40,6 +47,9 @@ namespace monogame_experiment.Desktop.Field
 
             // Set camera position
             cam.MoveTo(player.GetPos().X, player.GetPos().Y - Stage.TILE_SIZE / 2);
+
+            // Play spawn sound
+            audio.PlaySample(sSpawn, 0.90f);
         }
 
 
