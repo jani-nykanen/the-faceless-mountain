@@ -107,9 +107,25 @@ namespace monogame_experiment.Desktop.Core
         }
 
 
+        // Fade a sample
+        public void FadeCurrentLoopedSample(int ms, float target)
+        {
+            fadingSample = loopedTrack;
+            float start = fadingSample.GetVolume();
+
+            // Compute speed
+            fadeSpeed = (target - start) / (float)ms * (1000.0f / 60.0f);
+
+            // Set target
+            fadeTarget = volume * target;
+        }
+
+
         // Update
         public void Update(float tm)
         {
+            const float DELTA = 0.01f;
+
             // Fade in
             bool stop = false;
             if(fadingSample != null)
@@ -126,7 +142,13 @@ namespace monogame_experiment.Desktop.Core
 
                 // Stop, target reached
                 if (stop)
+                {
+                    if(v < DELTA)
+                    {
+                        fadingSample.Stop();
+                    }
                     fadingSample = null;
+                }
             }
         }
     }

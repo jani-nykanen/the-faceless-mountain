@@ -267,6 +267,8 @@ namespace monogame_experiment.Desktop.Field
             const float CAM_TARGET = 0.5f;
             const float CAM_SPEED = 0.00625f;
 
+            audio.FadeCurrentLoopedSample(2000, 0.0f);
+
             trans.Activate(Transition.Mode.In, TRANS_SPEED, Quit, 1, 1, 1);
             cam.SetScaleTarget(CAM_TARGET, CAM_TARGET, CAM_SPEED, CAM_SPEED);
         }

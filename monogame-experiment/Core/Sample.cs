@@ -73,5 +73,12 @@ namespace monogame_experiment.Desktop.Core
         {
             instance.Resume();
         }
+
+
+        // Stop
+        public void Stop()
+        {
+            instance.Stop();
+        }
     }
 }
