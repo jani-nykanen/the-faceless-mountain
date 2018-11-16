@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<assets bitmap_path="Assets/Bitmaps/" tilemap_path="Assets/Tilemaps/">
+<assets bitmap_path="Assets/Bitmaps/" tilemap_path="Assets/Tilemaps/" audio_path="Assets/Audio/">
     <bitmap name="font" path="font.png" />
     <bitmap name="tileset" path="tileset.png" />
     <bitmap name="body" path="body.png" />
@@ -14,5 +14,7 @@
     <tilemap name="1" path="1.tmx" />
     <tilemap name="2" path="2.tmx" />
     <tilemap name="3" path="3.tmx" />
+    
+    <sample name="theme" path="theme.raw" />
 </assets>
 

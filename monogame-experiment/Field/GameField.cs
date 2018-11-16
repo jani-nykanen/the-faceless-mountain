@@ -92,6 +92,10 @@ namespace monogame_experiment.Desktop.Field
             Tongue.Init(assets);
             Enemy.Init(assets);
 
+            // Play music
+            Sample sMusic = assets.GetSample("theme");
+            audio.PlaySample(sMusic, 0.65f, true);
+
             // Create pause
             pause = new Pause(this);
 

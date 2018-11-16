@@ -13,14 +13,17 @@ namespace monogame_experiment.Desktop.Core
 		private List<KeyValuePair<Bitmap>> bitmaps;
         // Tilemaps
         private List<KeyValuePair<Tilemap>> tilemaps;
+        // Samples
+        private List<KeyValuePair<Sample>> samples;
 
 
-		// Constructor
+        // Constructor
         public AssetPack(String path)
         {
 			// Assign lists
 			bitmaps = new List<KeyValuePair<Bitmap>>();
             tilemaps = new List<KeyValuePair<Tilemap>>();
+            samples = new List<KeyValuePair<Sample>>();
 
             // Open document
             XElement doc = XElement.Load(path);
@@ -28,6 +31,7 @@ namespace monogame_experiment.Desktop.Core
 			// Paths
 			String bmpPath = "";
             String mapPath = "";
+            String aPath = "";
 
             // Get attributes
 			if(doc.HasAttributes) 
@@ -35,6 +39,7 @@ namespace monogame_experiment.Desktop.Core
 				// Get asset paths
 				bmpPath = doc.Attribute("bitmap_path").Value;
                 mapPath = doc.Attribute("tilemap_path").Value;
+                aPath = doc.Attribute("audio_path").Value;
 			}
 
             // Go through nodes
@@ -55,41 +60,48 @@ namespace monogame_experiment.Desktop.Core
                 {
                     tilemaps.Add(new KeyValuePair<Tilemap>(name, new Tilemap(mapPath + fpath)));
                 }
-			}
+                else if (type == "sample")
+                {
+                    samples.Add(new KeyValuePair<Sample>(name, new Sample(aPath + fpath)));
+                }
+            }
 
+        }
+
+
+        // Get any asset
+        private T GetAsset<T> (String name, List<KeyValuePair<T>> arr)
+        {
+            foreach(var x in arr)
+            {
+                if(x.key.Equals(name))
+                {
+                    return x.value;
+                }
+            }
+
+            return default(T);
         }
 
 
         // Get a bitmap
         public Bitmap GetBitmap(String name)
 		{
-			// Go through bitmaps & compare names
-			foreach(var b in bitmaps)
-			{
-				if(b.key.Equals(name))
-				{
-					return b.value;
-				}
-			}
-            
-			return null;
+            return GetAsset<Bitmap>(name, bitmaps);
 		}
 
 
         // Get a tilemap
-        // TODO: Generic method for these two?
         public Tilemap GetTilemap(String name)
         {
-            // Go through bitmaps & compare names
-            foreach (var b in tilemaps)
-            {
-                if (b.key.Equals(name))
-                {
-                    return b.value;
-                }
-            }
+            return GetAsset<Tilemap>(name, tilemaps);
+        }
 
-            return null;
+
+        // Get a sample
+        public Sample GetSample(String name)
+        {
+            return GetAsset<Sample>(name, samples);
         }
     }
 }

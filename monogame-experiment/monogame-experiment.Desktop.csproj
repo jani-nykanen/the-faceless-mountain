@@ -85,6 +85,7 @@
     <Compile Include="Pause.cs" />
     <Compile Include="Core\AudioManager.cs" />
     <Compile Include="Field\CollisionObject.cs" />
+    <Compile Include="Core\Sample.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -149,6 +150,7 @@
   <ItemGroup>
     <Folder Include="Field\" />
     <Folder Include="Field\Enemies\" />
+    <Folder Include="Assets\Audio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Bitmaps\font.png">
@@ -204,6 +206,9 @@
     </Content>
     <Content Include="Assets\Tilemaps\3.tmx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Audio\theme.raw">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
