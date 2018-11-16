@@ -11,11 +11,22 @@ namespace monogame_experiment.Desktop.Field
     {
         // Global bitmaps
         static private Bitmap bmpEnemy;
+        // Global samples
+        static protected Sample sThwomp;
+
+        // Audio reference
+        static protected AudioManager audio;
+
 
         // Initialize global content
-        static public void Init(AssetPack assets)
+        static public void Init(AssetPack assets, AudioManager audio)
         {
+            // Bitmaps
             bmpEnemy = assets.GetBitmap("enemy");
+            // Samples
+            sThwomp = assets.GetSample("thwomp");
+
+            Enemy.audio = audio;
         }
 
 

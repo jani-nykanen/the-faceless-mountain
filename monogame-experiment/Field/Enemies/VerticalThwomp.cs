@@ -21,6 +21,13 @@ namespace monogame_experiment.Desktop.Field.Enemies
         private bool shake;
 
 
+        // Play thwomp
+        private void Thwomp()
+        {
+            audio.PlaySample(sThwomp, 0.70f);
+        }
+
+
         // Constructor
         public VerticalThwomp(float x, float y, Graphics.Flip flip = Graphics.Flip.None) : base(x, y, flip)
         {
@@ -79,6 +86,9 @@ namespace monogame_experiment.Desktop.Field.Enemies
             const float GRAV_ACC = 0.50f;
 
             const float RETURN_SPEED = 2.0f;
+
+            // Do not take collisions if not necessary
+            getCollision = thwomping && thwompMode == 0;
 
             // "Thwomp"
             if(thwomping)
@@ -155,6 +165,8 @@ namespace monogame_experiment.Desktop.Field.Enemies
                 thwompMode = 1;
                 thwompWait = WAIT_TIME;
                 shake = true;
+
+                Thwomp();
             }
             // Or if flipped, stop
             else if (thwompMode == 2 && flip == Graphics.Flip.Vertical)
@@ -185,6 +197,8 @@ namespace monogame_experiment.Desktop.Field.Enemies
                 thwompMode = 1;
                 thwompWait = WAIT_TIME;
                 shake = true;
+
+                Thwomp();
             }
         }
     }

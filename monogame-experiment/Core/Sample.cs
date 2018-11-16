@@ -42,5 +42,22 @@ namespace monogame_experiment.Desktop.Core
             instance.IsLooped = loop;
             instance.Play();
         }
+
+
+        // Get volume
+        public float GetVolume()
+        {
+            return instance.Volume;
+        }
+
+
+        // Set volume
+        public void SetVolume(float v)
+        {
+            if (v < 0.0f) v = 0.0f;
+            if (v >= 1.0f) v = 1.0f;
+
+            instance.Volume = v;
+        }
     }
 }

@@ -75,7 +75,7 @@ namespace monogame_experiment.Desktop.Field
 		// Initialize scene
 		override public void Init()
         {
-            const float MUSIC_VOL = 0.50f;
+            const float MUSIC_VOL = 0.45f;
 
             Global gs = (Global)globalScene;
 			assets = gs.GetAssets();
@@ -91,11 +91,12 @@ namespace monogame_experiment.Desktop.Field
             // Initialize global content for objects
             AnimatedFigure.Init(assets);
             Tongue.Init(assets);
-            Enemy.Init(assets);
+            Enemy.Init(assets, audio);
+            Player.Init(assets);
 
             // Play music
             Sample sMusic = assets.GetSample("theme");
-            audio.PlaySample(sMusic, MUSIC_VOL, true);
+            audio.FadeSample(sMusic,1000, 0.0f, MUSIC_VOL, true);
 
             // Create pause
             pause = new Pause(this);

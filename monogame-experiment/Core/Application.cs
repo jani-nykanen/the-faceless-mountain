@@ -158,6 +158,9 @@ namespace monogame_experiment.Desktop.Core
 
 			// Update input (post)
 			input.PostUpdate();
+
+            // Update audio
+            audio.Update(tm);
 		}
 
 

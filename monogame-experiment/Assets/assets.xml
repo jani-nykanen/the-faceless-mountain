@@ -17,5 +17,9 @@
     
     <sample name="theme" path="theme.raw" />
     <sample name="jump" path="jump.wav" />
+    <sample name="tongue" path="tongue.wav" />
+    <sample name="hurt" path="hurt.wav" />
+    <sample name="die" path="die.wav" />
+    <sample name="thwomp" path="thwomp.wav" />
 </assets>
 

@@ -12,6 +12,23 @@ namespace monogame_experiment.Desktop.Field
 	// Player object
     public class Player : GameObject
     {
+        // Global samples
+        static private Sample sJump;
+        static private Sample sHurt;
+        static private Sample sTongue;
+        static private Sample sDie;
+
+
+        // Initialize global content
+        public static void Init(AssetPack assets)
+        {
+            sJump = assets.GetSample("jump");
+            sTongue = assets.GetSample("tongue");
+            sHurt = assets.GetSample("hurt");
+            sDie = assets.GetSample("die");
+        }
+
+
         const float HURT_MAX = 60.0f;
 
 		const float SCALE = 32.0f;
@@ -28,9 +45,6 @@ namespace monogame_experiment.Desktop.Field
 
         const float MOUTH_X = 8.0f;
         const float MOUTH_Y = -60.0f;
-
-        // Samples
-        private Sample sJump;
 
         // Starting position
         private Vector2 startPos;
@@ -146,7 +160,8 @@ namespace monogame_experiment.Desktop.Field
 			if(canJump && fire1 == State.Pressed)
 			{
 				speed.Y = -jumpHeight;
-                audio.PlaySample(sJump, 0.80f);
+                // Sound
+                audio.PlaySample(sJump, 0.75f);
 			}
             else if(!canJump && jumpTimer > 0.0f && fire1 == State.Down)
 			{
@@ -179,6 +194,8 @@ namespace monogame_experiment.Desktop.Field
                 {
                     speed.Y = -headDir * TONGUE_SPEED;
                 }
+                // Sound
+                audio.PlaySample(sTongue, 0.825f);
 
                 tongue.Create(pos + new Vector2(MOUTH_X*direction, MOUTH_Y), speed);
                 tongue.SetTip(SCALE, -skeleton.GetHeadAngle() * direction, direction != 1);
@@ -239,6 +256,9 @@ namespace monogame_experiment.Desktop.Field
         // Kill
         private void Kill()
         {
+            // Sound
+            audio.PlaySample(sDie, 1.00f);
+
             dead = true;
 
             // Reset game
@@ -248,7 +268,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Constructor
-        public Player(Vector2 pos, AssetPack assets = null, GameField rf = null, AudioManager audio = null)
+        public Player(Vector2 pos, GameField rf = null, AudioManager audio = null)
         {
 			skeleton = new AnimatedFigure(SCALE);
             tongue = new Tongue();
@@ -272,9 +292,6 @@ namespace monogame_experiment.Desktop.Field
 
             // Set space animation
             skeleton.Animate(AnimatedFigure.AnimationMode.Stand, 0.0f, 1.0f, 0);
-
-            // Get assets
-            sJump = assets.GetSample("jump");
 
         }
 		public Player() : this(Vector2.Zero) { }
@@ -402,6 +419,9 @@ namespace monogame_experiment.Desktop.Field
 
                 target.X = speed.X;
                 target.Y = speed.Y;
+
+                // Sound
+                audio.PlaySample(sHurt, 0.80f);
 
             }
         }

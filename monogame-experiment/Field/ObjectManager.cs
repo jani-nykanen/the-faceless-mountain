@@ -34,7 +34,7 @@ namespace monogame_experiment.Desktop.Field
             Vector2 plPos = stage.GetStartPos();
 
             // Create player
-            player = new Player(plPos, assets, rf, audio);
+            player = new Player(plPos, rf, audio);
             // Set spiral position
             spiral.Create(plPos + new Vector2(0, -Stage.TILE_SIZE / 2 * 1.5f));
 
