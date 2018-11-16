@@ -59,6 +59,8 @@ namespace monogame_experiment.Desktop.Field
             objMan = new ObjectManager(assets);
             // Add objects
             stage.ParseObjects(objMan);
+            // Create star
+            objMan.CreateStar(stage);
             // Set player
             objMan.SetPlayer(cam, stage, this, audio, assets);
 
@@ -102,6 +104,7 @@ namespace monogame_experiment.Desktop.Field
             Tongue.Init(assets);
             Enemy.Init(assets, audio);
             Player.Init(assets);
+            Star.Init(assets);
 
             // Get samples
             sMusic = assets.GetSample("theme");

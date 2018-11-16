@@ -16,6 +16,8 @@ namespace monogame_experiment.Desktop.Field
         private Player player;
         // Spiral
         private Spiral spiral;
+        // Star
+        private Star star;
 
         // Enemies
         private List<Enemy> enemies;
@@ -53,11 +55,20 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Create star
+        public void CreateStar(Stage stage)
+        {
+            star = new Star(stage.GetStarPos());
+        }
+
+
         // Update
         public void Update(Stage stage, Camera cam, InputManager input, float tm)
         {
             // Update spiral
             spiral.Update(tm, true);
+            // Update star
+            star.Update(tm);
 
             // Update player
             player.Update(tm, input);
@@ -102,6 +113,9 @@ namespace monogame_experiment.Desktop.Field
         {
             // Draw spiral
             spiral.Draw(g);
+
+            // Draw star
+            star.Draw(g, cam);
 
             // Draw enemies
             foreach(Enemy e in enemies)

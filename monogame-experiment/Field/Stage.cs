@@ -45,6 +45,8 @@ namespace monogame_experiment.Desktop.Field
         // Checkpoints (only the first one is needed in 
         // the final game, other ones are for debugging)
         private List<Vector2> checkpoints;
+        // Star position
+        private Vector2 starPos;
 
 
         // Get map tile
@@ -143,6 +145,13 @@ namespace monogame_experiment.Desktop.Field
                         // Horizontal thwomp, flip
                         case 10:
                             e = new HorizontalThwomp(target.X, target.Y, Graphics.Flip.Horizontal);
+                            break;
+
+
+                        // Star
+                        case 14:
+                            starPos = target+ ( new Vector2(TILE_SIZE/2, -TILE_SIZE));
+                            e = null;
                             break;
 
                         // Player starting position
@@ -551,7 +560,7 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
-        // Move to the next check point
+        // Move to the next check point (debugging)
         public void ToNextCheckpoint(CollisionObject obj)
         {
 
@@ -561,6 +570,13 @@ namespace monogame_experiment.Desktop.Field
             if (mapIndex >= checkpoints.Count) return;
 
             obj.SetPos(checkpoints[mapIndex]);
+        }
+
+
+        // Get star position
+        public Vector2 GetStarPos()
+        {
+            return starPos;
         }
     }
 }

@@ -9,6 +9,7 @@
     <bitmap name="sky" path="sky.png" />
     <bitmap name="enemy" path="enemy.png" />
     <bitmap name="spiral" path="spiral.png" />
+    <bitmap name="star" path="star.png" />
     
     <tilemap name="0" path="0.tmx" />
     <tilemap name="1" path="1.tmx" />
