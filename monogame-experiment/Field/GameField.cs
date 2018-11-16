@@ -162,9 +162,9 @@ namespace monogame_experiment.Desktop.Field
                 objMan.Update(stage, cam, input, tm);
 
                 // Update HUD (and time!)
-                hud.Update(tm);
+                hud.Update(tm, !objMan.GoalReached());
             }
-            else if(!pause.IsActive())
+            else if(!pause.IsActive() && trans.GetMode() == Transition.Mode.Out)
             {
                 objMan.TransitionEvents(trans.GetValue(), tm);
             }
@@ -215,7 +215,7 @@ namespace monogame_experiment.Desktop.Field
 			g.Identity();
 
             // Draw HUD
-            hud.Draw(g);
+            hud.Draw(g, objMan.GetStarDistance());
 
             // Draw pause
             pause.Draw(g);
@@ -257,6 +257,18 @@ namespace monogame_experiment.Desktop.Field
             const float TRANS_SPEED = 2.0f;
 
             trans.Activate(Transition.Mode.In, TRANS_SPEED, Quit);
+        }
+
+
+        // Go to the ending
+        public void StartEnding()
+        {
+            const float TRANS_SPEED = 0.5f;
+            const float CAM_TARGET = 0.5f;
+            const float CAM_SPEED = 0.00625f;
+
+            trans.Activate(Transition.Mode.In, TRANS_SPEED, Quit, 1, 1, 1);
+            cam.SetScaleTarget(CAM_TARGET, CAM_TARGET, CAM_SPEED, CAM_SPEED);
         }
     }
 }

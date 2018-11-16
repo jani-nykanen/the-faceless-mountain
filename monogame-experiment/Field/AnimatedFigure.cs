@@ -28,6 +28,7 @@ namespace monogame_experiment.Desktop.Field
 			Run = 1,
 			Jump = 2,
             Hurt = 3,
+            Sit = 4,
 		};
 
         // Joint
@@ -289,7 +290,10 @@ namespace monogame_experiment.Desktop.Field
             // Speed limit when jumping
             const float SPEED_LIMIT = 0.75f;
 
-            jumping = animMode == AnimationMode.Jump;
+            // If "jumping"
+            jumping = 
+                animMode == AnimationMode.Jump 
+                || animMode == AnimationMode.Hurt || animMode == AnimationMode.Sit;
 
             // Should never change
             torsoPos = 0.0f;
@@ -359,13 +363,29 @@ namespace monogame_experiment.Desktop.Field
 
                     headTarget = -HEAD_TARGET;
 
-                    rightFoot = GetFootJointJumping(1.0f);
-                    leftFoot = rightFoot;
-
+                    // Set hands
                     rightHand = GetHandJoint(pi_f);
                     leftHand = rightHand;
 
+                    // Set feet
+                    rightFoot = GetFootJointJumping(SPEED_LIMIT);
+                    leftFoot = rightFoot;
+
                     break;
+        
+                // Sit
+                case AnimationMode.Sit:
+
+                    headTarget = 0.0f;
+
+                    rightFoot = GetFootJointJumping(SPEED_LIMIT);
+                    leftFoot = rightFoot;
+
+                    rightHand = GetHandJoint(pi_f / 2.0f);
+                    leftHand = rightHand;
+
+                    break;
+
 
                 // Ignore the rest for now
 				default:

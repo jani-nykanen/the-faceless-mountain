@@ -1,19 +1,24 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
+
 
 namespace monogame_experiment.Desktop
 {
-    /// <summary>
-    /// The main class.
-    /// </summary>
+    // Main class, do not edit
     public static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+        // Main
         [STAThread]
         static void Main()
         {
-			using (var game = new Runner())
+            // Set culture
+            CultureInfo ci = new CultureInfo("en-US");
+            Thread.CurrentThread.CurrentCulture = ci;
+            Thread.CurrentThread.CurrentUICulture = ci;
+
+            // Start game
+            using (var game = new Runner())
                 game.Run();
         }
     }

@@ -130,5 +130,12 @@ namespace monogame_experiment.Desktop
         {
             return timer / TIME_MAX;
         }
+
+
+        // Get mode
+        public Mode GetMode()
+        {
+            return mode;
+        }
     }
 }

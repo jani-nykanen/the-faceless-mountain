@@ -39,6 +39,28 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Draw metres
+        private void DrawMetres(Graphics g, float metres)
+        {
+            const int XOFF = -20;
+            const float SCALE = 0.70f;
+            const int YPOS = 56;
+
+            float m = (float)Math.Floor(metres * 10) / 10.0f;
+            String s = "DISTANCE: " +  m.ToString();
+            if(s[s.Length-2] != '.')
+            {
+                s += ".0";
+            }
+            s += "m";
+
+            g.DrawText(bmpFont, s,
+                       (int)g.GetViewport().X / 2,
+                       (int)g.GetViewport().Y - YPOS,
+                       XOFF, 0, SCALE, true);
+        }
+
+
         // Constructor
         public HUD(AssetPack assets)
         {
@@ -47,15 +69,18 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Update
-        public void Update(float tm)
+        public void Update(float tm, bool updateTime = true)
         {
             // Update time
-            time += 1.0f * tm;
+            if (updateTime)
+            {
+                time += 1.0f * tm;
+            }
         }
 
 
         // Draw
-        public void Draw(Graphics g)
+        public void Draw(Graphics g, float starDistance = 0.0f)
         {
             const float ALPHA = 0.80f;
 
@@ -73,6 +98,9 @@ namespace monogame_experiment.Desktop.Field
             g.SetColor(1.0f, 1.0f, 0.5f, ALPHA);
             g.DrawText(bmpFont, "TIME", (int)(vw / 2), TEXT_YPOS, XOFF, 0, TEXT_SCALE, true);
             g.DrawText(bmpFont, GetTimeString(), (int)(vw / 2), TIME_YPOS, XOFF, 0, TIME_SCALE, true);
+
+            // Draw metres
+            DrawMetres(g, starDistance);
 
             g.SetColor();
             g.EndDrawing();

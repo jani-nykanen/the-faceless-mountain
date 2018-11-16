@@ -63,6 +63,8 @@ namespace monogame_experiment.Desktop.Field
         private float jumpTimer;
         // Is running
         private bool running;
+        // Is sitting (on the goal star)
+        private bool sitting;
 
         // Head direction
         private int headDir;
@@ -109,6 +111,14 @@ namespace monogame_experiment.Desktop.Field
             const float RUN_PLUS = 2.0f;
             const float TONGUE_SPEED = 24.0f;
             const float JUMP_SPEED_BONUS = 6.0f;
+
+            // No controlling or gravity if sitting
+            if(sitting)
+            {
+                target.X = 0.0f;
+                target.Y = 0.0f;
+                return;
+            }
 
             // Set gravity here
             target.Y = GRAVITY;
@@ -213,6 +223,15 @@ namespace monogame_experiment.Desktop.Field
 
 			AnimatedFigure.AnimationMode mode = AnimatedFigure.AnimationMode.Stand;
 
+            // If sitting
+            if(sitting)
+            {
+                // Animate skeleton
+                skeleton.Animate(AnimatedFigure.AnimationMode.Sit, 
+                                 0.0f, tm, headDir);
+                return;
+            }
+
             // If hurt
             if (hurtTimer > 0.0f)
             {
@@ -301,8 +320,12 @@ namespace monogame_experiment.Desktop.Field
         override public void Update(float tm, InputManager input = null)
 		{
             // Set transition values to default
-            spcScale = 1.0f;
+            if(!sitting)
+                spcScale = 1.0f;
             angle = 0.0f;
+
+            // No collisions if sitting
+            getCollision = !sitting;
 
             // Update player stuff
 			Control(input, tm);
@@ -352,7 +375,6 @@ namespace monogame_experiment.Desktop.Field
         // Ceiling collision
         override protected void OnCeilingCollision(float x, float y)
         {
-
              pos.Y = y;
              speed.Y = 0.0f;
              jumpTimer = 0.0f;
@@ -388,6 +410,9 @@ namespace monogame_experiment.Desktop.Field
             const float BASE_JUMP = 5.0f;
             const float BASE_H = 2.0f;
 
+            if (!getCollision) return;
+
+            // Check if in the collision area
             if (hurtTimer <= 0.0f &&
                pos.X + width/2 > x && pos.X - width/2 < x + w &&
                pos.Y > y && pos.Y-height < y+h)
@@ -437,6 +462,7 @@ namespace monogame_experiment.Desktop.Field
         // Set camera following
         public void SetCameraFollowing(Camera cam, float tm)
         {
+            // If dead, ignore camera
             if (dead) return;
 
             const float DELTA = 1.0f;
@@ -458,14 +484,17 @@ namespace monogame_experiment.Desktop.Field
             float dy = pos.Y - SCALE*Y_CENTER_MUL;
 
             // If moving somewhere
-            if(moveDir != 0)
+            if (!sitting)
             {
-                dx += CAM_H_JUMP * direction;
-            }
-            // If watching up/down
-            if(headDir != 0)
-            {
-                dy -= CAM_V_JUMP * headDir;
+                if (moveDir != 0)
+                {
+                    dx += CAM_H_JUMP * direction;
+                }
+                // If watching up/down
+                if (headDir != 0)
+                {
+                    dy -= CAM_V_JUMP * headDir;
+                }
             }
 
             // Get camera pos
@@ -537,6 +566,37 @@ namespace monogame_experiment.Desktop.Field
         {
             angle = (float)(Math.PI * 2) * (1.0f-t);
             spcScale = 1.0f-t;
+        }
+
+
+        // Make sit
+        public void Sit(Vector2 pos, bool stopped = false)
+        {
+            sitting = true;
+            speed = Vector2.Zero;
+            target = Vector2.Zero;
+            this.pos = pos;
+            hurtTimer = 0.0f;
+
+            // If stopped, go to the ending
+            if(stopped)
+            {
+                gameRef.StartEnding();
+            }
+        }
+
+
+        // Is sitting
+        public bool IsSitting()
+        {
+            return sitting;
+        }
+
+
+        // Set special scale
+        public void SetSpecialScale(float s)
+        {
+            spcScale = s;
         }
 
     }

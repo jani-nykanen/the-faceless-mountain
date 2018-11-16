@@ -19,6 +19,9 @@ namespace monogame_experiment.Desktop.Field
         // Star
         private Star star;
 
+        // Star distance
+        private float starDistance;
+
         // Enemies
         private List<Enemy> enemies;
 
@@ -69,6 +72,9 @@ namespace monogame_experiment.Desktop.Field
             spiral.Update(tm, true);
             // Update star
             star.Update(tm);
+            star.GetPlayerCollision(player);
+            // Calculate start distance
+            starDistance = star.GetDistance(player);
 
             // Update player
             player.Update(tm, input);
@@ -114,8 +120,6 @@ namespace monogame_experiment.Desktop.Field
             // Draw spiral
             spiral.Draw(g);
 
-            // Draw star
-            star.Draw(g, cam);
 
             // Draw enemies
             foreach(Enemy e in enemies)
@@ -123,6 +127,8 @@ namespace monogame_experiment.Desktop.Field
                 e.Draw(g);
             }
 
+            // Draw star
+            star.Draw(g, cam);
             // Draw player
             player.Draw(g);
         }
@@ -132,6 +138,20 @@ namespace monogame_experiment.Desktop.Field
         public void AddEnemy(Enemy e)
         {
             enemies.Add(e);
+        }
+
+
+        // Get star distance
+        public float GetStarDistance()
+        {
+            return starDistance;
+        }
+    
+
+        // Is the goal reached
+        public bool GoalReached()
+        {
+            return player.IsSitting();
         }
     }
 }
