@@ -29,13 +29,12 @@ namespace monogame_experiment.Desktop.Field
         }
 
         // Set player
-        public void SetPlayer(Camera cam, Stage stage, GameField rf)
+        public void SetPlayer(Camera cam, Stage stage, GameField rf, AudioManager audio, AssetPack assets)
         {
             Vector2 plPos = stage.GetStartPos();
 
             // Create player
-            // TODO: Get position from the maps or something
-            player = new Player(plPos, rf);
+            player = new Player(plPos, assets, rf, audio);
             // Set spiral position
             spiral.Create(plPos + new Vector2(0, -Stage.TILE_SIZE / 2 * 1.5f));
 

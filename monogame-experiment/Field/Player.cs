@@ -29,6 +29,9 @@ namespace monogame_experiment.Desktop.Field
         const float MOUTH_X = 8.0f;
         const float MOUTH_Y = -60.0f;
 
+        // Samples
+        private Sample sJump;
+
         // Starting position
         private Vector2 startPos;
 
@@ -64,6 +67,8 @@ namespace monogame_experiment.Desktop.Field
 
         // A reference to the game object
         private GameField gameRef;
+        // Audio player
+        private AudioManager audio;
 
 
         // Get tongue movement
@@ -141,6 +146,7 @@ namespace monogame_experiment.Desktop.Field
 			if(canJump && fire1 == State.Pressed)
 			{
 				speed.Y = -jumpHeight;
+                audio.PlaySample(sJump, 0.80f);
 			}
             else if(!canJump && jumpTimer > 0.0f && fire1 == State.Down)
 			{
@@ -242,7 +248,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Constructor
-        public Player(Vector2 pos, GameField rf = null)
+        public Player(Vector2 pos, AssetPack assets = null, GameField rf = null, AudioManager audio = null)
         {
 			skeleton = new AnimatedFigure(SCALE);
             tongue = new Tongue();
@@ -259,12 +265,16 @@ namespace monogame_experiment.Desktop.Field
             dead = false;
 
             gameRef = rf;
+            this.audio = audio;
 
             // Store starting position
             startPos = pos;
 
             // Set space animation
             skeleton.Animate(AnimatedFigure.AnimationMode.Stand, 0.0f, 1.0f, 0);
+
+            // Get assets
+            sJump = assets.GetSample("jump");
 
         }
 		public Player() : this(Vector2.Zero) { }

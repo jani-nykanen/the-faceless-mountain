@@ -16,5 +16,6 @@
     <tilemap name="3" path="3.tmx" />
     
     <sample name="theme" path="theme.raw" />
+    <sample name="jump" path="jump.wav" />
 </assets>
 

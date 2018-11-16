@@ -52,7 +52,7 @@ namespace monogame_experiment.Desktop.Field
             // Add objects
             stage.ParseObjects(objMan);
             // Set player
-            objMan.SetPlayer(cam, stage, this);
+            objMan.SetPlayer(cam, stage, this, audio, assets);
 
             // Set initial camera scale
             cam.Scale(INITIAL_CAM_SCALE, INITIAL_CAM_SCALE);
@@ -75,6 +75,7 @@ namespace monogame_experiment.Desktop.Field
 		// Initialize scene
 		override public void Init()
         {
+            const float MUSIC_VOL = 0.50f;
 
             Global gs = (Global)globalScene;
 			assets = gs.GetAssets();
@@ -94,7 +95,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Play music
             Sample sMusic = assets.GetSample("theme");
-            audio.PlaySample(sMusic, 0.65f, true);
+            audio.PlaySample(sMusic, MUSIC_VOL, true);
 
             // Create pause
             pause = new Pause(this);
