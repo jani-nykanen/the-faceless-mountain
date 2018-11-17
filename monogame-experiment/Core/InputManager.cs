@@ -32,6 +32,9 @@ namespace monogame_experiment.Desktop.Core
 		// Old gamepad button states
 		private State[] oldPadStates;
 
+        // If something pressed
+        private bool somethingPressed;
+
  		// Mouse position
 		private Vector2 mousePos;
 
@@ -83,8 +86,11 @@ namespace monogame_experiment.Desktop.Core
                 if (arr[i] == State.Released)
                     arr[i] = State.Up;
 
-				else if (arr[i] == State.Pressed)
-					arr[i] = State.Down;
+                else if (arr[i] == State.Pressed)
+                {
+                    somethingPressed = true;
+                    arr[i] = State.Down;
+                }
             }
 		}
 
@@ -97,7 +103,8 @@ namespace monogame_experiment.Desktop.Core
 				return;
             
 			arr[key] = State.Pressed;
-		}
+
+        }
         
 
 		// Key/button up event (simulated)
@@ -197,9 +204,9 @@ namespace monogame_experiment.Desktop.Core
 
             const float TRIGGER_DELTA = 0.25f;
 
-			// Go through all the damn keys and check
-			// status changes
-			for (int i = 0; i < LAST_KEY; ++i)
+            // Go through all the damn keys and check
+            // status changes
+            for (int i = 0; i < LAST_KEY; ++i)
 			{
 				if (Keyboard.GetState().IsKeyDown((Keys)i))
 				{
@@ -233,7 +240,7 @@ namespace monogame_experiment.Desktop.Core
 			CheckSpecialButtons(mousePressed, oldButtonStates, buttonStates);
 
             // Update gamepad state
-			GamePadState padState = GamePad.GetState(PlayerIndex.One);
+            GamePadState padState = GamePad.GetState(PlayerIndex.One);
 			// Update stick
 			UpdateStick(padState);
             
@@ -265,8 +272,10 @@ namespace monogame_experiment.Desktop.Core
 		// "Post" update
 		public void PostUpdate()
 		{
-			// Update state arrays
-			updateStateArray(keyStates);
+            somethingPressed = false;
+
+            // Update state arrays
+            updateStateArray(keyStates);
 			updateStateArray(buttonStates);
 			updateStateArray(gamePadStates);
 		}
@@ -371,6 +380,13 @@ namespace monogame_experiment.Desktop.Core
         public Vector2 GetStickDelta()
         {
             return stickDelta;
+        }
+
+
+        // Was something pressed
+        public bool WasSomethingPressed()
+        {
+            return somethingPressed;
         }
 	}
 }

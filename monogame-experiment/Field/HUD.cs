@@ -19,31 +19,6 @@ namespace monogame_experiment.Desktop.Field
         private float guideTimer;
 
 
-        // Get time string
-        private String GetTimeString()
-        {
-
-            // Compute minutes, seconds & 1/100 seconds
-            int t = (int)Math.Floor(time / 60.0);
-            int sec = t % 60;
-            int min = (int)Math.Floor(t / 60.0f);
-            int cent = (int) (time % 60);
-            cent = (int)Math.Floor(100.0f / 60.0f * cent);
-
-            // Create string
-            String ret = min.ToString() + ":";
-            if (sec < 10) 
-                ret += "0";
-
-            ret += sec.ToString() + ":";
-            if (cent < 10) 
-                ret += "0";
-            ret += cent.ToString();
-
-            return ret;
-        }
-
-
         // Draw metres
         private void DrawMetres(Graphics g, float metres)
         {
@@ -170,6 +145,30 @@ namespace monogame_experiment.Desktop.Field
             DrawGuide(g);
 
             g.EndDrawing();
+        }
+
+
+        // Get time string
+        public String GetTimeString()
+        {
+            // Compute minutes, seconds & 1/100 seconds
+            int t = (int)Math.Floor(time / 60.0);
+            int sec = t % 60;
+            int min = (int)Math.Floor(t / 60.0f);
+            int cent = (int)(time % 60);
+            cent = (int)Math.Floor(100.0f / 60.0f * cent);
+
+            // Create string
+            String ret = min.ToString() + ":";
+            if (sec < 10)
+                ret += "0";
+
+            ret += sec.ToString() + ":";
+            if (cent < 10)
+                ret += "0";
+            ret += cent.ToString();
+
+            return ret;
         }
     }
 }

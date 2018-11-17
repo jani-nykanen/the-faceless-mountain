@@ -23,6 +23,9 @@ namespace monogame_experiment.Desktop.Core
         // Audio manager
         private AudioManager audio;
 
+        // Passed data
+        private Object data;
+
 
 		// Constructor
         public SceneManager(InputManager input, WeakEventManager eventMan, 
@@ -63,7 +66,7 @@ namespace monogame_experiment.Desktop.Core
 
 			// Pass references to certain objects to the
 			// scene
-			scene.Ready(input, eventMan, conf, audio);
+			scene.Ready(input, eventMan, conf, audio, this);
 		}
 
 
@@ -109,6 +112,21 @@ namespace monogame_experiment.Desktop.Core
             // Then update the global scene (if any)
             if (globalScene != null)
                 globalScene.Draw(g);
+        }
+
+
+        // Change scene
+        public void ChangeScene(String name, Object data = null)
+        {
+            // Find corresponding scene
+            foreach(var s in scenes)
+            {
+                if(s.GetName().Equals(name))
+                {
+                    s.OnChange(name, data);
+                    currentScene = s;
+                }
+            }
         }
 
 

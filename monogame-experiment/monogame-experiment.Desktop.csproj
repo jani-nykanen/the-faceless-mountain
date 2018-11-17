@@ -87,6 +87,7 @@
     <Compile Include="Field\CollisionObject.cs" />
     <Compile Include="Core\Sample.cs" />
     <Compile Include="Field\Star.cs" />
+    <Compile Include="Ending.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

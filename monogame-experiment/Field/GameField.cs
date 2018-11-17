@@ -272,7 +272,12 @@ namespace monogame_experiment.Desktop.Field
 
             audio.FadeCurrentLoopedSample(2000, 0.0f);
 
-            trans.Activate(Transition.Mode.In, TRANS_SPEED, Quit, 1, 1, 1);
+            // Fade out and change to the ending
+            trans.Activate(Transition.Mode.In, TRANS_SPEED, 
+                           delegate () {
+                            sceneMan.ChangeScene("ending", hud.GetTimeString());
+                           }
+                           , 1, 1, 1);
             cam.SetScaleTarget(CAM_TARGET, CAM_TARGET, CAM_SPEED, CAM_SPEED);
         }
     }
