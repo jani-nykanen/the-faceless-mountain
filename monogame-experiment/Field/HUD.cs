@@ -7,11 +7,16 @@ namespace monogame_experiment.Desktop.Field
     // Game HUD. Also handles time
     public class HUD
     {
-        // Bitmap
+        const float GUIDE_TIME = 480.0f;
+
+        // Bitmaps
 		private Bitmap bmpFont;
+        private Bitmap bmpGuide;
 
         // Time
         private float time;
+        // Guide timer 
+        private float guideTimer;
 
 
         // Get time string
@@ -61,10 +66,65 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
+        // Draw guide
+        private void DrawGuide(Graphics g)
+        {
+
+            if (guideTimer <= 0.0f) return;
+
+            const int XOFF = 32;
+            const int YPOS_LEFT = 80;
+            const int YPOS_RIGHT = 144;
+            const int YOFF = 192;
+            const int SCALE = 144;
+
+            const float FADE_TIME = 60.0f;
+            const float BASE_ALPHA = 0.85f;
+
+            float alpha = BASE_ALPHA;
+            float x = XOFF;
+            if(guideTimer < FADE_TIME)
+            {
+                float t = guideTimer / FADE_TIME;
+                alpha *= t;
+                x = XOFF * t;
+            }
+
+            g.SetColor(1, 1, 1, alpha);
+
+            // Left side
+            for (int i = 0; i < 3; ++ i)
+            {
+                g.DrawScaledBitmapRegion(bmpGuide, i * 128, 0, 128, 128,
+                                   (int)x, YPOS_LEFT + i * YOFF, SCALE, SCALE);
+            }
+
+
+            // Right side
+            float vw = g.GetViewport().X;
+            for (int i = 0; i < 2; ++i)
+            {
+                g.DrawScaledBitmapRegion(bmpGuide, i * 128, 128, 128, 128,
+                                   vw-SCALE- (int)x, YPOS_RIGHT + i * YOFF, SCALE, SCALE);
+            }
+        }
+
+
         // Constructor
         public HUD(AssetPack assets)
         {
+            // Get bitmaps
 			bmpFont = assets.GetBitmap("font");
+            bmpGuide = assets.GetBitmap("guide");
+
+            guideTimer = GUIDE_TIME;
+        }
+
+
+        // Reset
+        public void Reset()
+        {
+            guideTimer = GUIDE_TIME;
         }
 
 
@@ -76,6 +136,10 @@ namespace monogame_experiment.Desktop.Field
             {
                 time += 1.0f * tm;
             }
+
+            // Update guide timer
+            if(guideTimer > 0.0f)
+                guideTimer -= 1.0f * tm;
         }
 
 
@@ -98,11 +162,13 @@ namespace monogame_experiment.Desktop.Field
             g.SetColor(1.0f, 1.0f, 0.5f, ALPHA);
             g.DrawText(bmpFont, "TIME", (int)(vw / 2), TEXT_YPOS, XOFF, 0, TEXT_SCALE, true);
             g.DrawText(bmpFont, GetTimeString(), (int)(vw / 2), TIME_YPOS, XOFF, 0, TIME_SCALE, true);
-
             // Draw metres
             DrawMetres(g, starDistance);
 
+            // Draw guide
             g.SetColor();
+            DrawGuide(g);
+
             g.EndDrawing();
         }
     }

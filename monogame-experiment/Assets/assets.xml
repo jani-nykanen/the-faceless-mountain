@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <assets bitmap_path="Assets/Bitmaps/" tilemap_path="Assets/Tilemaps/" audio_path="Assets/Audio/">
+    
     <bitmap name="font" path="font.png" />
     <bitmap name="tileset" path="tileset.png" />
     <bitmap name="body" path="body.png" />
@@ -10,6 +11,7 @@
     <bitmap name="enemy" path="enemy.png" />
     <bitmap name="spiral" path="spiral.png" />
     <bitmap name="star" path="star.png" />
+    <bitmap name="guide" path="guide.png" />
     
     <tilemap name="0" path="0.tmx" />
     <tilemap name="1" path="1.tmx" />
@@ -27,5 +29,6 @@
     <sample name="select" path="select.wav" />
     <sample name="pause" path="pause.wav" />
     <sample name="cancel" path="cancel.wav" />
+    
 </assets>
 

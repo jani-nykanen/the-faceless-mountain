@@ -63,6 +63,9 @@ namespace monogame_experiment.Desktop.Field
             const float ENDING_TIMER1_SPEED = 0.05f;
             const float ENDING_TIMER2_SPEED = 0.025f;
 
+            const float POS1 = 192;
+            const float POS2 = 128;
+
             const float STOP = (float)Math.PI * 3.0f;
 
             if (activated)
@@ -85,8 +88,8 @@ namespace monogame_experiment.Desktop.Field
                 float s1 = (float)Math.Sin(endingTimer1);
                 float s2 = (float)Math.Sin(endingTimer2);
 
-                pos.Y = startPos.Y + s1 * s2 * 192.0f;
-                pos.X = startPos.X + s1 * 128.0f;
+                pos.Y = startPos.Y + s1 * s2 * POS1;
+                pos.X = startPos.X + s1 * POS2;
 
                 endingScale = 1.0f + s2;
             }

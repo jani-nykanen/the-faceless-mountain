@@ -111,6 +111,9 @@ namespace monogame_experiment.Desktop.Field
         {
             spiral.Update(tm);
             player.TransitionEvents(t);
+
+            // Calculate start distance
+            starDistance = star.GetDistance(player);
         }
 
 

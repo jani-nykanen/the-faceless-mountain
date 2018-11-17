@@ -14,8 +14,8 @@ namespace monogame_experiment.Desktop.Field
     {
 
         // Music volumes
-        const float MUSIC_VOL_BASE = 0.45f;
-        const float MUSIC_VOL_PAUSE = 0.25f;
+        const float MUSIC_VOL_BASE = 0.50f;
+        const float MUSIC_VOL_PAUSE = 0.30f;
 
         // Samples
         private Sample sMusic;
@@ -41,6 +41,7 @@ namespace monogame_experiment.Desktop.Field
         private HUD hud;
         // Pause screen
         private Pause pause;
+
 
         // Reset scene
         private void ResetGame()
@@ -72,6 +73,8 @@ namespace monogame_experiment.Desktop.Field
 
             // Disable pause
             pause.Disable();
+            // Reset HUD
+            hud.Reset();
 
             // Set transition
             trans.Activate(Transition.Mode.Out, TRANS_SPEED, null);
