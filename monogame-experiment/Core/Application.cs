@@ -53,6 +53,9 @@ namespace monogame_experiment.Desktop.Core
             runner.Window.Title = conf.caption;
 			// Enable resizing (not a user-option)
 			runner.Window.AllowUserResizing = true;
+
+            // Enable/disable audio
+            audio.ToggleAudio(conf.audioEnabled);
         }
 
 		
@@ -63,16 +66,17 @@ namespace monogame_experiment.Desktop.Core
 			this.gman = gman;
 			runner = r;
 
-			// Configurate
-			this.conf = conf;
+            // Create audio manager
+            audio = new AudioManager();
+
+            // Configurate
+            this.conf = conf;
 			Configure();
 
 			// Create input manager
 			input = new InputManager();
 			// Create event manager
 			eventMan = new WeakEventManager(this);
-            // Create audio manager
-            audio = new AudioManager();
 			// Create scene manager
 			sceneMan = new SceneManager(input, eventMan, conf, audio);
         }

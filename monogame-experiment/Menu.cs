@@ -76,7 +76,7 @@ namespace monogame_experiment.Desktop
             // If cursor pos changed, play sound
             if(old != cursorPos)
             {
-                audio.PlaySample(sSelect, 1.0f);
+                audio.PlaySample(sSelect, 0.80f);
             }
 
             // Check button down
@@ -90,7 +90,7 @@ namespace monogame_experiment.Desktop
                 }
 
                 // Sound
-                audio.PlaySample(sAccept, 0.90f);
+                audio.PlaySample(sAccept, 0.80f);
             }
         }
 

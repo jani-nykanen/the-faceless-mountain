@@ -37,7 +37,8 @@ namespace monogame_experiment.Desktop
 			// Add scenes
 			appBase.AddScene(new GameField(), true);
             appBase.AddScene(new Ending(), false);
-			appBase.AddScene(new Global(), false, true);
+            appBase.AddScene(new Title(), false);
+            appBase.AddScene(new Global(), false, true);
         }
 
 

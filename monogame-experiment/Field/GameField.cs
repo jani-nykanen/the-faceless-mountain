@@ -259,7 +259,9 @@ namespace monogame_experiment.Desktop.Field
         {
             const float TRANS_SPEED = 2.0f;
 
-            trans.Activate(Transition.Mode.In, TRANS_SPEED, Quit);
+            trans.Activate(Transition.Mode.In, TRANS_SPEED, delegate () {
+                sceneMan.ChangeScene("title");
+            });
         }
 
 

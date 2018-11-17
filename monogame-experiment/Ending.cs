@@ -20,6 +20,8 @@ namespace monogame_experiment.Desktop
         private String timeString;
         // Ending timer
         private float timer;
+        // Ending scale
+        private float scale;
 
         // Transition
         private Transition trans;
@@ -49,6 +51,7 @@ namespace monogame_experiment.Desktop
             bmpFont = assets.GetBitmap("font");
             sAccept = assets.GetSample("accept");
 
+
             timeString = "";
         }
 
@@ -56,17 +59,27 @@ namespace monogame_experiment.Desktop
         // Update
         public override void Update(float tm)
         {
-            if (trans.IsActive()) return;
+            const float SCALE_SPEED = -0.005f;
+
+            if (trans.IsActive())
+            {
+                if (trans.GetMode() == Transition.Mode.In)
+                {
+                    scale += SCALE_SPEED * tm;
+                }
+                return;
+            }
+            scale = 1.0f;
 
             // Update timer
-            if(timer >= 0.0f)
+            if (timer >= 0.0f)
             {
                 timer -= 1.0f * tm;
             }
             else
             {
                 // If something pressed, terminate
-                if(input.WasSomethingPressed())
+                if (input.WasSomethingPressed())
                 {
                     audio.PlaySample(sAccept, 0.90f);
                     trans.Activate(Transition.Mode.In, 0.5f,
@@ -92,16 +105,21 @@ namespace monogame_experiment.Desktop
 
             // Clear to black
             g.ClearScreen(0, 0, 0);
+
+            // Set view
             g.FitViewHeight(720.0f);
+            Vector2 view = g.GetViewport();
             g.Identity();
             g.IdentityWorld();
+            g.Translate(view.X / 2, view.Y / 2);
+            g.Scale(scale, scale);
+            g.Translate(-view.X / 2, -view.Y / 2);
 
             g.BeginDrawing();
 
             // Draw "Congratulations"
-            Vector2 view = g.GetViewport();
             g.SetColor(1, 1, 0.5f);
-            g.DrawText(bmpFont, "CONGRATULATIONS!", 
+            g.DrawText(bmpFont, "CONGRATULATIONS!",
                        (int)view.X / 2, (int)view.Y / 2 + BIG_YOFF,
                        XOFF, 0, BIG_SCALE, true);
 
@@ -135,6 +153,7 @@ namespace monogame_experiment.Desktop
             }
 
             g.EndDrawing();
+            g.Identity();
         }
 
 
@@ -157,6 +176,7 @@ namespace monogame_experiment.Desktop
         {
             timeString = (String)data;
             timer = TIME;
+            scale = 1.0f;
 
             trans.Activate(Transition.Mode.Out, 1.0f, null, 1, 1, 1);
         }

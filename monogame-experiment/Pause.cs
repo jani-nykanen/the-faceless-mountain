@@ -98,11 +98,13 @@ namespace monogame_experiment.Desktop
                 }
             );
 
+            bool audioState = baseScene.IsAudioEnabled();
+
             // Create settings
             settings = new Menu(
                 new String[] {
                     "Fullscreen",
-                    "Audio: On",
+                    "Audio: " + (audioState ? "On" : "Off"),
                     "Back"
                 },
                 new Menu.Callback[] {

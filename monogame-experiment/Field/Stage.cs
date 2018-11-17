@@ -320,28 +320,35 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
-        // Map
-        public Stage(AssetPack assets)
+        // Constructor
+        public Stage(AssetPack assets, bool shallow = false)
         {
-            // Get maps
-            Tilemap m;
-            maps = new List<Tilemap>();
-            int index = 0;
-            while((m = assets.GetTilemap((index ++).ToString())) != null)
+            if (!shallow)
             {
-                maps.Add(m);
-                mapHeight += m.GetHeight() * TILE_SIZE;
-            }
-            checkpoints = new List<Vector2>();
+                // Get maps
+                Tilemap m;
+                maps = new List<Tilemap>();
+                int index = 0;
+                while ((m = assets.GetTilemap((index++).ToString())) != null)
+                {
+                    maps.Add(m);
+                    mapHeight += m.GetHeight() * TILE_SIZE;
+                }
+                checkpoints = new List<Vector2>();
 
-            // Get bitmaps
-            bmpTileset = assets.GetBitmap("tileset");
-            bmpWater = assets.GetBitmap("water");
+                // Compute y translation
+                transY = -maps[0].GetHeight() * TILE_SIZE;
+
+                // Get bitmaps
+                bmpTileset = assets.GetBitmap("tileset");
+                bmpWater = assets.GetBitmap("water");
+
+            }
+
+            // Get background bitmaps
             bmpCloud = assets.GetBitmap("cloud");
             bmpSky = assets.GetBitmap("sky");
 
-            // Compute y translation
-            transY = -maps[0].GetHeight() * TILE_SIZE;
 
             // Create cloud positions
             cloudPos = new float[3];
@@ -353,17 +360,10 @@ namespace monogame_experiment.Desktop.Field
         }
 
 
-        // Update
-        public void Update(float tm)
+        // Update background only
+        public void UpdateBackground(float tm)
         {
-            const float WATER_SPEED = 1.0f;
-            const float WATER_WAVE = 0.025f;
             const float BASE_CLOUD_SPEED = 2.0f;
-
-            // Update water
-            waterPos += WATER_SPEED * tm;
-            waterPos %= 64;
-            waterWave += WATER_WAVE * tm;
 
             // Update clouds
             for (int i = 0; i < 3; ++i)
@@ -371,6 +371,22 @@ namespace monogame_experiment.Desktop.Field
                 cloudPos[i] += BASE_CLOUD_SPEED * (i + 1) * tm;
                 cloudPos[i] %= CLOUD_WIDTH;
             }
+        }
+
+
+        // Update
+        public void Update(float tm)
+        {
+            const float WATER_SPEED = 1.0f;
+            const float WATER_WAVE = 0.025f;
+
+            // Update water
+            waterPos += WATER_SPEED * tm;
+            waterPos %= 64;
+            waterWave += WATER_WAVE * tm;
+
+            // Update background
+            UpdateBackground(tm);
         }
 
 
@@ -458,7 +474,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw background
-        public void DrawBackground(Graphics g, Camera cam)
+        public void DrawBackground(Graphics g, Camera cam = null)
         {
             const int SKY_WIDTH = 320;
             const int SKY_HEIGHT = 640;
@@ -466,7 +482,10 @@ namespace monogame_experiment.Desktop.Field
             const float BASE_TRANSITION = -128.0f;
             const int STRIP_HEIGHT = 128;
 
-            float tr = BASE_TRANSITION + cam.GetPos().Y / (float)mapHeight * CLOUD_TRANSITION;
+            // Compute Y translation for clouds
+            float tr = cam == null ? 0.0f :
+                      (BASE_TRANSITION 
+                       + cam.GetPos().Y / (float)mapHeight * CLOUD_TRANSITION);
 
             g.SetColor();
             g.Identity();

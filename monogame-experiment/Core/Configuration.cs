@@ -15,10 +15,10 @@ namespace monogame_experiment.Desktop.Core
 
 		// Is fullscreen
 		public bool fullscreen = false;
-
+        // Audio enabled
+        public bool audioEnabled = true;
 		// Window caption
 		public String caption = "Game";
-
 		// Framerate
 		public int frameRate = 60;
       
@@ -52,8 +52,11 @@ namespace monogame_experiment.Desktop.Core
 					caption = value;
                     break;
 
-                
-				default:
+                case "audio":
+                    audioEnabled = bool.Parse(value);
+                    break;
+
+                default:
 
 					// Add to "other params"
 					otherParams.Add(new KeyValuePair<String>(name, value));

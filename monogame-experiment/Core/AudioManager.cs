@@ -44,6 +44,14 @@ namespace monogame_experiment.Desktop.Core
         }
 
 
+        // Toggle
+        public void ToggleAudio(bool state)
+        {
+            if (enabled == state) return;
+            ToggleAudio();
+        }
+
+
         // Is enabled
         public bool IsEnabled()
         {
