@@ -114,13 +114,13 @@ namespace monogame_experiment.Desktop.Field
             sPause = assets.GetSample("pause");
 
             // Play music
-            audio.FadeSample(sMusic,1000, 0.0f, MUSIC_VOL_BASE, true);
+            sMusic.Stop();
 
             // Create pause
             pause = new Pause(this);
 
             // (Re)set game objects & stuff
-            ResetGame();
+            // ResetGame();
 
         }
 
@@ -259,6 +259,7 @@ namespace monogame_experiment.Desktop.Field
         {
             const float TRANS_SPEED = 2.0f;
 
+            audio.FadeCurrentLoopedSample(500, 0.0f);
             trans.Activate(Transition.Mode.In, TRANS_SPEED, delegate () {
                 sceneMan.ChangeScene("title");
             });
@@ -281,6 +282,17 @@ namespace monogame_experiment.Desktop.Field
                            }
                            , 1, 1, 1);
             cam.SetScaleTarget(CAM_TARGET, CAM_TARGET, CAM_SPEED, CAM_SPEED);
+        }
+
+
+        // On change
+        public override void OnChange(String target, Object data = null)
+        {
+            ResetGame();
+
+            // Play music
+            sMusic.Stop();
+            audio.FadeSample(sMusic, 1000, 0.0f, MUSIC_VOL_BASE, true);
         }
     }
 }

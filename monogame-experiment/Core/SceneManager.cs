@@ -23,9 +23,6 @@ namespace monogame_experiment.Desktop.Core
         // Audio manager
         private AudioManager audio;
 
-        // Passed data
-        private Object data;
-
 
 		// Constructor
         public SceneManager(InputManager input, WeakEventManager eventMan, 

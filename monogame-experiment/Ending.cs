@@ -51,7 +51,6 @@ namespace monogame_experiment.Desktop
             bmpFont = assets.GetBitmap("font");
             sAccept = assets.GetSample("accept");
 
-
             timeString = "";
         }
 
@@ -83,7 +82,10 @@ namespace monogame_experiment.Desktop
                 {
                     audio.PlaySample(sAccept, 0.90f);
                     trans.Activate(Transition.Mode.In, 0.5f,
-                                   eventMan.Terminate, 0, 0, 0);
+                                   delegate {
+
+                                       sceneMan.ChangeScene("title");
+                                   }, 0, 0, 0);
                 }
             }
         }

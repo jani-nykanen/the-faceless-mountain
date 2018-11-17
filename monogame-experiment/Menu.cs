@@ -26,6 +26,7 @@ namespace monogame_experiment.Desktop
 
 
         // Callback type
+        // TODO: Object o is actually useless there
         public delegate void Callback(Object o);
 
         // Button texts

@@ -488,8 +488,11 @@ namespace monogame_experiment.Desktop.Field
                        + cam.GetPos().Y / (float)mapHeight * CLOUD_TRANSITION);
 
             g.SetColor();
-            g.Identity();
-            g.IdentityWorld();
+            if (cam != null)
+            {
+                g.Identity();
+                g.IdentityWorld();
+            }
             g.BeginDrawing();
 
             // Draw sky

@@ -75,6 +75,8 @@ namespace monogame_experiment.Desktop
         // Draw scene
 		override public void Draw(Graphics g)
         {
+            g.ToggleAutoBeginEnd(false);
+
             // Draw transition
             trans.Draw(g);
         }

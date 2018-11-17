@@ -115,6 +115,8 @@ namespace monogame_experiment.Desktop
 
             // Fill screen with the color
             g.SetView(1, 1);
+            g.Identity();
+            g.IdentityWorld();
             g.BeginDrawing();
 
             g.SetColor(color[0], color[1], color[2], t);
