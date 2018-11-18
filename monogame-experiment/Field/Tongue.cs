@@ -154,7 +154,8 @@ namespace monogame_experiment.Desktop.Field
 
                 // Update timer
                 timer += 1.0f * tm;
-                if(timer >= DISAPPEAR_TIMER || input.GetButton("fire3") == State.Up)
+                if(timer >= DISAPPEAR_TIMER || input.GetButton("fire3") == State.Up
+                   || input.GetButton("fire3") == State.Released)
                 {
                     returning = true;
                 }
@@ -164,7 +165,7 @@ namespace monogame_experiment.Desktop.Field
             else
             {
 
-                if(input.GetButton("fire3") == State.Up)
+                if(input.GetButton("fire3") == State.Up || input.GetButton("fire3") == State.Released)
                 {
                     returning = true;
                     stuck = false;
