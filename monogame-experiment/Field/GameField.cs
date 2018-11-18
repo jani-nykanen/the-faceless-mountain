@@ -218,7 +218,7 @@ namespace monogame_experiment.Desktop.Field
 			g.Identity();
 
             // Draw HUD
-            hud.Draw(g, objMan.GetStarDistance());
+            hud.Draw(g, objMan.GetStarDistance(), pause.IsActive());
 
             // Draw pause
             pause.Draw(g);

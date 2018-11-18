@@ -132,6 +132,8 @@ namespace monogame_experiment.Desktop.Field
             // Return back to the player
             if (returning)
             {
+                stuck = false;
+
                 ReturnBack(tm);
                 Move(tm);
 
@@ -165,7 +167,7 @@ namespace monogame_experiment.Desktop.Field
             else
             {
 
-                if(input.GetButton("fire3") == State.Up || input.GetButton("fire3") == State.Released)
+                if(input.GetButton("fire3") != State.Down)
                 {
                     returning = true;
                     stuck = false;

@@ -42,10 +42,10 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw guide
-        private void DrawGuide(Graphics g)
+        private void DrawGuide(Graphics g, bool forceDrawGuide = false)
         {
 
-            if (guideTimer <= 0.0f) return;
+            if (!forceDrawGuide && guideTimer <= 0.0f) return;
 
             const int XOFF = 32;
             const int YPOS_LEFT = 80;
@@ -58,7 +58,7 @@ namespace monogame_experiment.Desktop.Field
 
             float alpha = BASE_ALPHA;
             float x = XOFF;
-            if(guideTimer < FADE_TIME)
+            if(!forceDrawGuide && guideTimer < FADE_TIME)
             {
                 float t = guideTimer / FADE_TIME;
                 alpha *= t;
@@ -119,7 +119,7 @@ namespace monogame_experiment.Desktop.Field
 
 
         // Draw
-        public void Draw(Graphics g, float starDistance = 0.0f)
+        public void Draw(Graphics g, float starDistance = 0.0f, bool forceDrawGuide = false)
         {
             const float ALPHA = 0.80f;
 
@@ -142,7 +142,7 @@ namespace monogame_experiment.Desktop.Field
 
             // Draw guide
             g.SetColor();
-            DrawGuide(g);
+            DrawGuide(g, forceDrawGuide);
 
             g.EndDrawing();
         }

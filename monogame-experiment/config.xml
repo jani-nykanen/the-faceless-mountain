@@ -8,4 +8,5 @@
     <property key="framerate" value="60" />
     <property key="keyconfig_path" value="keyconfig.xml" />
     <property key="audio" value="true" />
+    
 </config>
