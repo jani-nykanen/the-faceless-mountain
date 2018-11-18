@@ -85,7 +85,7 @@ namespace monogame_experiment.Desktop
         //Destroy scene
 		override public void Destroy()
         {
-
+            assets.Destroy();
         }
 
 

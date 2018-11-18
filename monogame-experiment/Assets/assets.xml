@@ -21,6 +21,7 @@
     <tilemap name="3" path="3.tmx" />
     
     <sample name="theme" path="theme.raw" />
+    <sample name="menu" path="menu.raw" />
     <sample name="jump" path="jump.wav" />
     <sample name="tongue" path="tongue.wav" />
     <sample name="hurt" path="hurt.wav" />

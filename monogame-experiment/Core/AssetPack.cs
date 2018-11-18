@@ -103,5 +103,15 @@ namespace monogame_experiment.Desktop.Core
         {
             return GetAsset<Sample>(name, samples);
         }
+
+
+        // Destroy
+        public void Destroy()
+        {
+            foreach(KeyValuePair<Sample> s in samples)
+            {
+                s.value.Destroy();
+            }
+        }
     }
 }

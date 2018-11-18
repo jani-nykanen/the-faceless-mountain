@@ -11,7 +11,10 @@ namespace monogame_experiment.Desktop
     {
         // Intro time
         private const float INTRO_TIME = 150.0f;
+        // Logo fade time
         private const float LOGO_FADE = 60.0f;
+        // Title music vol
+        private const float MUSIC_VOL = 0.30f;
 
         // Bitmaps
         private Bitmap bmpFont;
@@ -19,6 +22,7 @@ namespace monogame_experiment.Desktop
         private Bitmap bmpIntro;
         // Samples
         private Sample sPause;
+        private Sample sMenuMusic;
 
         // Scale
         private float scale;
@@ -58,6 +62,7 @@ namespace monogame_experiment.Desktop
             bmpLogo = assets.GetBitmap("logo");
             bmpIntro = assets.GetBitmap("intro");
             sPause = assets.GetSample("pause");
+            sMenuMusic = assets.GetSample("menu");
 
             // Create a "shallow" stage
             stage = new Stage(assets, true);
@@ -76,6 +81,10 @@ namespace monogame_experiment.Desktop
                     delegate(Object self)
                     {
                         changingToGame = true;
+
+                        // Fade out music
+                        audio.FadeCurrentLoopedSample(500, 0.0f);
+
                         // Change to game
                         trans.Activate(Transition.Mode.In, 2.0f, delegate {
                             sceneMan.ChangeScene("game");
@@ -150,6 +159,9 @@ namespace monogame_experiment.Desktop
                 {
                     ++ phase;
                     phaseTimer = LOGO_FADE;
+
+                    // Fade in music
+                    audio.FadeSample(sMenuMusic, 1000, 0.0f, MUSIC_VOL, true);
                 }
             }
             else if (phase == 0)
@@ -330,6 +342,9 @@ namespace monogame_experiment.Desktop
             scale = 1.0f;
             changingToGame = false;
             trans.Activate(Transition.Mode.Out, 2.0f, null);
+
+            // Fade in music
+            audio.FadeSample(sMenuMusic, 1000, 0.0f, MUSIC_VOL, true);
         }
     }
 }

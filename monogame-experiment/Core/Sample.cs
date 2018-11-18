@@ -81,5 +81,13 @@ namespace monogame_experiment.Desktop.Core
         {
             instance.Stop();
         }
+
+
+        // Destroy
+        public void Destroy()
+        {
+            instance.Dispose();
+            sound.Dispose();
+        }
     }
 }

@@ -89,6 +89,9 @@ namespace monogame_experiment.Desktop.Core
         // Fade a sample
         public void FadeSample(Sample s, int ms, float start, float target, bool loop = false)
         {
+            if (loopedTrack != null)
+                loopedTrack.Stop();
+
             // Store looped track, so we can
             // continue playing it if audio
             // is disabled and then re-enabled
@@ -133,7 +136,7 @@ namespace monogame_experiment.Desktop.Core
         // Update
         public void Update(float tm)
         {
-            const float DELTA = 0.01f;
+            const float DELTA = 0.02f;
 
             // Fade in
             bool stop = false;
@@ -152,7 +155,7 @@ namespace monogame_experiment.Desktop.Core
                 // Stop, target reached
                 if (stop)
                 {
-                    if(v < DELTA)
+                    if(fadeTarget <= DELTA)
                     {
                         fadingSample.Stop();
                     }
