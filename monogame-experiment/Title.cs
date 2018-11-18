@@ -9,9 +9,14 @@ namespace monogame_experiment.Desktop
     // Ttile screen scene
     public class Title : Scene
     {
+        // Intro time
+        private const float INTRO_TIME = 150.0f;
+        private const float LOGO_FADE = 60.0f;
+
         // Bitmaps
         private Bitmap bmpFont;
         private Bitmap bmpLogo;
+        private Bitmap bmpIntro;
         // Samples
         private Sample sPause;
 
@@ -23,12 +28,16 @@ namespace monogame_experiment.Desktop
         private int phase;
         // Pause alpha timer
         private float alphaTimer;
+        // Phase timer
+        private float phaseTimer;
 
         // Stage ("shallow")
         private Stage stage;
 
         // Menu
         private Menu menu;
+        // Pause (for settings only)
+        private Pause settings;
 
         // Transition
         private Transition trans;
@@ -37,6 +46,8 @@ namespace monogame_experiment.Desktop
         // Initialize
         public override void Init()
         {
+            const float FADE_SPEED = 1.0f;
+
             // Get global components
             Global gs = (Global)globalScene;
             AssetPack assets = gs.GetAssets();
@@ -45,6 +56,7 @@ namespace monogame_experiment.Desktop
             // Get assets
             bmpFont = assets.GetBitmap("font");
             bmpLogo = assets.GetBitmap("logo");
+            bmpIntro = assets.GetBitmap("intro");
             sPause = assets.GetSample("pause");
 
             // Create a "shallow" stage
@@ -72,7 +84,7 @@ namespace monogame_experiment.Desktop
                     // Settings
                     delegate(Object self)
                     {
-                        // ...
+                        settings.Activate(true);
                     },
                     // Quit
                     delegate(Object self)
@@ -84,10 +96,16 @@ namespace monogame_experiment.Desktop
                 }
             );
 
+            // Create "settings"
+            settings = new Pause(this);
+
             // Set some default values
             scale = 1.0f;
-            phase = 0;
-            alphaTimer = 0.0f;
+            phase = -1;
+            alphaTimer = (float)Math.PI / 2.0f;
+
+            // Fade out
+            trans.Activate(Transition.Mode.Out, FADE_SPEED, null);
         }
 
 
@@ -96,6 +114,13 @@ namespace monogame_experiment.Desktop
         {
             const float SCALE_SPEED = 0.02f;
             const float ALPHA_SPEED = 0.05f;
+
+            // Update settings if active
+            if(settings.IsActive())
+            {
+                settings.Update(input, audio);
+                return;
+            }
 
             // Update stage background
             stage.UpdateBackground(tm);
@@ -113,16 +138,39 @@ namespace monogame_experiment.Desktop
                 return;
             }
 
-            if (phase == 0)
+            if(phase == -1)
+            {
+                // If enter/x is down, the intro is speeded up
+                float phaseSpeed = (input.GetButton("start") == State.Down
+                                    || input.GetButton("fire1") == State.Down)
+                    ? 2.0f : 1.0f;
+
+                // Update intro time
+                if((phaseTimer += phaseSpeed * tm) >= INTRO_TIME*2)
+                {
+                    ++ phase;
+                    phaseTimer = LOGO_FADE;
+                }
+            }
+            else if (phase == 0)
             {
                 // Update text alpha
                 alphaTimer += ALPHA_SPEED * tm;
 
-                // Wait for enter/start pressed
-                if (input.GetButton("start") == State.Pressed)
+                // Update logo fading
+                if (phaseTimer > 0.0f)
                 {
-                    ++ phase;
-                    audio.PlaySample(sPause, 0.90f);
+                    phaseTimer -= 1.0f * tm;
+                }
+                else
+                {
+
+                    // Wait for enter/start pressed
+                    if (input.GetButton("start") == State.Pressed)
+                    {
+                        ++phase;
+                        audio.PlaySample(sPause, 0.90f);
+                    }
                 }
             }
             else
@@ -133,7 +181,7 @@ namespace monogame_experiment.Desktop
             }
 
             // Escape pressed
-            if(input.GetButton("cancel") == State.Pressed)
+            if(phase != -1 && input.GetButton("cancel") == State.Pressed)
             {
                 // Quit
                 changingToGame = false;
@@ -158,6 +206,9 @@ namespace monogame_experiment.Desktop
 
             const int PRESS_ENTER_Y = 528;
 
+            const float INTRO_SCALE = 1.5f;
+            const float INTRO_FADE = 30.0f;
+
             // Clear to black
             g.ClearScreen(0, 0, 0);
 
@@ -173,22 +224,69 @@ namespace monogame_experiment.Desktop
             // Draw background
             stage.DrawBackground(g);
 
+            // Draw logo & copyright
+            int w, h;
+            if (phase > -1)
+            {
+                float alpha = 1.0f;
+                if(phaseTimer > 0.0f)
+                {
+                    alpha = 1.0f - phaseTimer / LOGO_FADE;
+                }
 
-            g.BeginDrawing();
+                g.BeginDrawing();
 
-            // Draw logo
-            int w = (int)(bmpLogo.GetWidth() * LOGO_SCALE);
-            int h = (int)(bmpLogo.GetHeight()*LOGO_SCALE);
-            g.DrawScaledBitmap(bmpLogo, (int)view.X / 2 - w/2, LOGO_Y, w, h);
+                // Draw logo
+                w = (int)(bmpLogo.GetWidth() * LOGO_SCALE);
+                h = (int)(bmpLogo.GetHeight() * LOGO_SCALE);
 
-            // Draw copyright
-            g.SetColor(1, 1, 0.5f);
-            g.DrawText(bmpFont, "(c)2018 Jani Nyk~nen", 
-                       (int)view.X / 2, (int)view.Y - COPYRIGHT_YPOS, -26, 0, COPYRIGHT_SCALE, true);
+                g.SetColor(1, 1, 1, alpha);
+                g.DrawScaledBitmap(bmpLogo, (int)view.X / 2 - w / 2, LOGO_Y, w, h);
 
-            g.EndDrawing();
+                // Draw copyright
+                g.SetColor(1, 1, 0.5f, alpha);
+                g.DrawText(bmpFont, "(c)2018 Jani Nyk~nen",
+                           (int)view.X / 2, (int)view.Y - COPYRIGHT_YPOS, -26, 0, COPYRIGHT_SCALE, true);
 
-            if (phase == 0)
+                g.EndDrawing();
+            }
+
+            // Intro phase
+            // TODO: Split to smaller methods?
+            if(phase == -1)
+            {
+                int p = phaseTimer <= INTRO_TIME ? 0 : 256;
+
+                w = bmpIntro.GetWidth() / 2;
+                h = bmpIntro.GetHeight();
+
+                int sw = (int)(w * INTRO_SCALE);
+                int sh = (int)(h * INTRO_SCALE);
+
+                // Compute alpha
+                float t = phaseTimer % INTRO_TIME;
+                float alpha = 1.0f;
+                if(t < INTRO_FADE)
+                {
+                    alpha = t / INTRO_FADE;
+                }
+                else if(t >= INTRO_TIME - INTRO_FADE)
+                {
+                    alpha = 1.0f - (t - (INTRO_TIME-INTRO_FADE)) / INTRO_FADE;
+                }
+
+                g.BeginDrawing();
+
+                // Draw intro bitmap
+                g.SetColor(1, 1, 1, alpha);
+                g.DrawScaledBitmapRegion(bmpIntro, p, 0, w, h, (int)view.X / 2 - sw / 2,
+                                   (int)view.Y / 2 - sh / 2, sw, sh);
+
+                g.EndDrawing();
+
+            }
+            // "Press something" phase
+            else if (phase == 0 && phaseTimer <= 0.0f)
             {
                 g.BeginDrawing();
 
@@ -200,11 +298,15 @@ namespace monogame_experiment.Desktop
                 g.SetColor();
                 g.EndDrawing();
             }
-            else
+            // Menu phase
+            else if(phase == 1)
             {
                 // Draw menu
                 menu.Draw(g, view.X / 2, view.Y * MENU_Y, MENU_SCALE);
             }
+
+            // Draw settings
+            settings.Draw(g);
         }
 
 

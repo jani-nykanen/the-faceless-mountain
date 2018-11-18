@@ -111,6 +111,7 @@ namespace monogame_experiment.Desktop.Core
 
             // Set target & start sample
             fadeTarget = volume * target;
+
             s.Play(start * volume, loop);
         }
 

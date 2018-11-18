@@ -35,7 +35,8 @@ namespace monogame_experiment.Desktop.Core
         public void Play(float vol, bool loop = false)
         {
             // Stop, if already playing
-            if(instance.State == SoundState.Playing)
+            if(instance.State == SoundState.Playing ||
+               instance.State == SoundState.Paused)
                 instance.Stop();
 
             instance.Volume = vol;

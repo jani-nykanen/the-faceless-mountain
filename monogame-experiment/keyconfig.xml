@@ -12,5 +12,5 @@
     <key name="start" code="13" button="9"/>
     <key name="cancel" code="27" button="8"/>
     
-    <key name="debug" code="33" button="4"/>
+    <!-- <key name="debug" code="33" button="4"/> -->
 </keyconfig>

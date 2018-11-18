@@ -33,6 +33,8 @@ namespace monogame_experiment.Desktop
 
         // Is in settings
         private bool inSettings;
+        // Was directly started in settings
+        private bool settingsMode;
 
         // Base scene
         private Scene baseScene;
@@ -119,7 +121,13 @@ namespace monogame_experiment.Desktop
 
                     }, 
                     // Quit
-                    delegate(Object o) { ((Pause)o).inSettings = false; },
+                    delegate(Object o) { 
+                    ((Pause)o).inSettings = false; 
+                    if(settingsMode)
+                    {
+                        Disable();
+                    }
+                },
                 }
             );
         }
@@ -133,11 +141,15 @@ namespace monogame_experiment.Desktop
 
 
         // Activate
-        public void Activate()
+        public void Activate(bool toSettings=false)
         {
-            inSettings = false;
+            inSettings = toSettings;
+            settingsMode = toSettings;
+
             active = true;
-            baseMenu.SetCursorPos(0);
+            baseMenu.SetCursorPos(settingsMode ? 2 : 0);
+
+            settings.RenameButton(1, "Audio: " + (baseScene.IsAudioEnabled() ? "On" : "Off"));
         }
 
 

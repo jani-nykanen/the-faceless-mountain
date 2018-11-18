@@ -98,7 +98,7 @@ namespace monogame_experiment.Desktop.Core
 					return new int[] { kv.key, kv.button };
                 }
             }
-			return new int[]{0, 0};
+            return null;
         }
     }
 }

@@ -322,6 +322,7 @@ namespace monogame_experiment.Desktop.Core
 			if (keyConf == null) return State.Up;
 
 			int[] ids = keyConf.GetKeyAndButtonIndex(name);
+            if (ids == null) return State.Up;
 
 			State ret = GetKey(ids[0]);
 			if (ret == State.Up)

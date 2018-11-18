@@ -13,6 +13,7 @@
     <bitmap name="star" path="star.png" />
     <bitmap name="guide" path="guide.png" />
     <bitmap name="logo" path="logo.png" />
+    <bitmap name="intro" path="intro.png" />
     
     <tilemap name="0" path="0.tmx" />
     <tilemap name="1" path="1.tmx" />
